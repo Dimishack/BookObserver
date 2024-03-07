@@ -9,6 +9,9 @@
     <Window.DataContext>
         <vm:MainWindowViewModel/>
     </Window.DataContext>
+    <Window.InputBindings>
+        <KeyBinding Modifiers="Ctrl" Key="Q" Command="{Binding CloseWindowCommand}"/>
+    </Window.InputBindings>
     <Grid>
 
     </Grid>
