@@ -12,7 +12,16 @@
     <Window.InputBindings>
         <KeyBinding Modifiers="Ctrl" Key="Q" Command="{Binding CloseWindowCommand}"/>
     </Window.InputBindings>
-    <Grid>
-
-    </Grid>
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="Файл"/>
+            <MenuItem Header="Правка">
+                <MenuItem Header="Настройки"/>
+            </MenuItem>
+        </Menu>
+        <TabControl>
+            <TabItem Header="Книги"/>
+            <TabItem Header="Читатели"/>
+        </TabControl>
+    </DockPanel>
 </Window>
