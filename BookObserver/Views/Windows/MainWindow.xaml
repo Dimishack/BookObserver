@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BookObserver"
         xmlns:vm="clr-namespace:BookObserver.ViewModels"
+        xmlns:us="clr-namespace:BookObserver.Views.UserControl"
         Title="{Binding Title}" Height="450" Width="800">
     <Window.DataContext>
         <vm:MainWindowViewModel/>
@@ -20,7 +21,9 @@
             </MenuItem>
         </Menu>
         <TabControl>
-            <TabItem Header="Книги"/>
+            <TabItem Header="Книги">
+                <us:BooksUserControl DataContext="{Binding BookUC}"/>
+            </TabItem>
             <TabItem Header="Читатели"/>
         </TabControl>
     </DockPanel>

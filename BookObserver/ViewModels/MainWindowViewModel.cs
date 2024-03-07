@@ -7,10 +7,11 @@ namespace BookObserver.ViewModels
 {
     class MainWindowViewModel : ViewModel
     {
-		#region Title : string? - Заголовок окна
+        public BooksUserControlViewModel BookUC { get; }
+        #region Title : string? - Заголовок окна
 
-		///<summary>Заголовок окна</summary>
-		private string? _title = "BookObserver";
+        ///<summary>Заголовок окна</summary>
+        private string? _title = "BookObserver";
 
 		///<summary>Заголовок окна</summary>
 		public string? Title { get => _title; set => Set(ref _title, value); }
@@ -22,8 +23,8 @@ namespace BookObserver.ViewModels
 		///<summary>Закрытие окна</summary>
 		private ICommand? _closeWindowCommand;
 
-		///<summary>Закрытие окна</summary>
-		public ICommand CloseWindowCommand => _closeWindowCommand
+        ///<summary>Закрытие окна</summary>
+        public ICommand CloseWindowCommand => _closeWindowCommand
 			??= new LambdaCommand(OnCloseWindowCommandExecuted);
 
 		///<summary>Логика выполнения - Закрытие окна</summary>
@@ -32,6 +33,13 @@ namespace BookObserver.ViewModels
 			MessageBox.Show("Закрытие окна прошло успешно!", _title);
 			App.Current.Shutdown();
 		}
+
+		public MainWindowViewModel() { }
+
+		public MainWindowViewModel(BooksUserControlViewModel bookUC)
+		{
+            BookUC = bookUC;
+        }
 
 		#endregion
 	}
