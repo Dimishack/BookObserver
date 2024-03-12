@@ -12,13 +12,13 @@ namespace BookObserver.ViewModels
 
         public BooksUserControlViewModel()
         {
-            Books = new ObservableCollection<Book>(Enumerable.Range(0,10).Select(p => new Book
+            Books = new ObservableCollection<Book>(Enumerable.Range(0, 1000).Select(p => new Book
             {
                 Id = p,
                 BBK = $"{p}{p}",
-                Pages = p + Random.Shared.Next(0,100),
+                Pages = p + Random.Shared.Next(0, 100),
                 Author = $"Author {p}",
-                Name = $"Name {p}"
+                Name = new string('ü', 150)
             }));
         }
     }

@@ -4,26 +4,97 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:BookObserver.Views.UserControl"
+             
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:vm="clr-namespace:BookObserver.ViewModels"
+             
              d:DataContext="{d:DesignInstance vm:BooksUserControlViewModel}"
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <DataGrid ItemsSource="{Binding Books}"
-                  AutoGenerateColumns="False">
-            <DataGrid.Resources>
-                <Style TargetType="DataGridColumnHeader">
-                    <Setter Property="FontWeight" Value="Bold"/>
-                    <Setter Property="HorizontalContentAlignment" Value="Center"/>
-                </Style>
-            </DataGrid.Resources>
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="п\п" Binding="{Binding Id}" Width="Auto"/>
-                <DataGridTextColumn Header="ББК" Binding="{Binding BBK}" Width="Auto"/>
-                <DataGridTextColumn Header="Издательство" Binding="{Binding Publish}" Width="Auto"/>
-                <DataGridTextColumn Header="Страниц" Binding="{Binding Pages}" Width="Auto"/>
-                <DataGridTextColumn Header="Автор" Binding="{Binding Author}" Width="Auto"/>
-                <DataGridTextColumn Header="Название" Binding="{Binding Name}" Width="*"/>
-            </DataGrid.Columns>
-        </DataGrid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" MaxWidth="250" MinWidth="85"/>
+            <ColumnDefinition Width="3"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <DockPanel Grid.Column="0">
+            <GroupBox DockPanel.Dock="Bottom" Header="Сортировка">
+
+            </GroupBox>
+            <GroupBox Header="Поиск">
+
+            </GroupBox>
+        </DockPanel>
+        <GridSplitter Grid.Column="1" Background="Transparent"
+                          HorizontalAlignment="Stretch"/>
+        <DockPanel Grid.Column="2">
+            <UniformGrid DockPanel.Dock="Bottom" Rows="1" Margin="5">
+                <Button Content="Добавить"/>
+                <Button Content="Редактировать"/>
+                <Button Content="Удалить"/>
+                <Button>
+                    <TextBlock TextAlignment="Center">
+                    Сохранить<LineBreak/>список
+                    </TextBlock>
+                </Button>
+            </UniformGrid>
+            <ListBox ItemsSource="{Binding Books}"
+                     SelectionMode="Single"
+                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                     
+                     VirtualizingPanel.CacheLength="2"
+                     VirtualizingPanel.IsVirtualizing="True"
+                     VirtualizingPanel.IsContainerVirtualizable="True"
+                     VirtualizingPanel.VirtualizationMode="Recycling">
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel/>
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Border BorderBrush="SandyBrown" BorderThickness="2">
+                            <Grid>
+                                <StackPanel>
+                                    <StackPanel.Resources>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="TextWrapping" Value="Wrap"/>
+                                            <Setter Property="FontSize" Value="12"/>
+                                        </Style>
+                                    </StackPanel.Resources>
+                                    <TextBlock Text="{Binding BBK, StringFormat=ББК: {0}}"/>
+                                    <TextBlock Text="{Binding Publish, StringFormat=Издательство: {0}}"/>
+                                    <TextBlock Text="{Binding Pages, StringFormat=Количество страниц: {0}}"/>
+                                    <TextBlock Text="{Binding Author, StringFormat=Автор: {0}}"/>
+                                    <TextBlock Text="{Binding Name, StringFormat=Название: {0}}"/>
+                                    <TextBlock Text="{Binding Stock, StringFormat=В наличии: {0}}"/>
+                                    <TextBlock Text="{Binding Reader, StringFormat=Читатель: {0}}"/>
+                                </StackPanel>
+                                <Button Content="X" FontWeight="Bold"
+                                    Background="Transparent"
+                                    BorderThickness="0"
+                                    HorizontalAlignment="Right" VerticalAlignment="Top"
+                                    Margin="7,5" Padding="3">
+                                    <Button.Resources>
+                                        <Style TargetType="Button">
+                                            <Setter Property="Foreground" Value="Red"/>
+                                            <Style.Triggers>
+                                                <Trigger Property="IsPressed" Value="True">
+                                                    <Setter Property="Foreground" Value="Green"/>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Resources>
+                                </Button>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </DockPanel>
     </Grid>
 </UserControl>
