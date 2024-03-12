@@ -7,6 +7,7 @@
              
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:vm="clr-namespace:BookObserver.ViewModels"
+             xmlns:c="clr-namespace:BookObserver.Infrastructure.Converters"
              
              d:DataContext="{d:DesignInstance vm:BooksUserControlViewModel}"
              d:DesignHeight="450" d:DesignWidth="800">
@@ -17,17 +18,41 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <DockPanel Grid.Column="0">
-            <GroupBox DockPanel.Dock="Bottom" Header="Сортировка">
-
+            <GroupBox DockPanel.Dock="Top" Header="Сортировка">
+                <ComboBox SelectedIndex="0">
+                    <ComboBoxItem Content="Сначала новые записи"/>
+                    <ComboBoxItem Content="Сначала старые записи"/>
+                    <ComboBoxItem Content="Сначала в наличии"/>
+                    <ComboBoxItem Content="Сначала не в наличии"/>
+                    <ComboBoxItem Content="ББК (по возрастанию)"/>
+                    <ComboBoxItem Content="ББК (по убыванию)"/>
+                    <ComboBoxItem Content="Автор (по возрастанию)"/>
+                    <ComboBoxItem Content="Автор (по убыванию)"/>
+                    <ComboBoxItem Content="Название (по возрастанию)"/>
+                    <ComboBoxItem Content="Название (по убыванию)"/>
+                </ComboBox>
             </GroupBox>
             <GroupBox Header="Поиск">
-
+                <DockPanel>
+                    <Button DockPanel.Dock="Bottom" Content="Поиск"/>
+                    <Grid>
+                        
+                    </Grid>
+                </DockPanel>
             </GroupBox>
         </DockPanel>
         <GridSplitter Grid.Column="1" Background="Transparent"
                           HorizontalAlignment="Stretch"/>
         <DockPanel Grid.Column="2">
+            <GroupBox DockPanel.Dock="Top" Header="Быстрый поиск">
+                <TextBox/>
+            </GroupBox>
             <UniformGrid DockPanel.Dock="Bottom" Rows="1" Margin="5">
+                <UniformGrid.Resources>
+                    <Style TargetType="Button">
+                        <Setter Property="Margin" Value="3,0"/>
+                    </Style>
+                </UniformGrid.Resources>
                 <Button Content="Добавить"/>
                 <Button Content="Редактировать"/>
                 <Button Content="Удалить"/>
@@ -65,13 +90,14 @@
                                             <Setter Property="TextWrapping" Value="Wrap"/>
                                             <Setter Property="FontSize" Value="12"/>
                                         </Style>
+                                        <c:BoolToStringStockConverter x:Key="StockConverter"/>
                                     </StackPanel.Resources>
                                     <TextBlock Text="{Binding BBK, StringFormat=ББК: {0}}"/>
                                     <TextBlock Text="{Binding Publish, StringFormat=Издательство: {0}}"/>
                                     <TextBlock Text="{Binding Pages, StringFormat=Количество страниц: {0}}"/>
                                     <TextBlock Text="{Binding Author, StringFormat=Автор: {0}}"/>
                                     <TextBlock Text="{Binding Name, StringFormat=Название: {0}}"/>
-                                    <TextBlock Text="{Binding Stock, StringFormat=В наличии: {0}}"/>
+                                    <TextBlock Text="{Binding Stock, Converter={StaticResource StockConverter},StringFormat=В наличии: {0}}"/>
                                     <TextBlock Text="{Binding Reader, StringFormat=Читатель: {0}}"/>
                                 </StackPanel>
                                 <Button Content="X" FontWeight="Bold"
