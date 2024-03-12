@@ -8,7 +8,8 @@
              d:DataContext="{d:DesignInstance vm:BooksUserControlViewModel}"
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
-        <DataGrid>
+        <DataGrid ItemsSource="{Binding Books}"
+                  AutoGenerateColumns="False">
             <DataGrid.Resources>
                 <Style TargetType="DataGridColumnHeader">
                     <Setter Property="FontWeight" Value="Bold"/>
@@ -16,12 +17,12 @@
                 </Style>
             </DataGrid.Resources>
             <DataGrid.Columns>
-                <DataGridTextColumn Header="п\п" Width="Auto"/>
-                <DataGridTextColumn Header="ББК" Width="Auto"/>
-                <DataGridTextColumn Header="Издательство" Width="Auto"/>
-                <DataGridTextColumn Header="Страниц" Width="Auto"/>
-                <DataGridTextColumn Header="Автор" Width="Auto"/>
-                <DataGridTextColumn Header="Название" Width="*"/>
+                <DataGridTextColumn Header="п\п" Binding="{Binding Id}" Width="Auto"/>
+                <DataGridTextColumn Header="ББК" Binding="{Binding BBK}" Width="Auto"/>
+                <DataGridTextColumn Header="Издательство" Binding="{Binding Publish}" Width="Auto"/>
+                <DataGridTextColumn Header="Страниц" Binding="{Binding Pages}" Width="Auto"/>
+                <DataGridTextColumn Header="Автор" Binding="{Binding Author}" Width="Auto"/>
+                <DataGridTextColumn Header="Название" Binding="{Binding Name}" Width="*"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

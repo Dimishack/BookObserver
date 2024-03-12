@@ -34,12 +34,10 @@ namespace BookObserver.ViewModels
 			App.Current.Shutdown();
 		}
 
-		public MainWindowViewModel() { }
-
-		public MainWindowViewModel(BooksUserControlViewModel bookUC)
+		public MainWindowViewModel()
 		{
-            BookUC = bookUC;
-        }
+			BookUC = new BooksUserControlViewModel();
+		}
 
 		#endregion
 	}
