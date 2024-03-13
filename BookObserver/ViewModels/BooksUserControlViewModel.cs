@@ -1,6 +1,7 @@
 ﻿using BookObserver.Models.Books;
 using BookObserver.ViewModels.Base;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 
@@ -10,9 +11,22 @@ namespace BookObserver.ViewModels
     {
         public ObservableCollection<Book> Books { get; }
 
+        public IList<int?> ListPages
+        {
+            get
+            {
+                List<int?> list = [];
+                foreach (var book in Books)
+                    if(!list.Contains(book.Pages))
+                        list.Add(book.Pages);
+                list.Sort();
+                return list;
+            }
+        }
+
         public BooksUserControlViewModel()
         {
-            Books = new ObservableCollection<Book>(Enumerable.Range(0, 1000000).Select(p => new Book
+            Books = new (Enumerable.Range(0, 10000).Select(p => new Book
             {
                 Id = p,
                 BBK = $"{p}{p}",

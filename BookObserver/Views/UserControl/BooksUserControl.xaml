@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:BookObserver.Views.UserControl"
              
+             xmlns:fa5="http://schemas.fontawesome.com/icons/"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:vm="clr-namespace:BookObserver.ViewModels"
              xmlns:c="clr-namespace:BookObserver.Infrastructure.Converters"
@@ -18,7 +19,14 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <DockPanel Grid.Column="0">
-            <GroupBox DockPanel.Dock="Top" Header="Сортировка">
+            <GroupBox DockPanel.Dock="Top">
+                <GroupBox.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Name="TBSort" Text="Сортировка"/>
+                        <fa5:ImageAwesome Icon="Solid_Sort" Height="{Binding ElementName=TBSort, Path=FontSize}"
+                                          Margin="3,0"/>
+                    </StackPanel>
+                </GroupBox.Header>
                 <ComboBox SelectedIndex="0">
                     <ComboBoxItem Content="Сначала новые записи"/>
                     <ComboBoxItem Content="Сначала старые записи"/>
@@ -32,12 +40,30 @@
                     <ComboBoxItem Content="Название (по убыванию)"/>
                 </ComboBox>
             </GroupBox>
-            <GroupBox Header="Поиск">
+            <GroupBox>
+                <GroupBox.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Name="TBSearch" Text="Поиск"/>
+                        <fa5:ImageAwesome Icon="Solid_Search" Height="{Binding ElementName=TBSearch, Path=FontSize}"
+                                          Margin="3,0,0,0"/>
+                    </StackPanel>
+                </GroupBox.Header>
                 <DockPanel>
                     <Button DockPanel.Dock="Bottom" Content="Поиск"/>
-                    <Grid>
-                        
-                    </Grid>
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Text="В наличии"/>
+                        <ComboBox/>
+                        <TextBlock Text="ББК"/>
+                        <ComboBox/>
+                        <TextBlock Text="Автор"/>
+                        <ComboBox/>
+                        <TextBlock Text="Название"/>
+                        <ComboBox/>
+                        <TextBlock Text="Издательство"/>
+                        <ComboBox/>
+                        <TextBlock Text="Год издания"/>
+                        <ComboBox/>
+                    </StackPanel>
                 </DockPanel>
             </GroupBox>
         </DockPanel>
@@ -45,7 +71,12 @@
                           HorizontalAlignment="Stretch"/>
         <DockPanel Grid.Column="2">
             <GroupBox DockPanel.Dock="Top" Header="Быстрый поиск">
-                <TextBox/>
+                <DockPanel >
+                    <fa5:ImageAwesome DockPanel.Dock="Left" Icon="Solid_Search" 
+                                      Height="{Binding ElementName=TBFastSearch, Path=FontSize}"
+                                      Margin="0,0,3,0"/>
+                    <TextBlock Name="TBFastSearch" Text="123"/>
+                </DockPanel>
             </GroupBox>
             <UniformGrid DockPanel.Dock="Bottom" Rows="1" Margin="5">
                 <UniformGrid.Resources>
@@ -104,7 +135,7 @@
                                                FontWeight="Bold"/>
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Text="{Binding Reader.FullName, StringFormat='ФИО читателя: {0}'}"/>
-                                        <TextBlock Text="{Binding Reader.DateSet, StringFormat=', дата возвращения: {0:dd:MM:yyyy}', ConverterCulture=ru}"/>
+                                        <TextBlock Text="{Binding Reader.DateSet, StringFormat=', дата возврата: {0:dd:MM:yyyy}', ConverterCulture=ru}"/>
                                     </StackPanel>
                                 </StackPanel>
                                 <Button Content="X" FontWeight="Bold"
