@@ -1,6 +1,7 @@
 ﻿using BookObserver.Models.Books;
 using BookObserver.ViewModels.Base;
 using System;
+using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -24,7 +25,8 @@ namespace BookObserver.ViewModels
                 if (!Set(ref _books, value)) return;
 
                 _booksView.Source = value;
-                _authorsView.Source = value?.Select(p => p.Author).ToList();
+                _authorsView.Source = value?.Select(p => p.Author).ToImmutableSortedSet();
+                _namesView.Source = value?.Select(p => p.Name).ToImmutableSortedSet();
             }
         }
 
@@ -62,7 +64,7 @@ namespace BookObserver.ViewModels
         public ICollectionView AuthorsView => _authorsView.View;
 
         #endregion
-        
+
         #region AuthorsFilterText : string? - фильтр авторов
 
         ///<summary>фильтр авторов</summary>
@@ -82,6 +84,29 @@ namespace BookObserver.ViewModels
 
         #endregion
 
+        private readonly CollectionViewSource _namesView = new();
+        public ICollectionView NamesView => _namesView.View;
+
+        #region NameFilterText : string? - фильтр названий
+
+        ///<summary>фильтр названий</summary>
+        private string? _nameFilterText;
+
+        ///<summary>фильтр названий</summary>
+        public string? NameFilterText
+        {
+            get => _nameFilterText;
+            set
+            {
+                if (!Set(ref _nameFilterText, value)) return;
+
+                _namesView.View.Refresh();
+            }
+        }
+
+        #endregion
+
+
         public BooksUserControlViewModel()
         {
             Books = new(Enumerable.Range(0, 50000).Select(p => new Book
@@ -90,7 +115,7 @@ namespace BookObserver.ViewModels
                 BBK = $"{p}{p}",
                 Pages = p + Random.Shared.Next(0, 100),
                 Author = $"Author {p}",
-                Name = new string('ü', 150),
+                Name = new string('ü', Random.Shared.Next(15,30)),
                 Reader = new Models.Readers.Reader
                 {
                     FirstName = "Амплитуда"
@@ -98,11 +123,28 @@ namespace BookObserver.ViewModels
             }));
             _booksView.Filter += BooksView_Filter;
             _authorsView.Filter += AuthorsView_Filter;
+            _namesView.Filter += NamesView_Filter;
+        }
+
+        private void NamesView_Filter(object sender, FilterEventArgs e)
+        {
+            if (e.Item is not string name)
+            {
+                e.Accepted = false;
+                return;
+            }
+
+            var filter_text = _nameFilterText;
+            if (string.IsNullOrWhiteSpace(filter_text)) return;
+
+            if (name.Contains(filter_text)) return;
+
+            e.Accepted = false;
         }
 
         private void AuthorsView_Filter(object sender, FilterEventArgs e)
         {
-            if(e.Item is not string author)
+            if (e.Item is not string author)
             {
                 e.Accepted = false;
                 return;

@@ -60,7 +60,8 @@
                                   Text="{Binding AuthorsFilterText, UpdateSourceTrigger=PropertyChanged}">
                         </ComboBox>
                         <TextBlock Text="Название"/>
-                        <ComboBox/>
+                        <ComboBox ItemsSource="{Binding NamesView}"
+                                  Text="{Binding NameFilterText, UpdateSourceTrigger=PropertyChanged}"/>
                         <TextBlock Text="Издательство"/>
                         <ComboBox/>
                         <TextBlock Text="Год издания"/>
