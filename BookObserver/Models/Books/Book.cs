@@ -6,8 +6,8 @@ namespace BookObserver.Models.Books
     {
         public int Id { get; set; }
         public bool Stock { get; set; }
-        public int? Pages { get; set; }
-        public int? YearPublish { get; set; }
+        public int Pages { get; set; }
+        public int YearPublish { get; set; }
         public string Author { get; set; } = string.Empty;
         public string BBK {  get; set; } = string.Empty;
         public string CodeAuthor { get; set; } = string.Empty;

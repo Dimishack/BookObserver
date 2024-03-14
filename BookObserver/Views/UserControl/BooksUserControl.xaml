@@ -56,7 +56,9 @@
                         <TextBlock Text="ББК"/>
                         <ComboBox/>
                         <TextBlock Text="Автор"/>
-                        <ComboBox/>
+                        <ComboBox ItemsSource="{Binding AuthorsView}" 
+                                  Text="{Binding AuthorsFilterText, UpdateSourceTrigger=PropertyChanged}">
+                        </ComboBox>
                         <TextBlock Text="Название"/>
                         <ComboBox/>
                         <TextBlock Text="Издательство"/>

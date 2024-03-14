@@ -3,12 +3,19 @@
     <Style TargetType="ComboBox">
         <Setter Property="MaxDropDownHeight" Value="200"/>
         <Setter Property="IsEditable" Value="True"/>
-        <Setter Property="IsTextSearchEnabled" Value="False"/>
+        <Setter Property="IsTextSearchCaseSensitive" Value="False"/>
         <Setter Property="StaysOpenOnEdit" Value="True"/>
+        <Setter Property="MaxDropDownHeight" Value="140"/>
 
-        <Setter Property="VirtualizingPanel.CacheLength" Value="5"/>
         <Setter Property="VirtualizingPanel.IsVirtualizing" Value="True"/>
         <Setter Property="VirtualizingPanel.IsContainerVirtualizable" Value="True"/>
         <Setter Property="VirtualizingPanel.VirtualizationMode" Value="Recycling"/>
+        <Setter Property="ItemsPanel">
+            <Setter.Value>
+                <ItemsPanelTemplate>
+                    <VirtualizingStackPanel/>
+                </ItemsPanelTemplate>
+            </Setter.Value>
+        </Setter>
     </Style>
 </ResourceDictionary>
