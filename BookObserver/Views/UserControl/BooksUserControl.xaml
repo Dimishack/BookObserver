@@ -75,7 +75,8 @@
                     <fa5:ImageAwesome DockPanel.Dock="Left" Icon="Solid_Search" 
                                       Height="{Binding ElementName=TBFastSearch, Path=FontSize}"
                                       Margin="0,0,3,0"/>
-                    <TextBlock Name="TBFastSearch" Text="123"/>
+                    <TextBox Name="TBFastSearch" Text="{Binding BooksFilterText, UpdateSourceTrigger=PropertyChanged}" 
+                             HorizontalAlignment="Stretch"/>
                 </DockPanel>
             </GroupBox>
             <UniformGrid DockPanel.Dock="Bottom" Rows="1" Margin="5">
@@ -93,14 +94,13 @@
                     </TextBlock>
                 </Button>
             </UniformGrid>
-            <ListBox ItemsSource="{Binding Books}"
+            <ListBox ItemsSource="{Binding BooksView}"
                      SelectionMode="Single"
                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                      
-                     VirtualizingPanel.CacheLength="3"
                      VirtualizingPanel.IsVirtualizing="True"
                      VirtualizingPanel.IsContainerVirtualizable="True"
-                     VirtualizingPanel.VirtualizationMode="Recycling">
+                     VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.CacheLength="3">
                 <ListBox.ItemsPanel>
                     <ItemsPanelTemplate>
                         <VirtualizingStackPanel/>
