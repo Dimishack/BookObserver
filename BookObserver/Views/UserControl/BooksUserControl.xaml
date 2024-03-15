@@ -8,7 +8,6 @@
              xmlns:fa5="http://schemas.fontawesome.com/icons/"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:vm="clr-namespace:BookObserver.ViewModels"
-             xmlns:c="clr-namespace:BookObserver.Infrastructure.Converters"
              
              d:DataContext="{d:DesignInstance vm:BooksUserControlViewModel}"
              d:DesignHeight="450" d:DesignWidth="800">
@@ -49,13 +48,20 @@
                     </StackPanel>
                 </GroupBox.Header>
                 <DockPanel>
-                    <Button DockPanel.Dock="Bottom" Content="Поиск"/>
+                    <UniformGrid DockPanel.Dock="Bottom" Columns="1" Background="WhiteSmoke">
+                        <UniformGrid.Resources>
+                            <Style TargetType="Button">
+                                <Setter Property="Padding" Value="3"/>
+                                <Setter Property="Margin" Value="3"/>
+                            </Style>
+                        </UniformGrid.Resources>
+                        <Button Content="Поиск"
+                            Command="{Binding FindBooksCommand}" CommandParameter="{Binding Books}"/>
+                        <Button Content="Обнулить поиск"/>
+                    </UniformGrid>
                     <StackPanel Orientation="Vertical">
-                        <StackPanel.Resources>
-                            <c:BoolToStringCollectionStockConverter x:Key="CollectionStockConverter"/>
-                        </StackPanel.Resources>
                         <TextBlock Text="В наличии"/>
-                        <ComboBox ItemsSource="{Binding StockView, Converter={StaticResource CollectionStockConverter}}"
+                        <ComboBox ItemsSource="{Binding StockView}"
                                   Text="{Binding StockFilterText, UpdateSourceTrigger=PropertyChanged}"/>
                         <TextBlock Text="ББК"/>
                         <ComboBox ItemsSource="{Binding BBKView}"
@@ -73,6 +79,7 @@
                         <TextBlock Text="Год издания"/>
                         <ComboBox ItemsSource="{Binding YearPublishView}"
                                   Text="{Binding YearPublishFilterText, UpdateSourceTrigger=PropertyChanged}"/>
+                        <Button Content="Очистить фильтры" Margin="10"/>
                     </StackPanel>
                 </DockPanel>
             </GroupBox>
@@ -92,12 +99,25 @@
             <UniformGrid DockPanel.Dock="Bottom" Rows="1" Margin="5">
                 <UniformGrid.Resources>
                     <Style TargetType="Button">
-                        <Setter Property="Margin" Value="3,0"/>
+                        <Setter Property="Margin" Value="3"/>
+                        <Setter Property="Padding" Value="3"/>
                     </Style>
                 </UniformGrid.Resources>
-                <Button Content="Добавить"/>
-                <Button Content="Редактировать"/>
-                <Button Content="Удалить"/>
+                <Button>
+                    <TextBlock TextAlignment="Center">
+                        Добавить <LineBreak/> книгу
+                    </TextBlock>
+                </Button>
+                <Button>
+                    <TextBlock TextAlignment="Center">
+                        Редактировать <LineBreak/> книгу
+                    </TextBlock>
+                </Button>
+                <Button>
+                    <TextBlock TextAlignment="Center">
+                        Удалить <LineBreak/> книгу
+                    </TextBlock>
+                </Button>
                 <Button>
                     <TextBlock TextAlignment="Center">
                     Сохранить<LineBreak/>список
@@ -131,7 +151,6 @@
                                             <Setter Property="TextWrapping" Value="Wrap"/>
                                             <Setter Property="FontSize" Value="12"/>
                                         </Style>
-                                        <c:BoolToStringStockConverter x:Key="StockConverter"/>
                                     </StackPanel.Resources>
                                     <TextBlock Text="{Binding BBK, StringFormat=ББК: {0}}"/>
                                     <StackPanel Orientation="Horizontal">
@@ -141,7 +160,7 @@
                                     <TextBlock Text="{Binding Pages, StringFormat='Количество страниц: {0}'}"/>
                                     <TextBlock Text="{Binding Author, StringFormat=Автор: {0}}"/>
                                     <TextBlock Text="{Binding Name, StringFormat=Название: {0}}"/>
-                                    <TextBlock Text="{Binding Stock, Converter={StaticResource StockConverter},StringFormat=В наличии: {0}}"
+                                    <TextBlock Text="{Binding Stock, StringFormat=В наличии: {0}}"
                                                FontWeight="Bold"/>
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Text="{Binding Reader.FullName, StringFormat='ФИО читателя: {0}'}"/>

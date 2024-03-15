@@ -1,11 +1,14 @@
-﻿using BookObserver.Models.Books;
+﻿using BookObserver.Infrastructure.Commands;
+using BookObserver.Models.Books;
 using BookObserver.ViewModels.Base;
 using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Data;
+using System.Windows.Input;
 
 namespace BookObserver.ViewModels
 {
@@ -44,6 +47,38 @@ namespace BookObserver.ViewModels
 
         #endregion
 
+        #region StockView : ICollectionView - Вывод списка "в наличии"
+        private readonly CollectionViewSource _stockView = new();
+        public ICollectionView StockView => _stockView.View;
+        #endregion
+
+        #region AuthorsView : ICollectionView - Вывод списка авторов
+
+        private readonly CollectionViewSource _authorsView = new();
+        public ICollectionView AuthorsView => _authorsView.View;
+
+        #endregion
+
+        #region NamesView : ICollectionView - Вывод списка названий книг
+        private readonly CollectionViewSource _namesView = new();
+        public ICollectionView NamesView => _namesView.View;
+        #endregion
+
+        #region BBKView : ICollectionView - Вывод списка BBK
+        private readonly CollectionViewSource _bbkView = new();
+        public ICollectionView BBKView => _bbkView.View;
+        #endregion
+
+        #region PublishView : ICollectionView - Вывод списка издательства
+        private readonly CollectionViewSource _publishView = new();
+        public ICollectionView PublishView => _publishView.View;
+        #endregion
+
+        #region YearPublishView : ICollectionView - Вывод списка года издательств
+        private readonly CollectionViewSource _yearPublishView = new();
+        public ICollectionView YearPublishView => _yearPublishView.View;
+        #endregion
+
         #region BooksFilterText : string? - Фильтр книг
 
         ///<summary>Фильтр книг</summary>
@@ -61,11 +96,6 @@ namespace BookObserver.ViewModels
             }
         }
 
-        #endregion
-
-        #region StockView : ICollectionView - Вывод списка "в наличии"
-        private readonly CollectionViewSource _stockView = new();
-        public ICollectionView StockView => _stockView.View;
         #endregion
 
         #region StockFilterText : string? - Фильтр "в наличии"
@@ -87,10 +117,41 @@ namespace BookObserver.ViewModels
 
         #endregion
 
-        #region AuthorsView : ICollectionView - Вывод списка авторов
+        #region BBKFilterText : string? - Фильтр ББК
 
-        private readonly CollectionViewSource _authorsView = new();
-        public ICollectionView AuthorsView => _authorsView.View;
+        ///<summary>Фильтр ББК</summary>
+        private string? _bbkFilterText;
+
+        ///<summary>Фильтр ББК</summary>
+        public string? BBKFilterText
+        {
+            get => _bbkFilterText;
+            set
+            {
+                if (!Set(ref _bbkFilterText, value)) return;
+
+                _bbkView.View.Refresh();
+            }
+        }
+
+        #endregion
+
+        #region NameFilterText : string? - Фильтр названий
+
+        ///<summary>Фильтр названий</summary>
+        private string? _nameFilterText;
+
+        ///<summary>Фильтр названий</summary>
+        public string? NameFilterText
+        {
+            get => _nameFilterText;
+            set
+            {
+                if (!Set(ref _nameFilterText, value)) return;
+
+                _namesView.View.Refresh();
+            }
+        }
 
         #endregion
 
@@ -113,59 +174,6 @@ namespace BookObserver.ViewModels
 
         #endregion
 
-        #region NamesView : ICollectionView - Вывод списка названий книг
-        private readonly CollectionViewSource _namesView = new();
-        public ICollectionView NamesView => _namesView.View;
-        #endregion
-
-        #region NameFilterText : string? - Фильтр названий
-
-        ///<summary>Фильтр названий</summary>
-        private string? _nameFilterText;
-
-        ///<summary>Фильтр названий</summary>
-        public string? NameFilterText
-        {
-            get => _nameFilterText;
-            set
-            {
-                if (!Set(ref _nameFilterText, value)) return;
-
-                _namesView.View.Refresh();
-            }
-        }
-
-        #endregion
-
-        #region BBKView : ICollectionView - Вывод списка BBK
-        private readonly CollectionViewSource _bbkView = new();
-        public ICollectionView BBKView => _bbkView.View;
-        #endregion
-
-        #region BBKFilterText : string? - Фильтр ББК
-
-        ///<summary>Фильтр ББК</summary>
-        private string? _bbkFilterText;
-
-        ///<summary>Фильтр ББК</summary>
-        public string? BBKFilterText
-        {
-            get => _bbkFilterText;
-            set
-            {
-                if (!Set(ref _bbkFilterText, value)) return;
-
-                _bbkView.View.Refresh();
-            }
-        }
-
-        #endregion
-
-        #region PublishView : ICollectionView - Вывод списка издательства
-        private readonly CollectionViewSource _publishView = new();
-        public ICollectionView PublishView => _publishView.View;
-        #endregion
-
         #region PublishFilterText : string? - Фильтр издательств
 
         ///<summary>Фильтр издательств</summary>
@@ -183,11 +191,6 @@ namespace BookObserver.ViewModels
             }
         }
 
-        #endregion
-
-        #region YearPublishView : ICollectionView - Вывод списка года издательств
-        private readonly CollectionViewSource _yearPublishView = new();
-        public ICollectionView YearPublishView => _yearPublishView.View;
         #endregion
 
         #region YearPublishFilterText : string? - Фильтр годов издания
@@ -209,10 +212,58 @@ namespace BookObserver.ViewModels
 
         #endregion
 
+        #region Команды
+
+        #region FindBooksCommand - Поиск книг
+
+        ///<summary>Поиск книг</summary>
+        private ICommand? _findBooksCommand;
+
+        ///<summary>Поиск книг</summary>
+        public ICommand FindBooksCommand => _findBooksCommand
+            ??= new LambdaCommand(OnFindBooksCommandExecuted, CanFindBooksCommandExecute);
+
+        ///<summary>Проверка возможности выполнения - Поиск книг</summary>
+        private bool CanFindBooksCommandExecute(object? p) =>
+            p is not null
+            && p is IList<Book>
+            && (!string.IsNullOrWhiteSpace(_stockFilterText)
+            || !string.IsNullOrWhiteSpace(_bbkFilterText)
+            || !string.IsNullOrWhiteSpace(_authorsFilterText)
+            || !string.IsNullOrWhiteSpace(_nameFilterText)
+            || !string.IsNullOrWhiteSpace(_publishFilterText)
+            || !string.IsNullOrWhiteSpace(_yearPublishFilterText)
+            );
+
+        ///<summary>Логика выполнения - Поиск книг</summary>
+        private void OnFindBooksCommandExecuted(object? p)
+        {
+            IList<Book> result = (p as IList<Book>)!;
+            if (!string.IsNullOrWhiteSpace(_stockFilterText)) result = result.Where(
+                p => p.Stock.Contains(_stockFilterText, StringComparison.OrdinalIgnoreCase)).ToList();
+            if (!string.IsNullOrWhiteSpace(_bbkFilterText)) result = result.Where(
+                p => p.BBK.Contains(_bbkFilterText, StringComparison.OrdinalIgnoreCase)).ToList();
+            if (!string.IsNullOrWhiteSpace(_authorsFilterText)) result = result.Where(
+                p => p.Author.Contains(_authorsFilterText, StringComparison.OrdinalIgnoreCase)).ToList();
+            if (!string.IsNullOrWhiteSpace(_nameFilterText)) result = result.Where(
+                p => p.Name.Contains(_nameFilterText, StringComparison.OrdinalIgnoreCase)).ToList();
+            if (!string.IsNullOrWhiteSpace(_publishFilterText)) result = result.Where(
+                p => p.Publish.Contains(_publishFilterText, StringComparison.OrdinalIgnoreCase)).ToList();
+            if (!string.IsNullOrWhiteSpace(_yearPublishFilterText)) result = result.Where(
+                p => Convert.ToString(p.YearPublish)
+                .Contains(_yearPublishFilterText, StringComparison.OrdinalIgnoreCase)).ToList();
+
+            _booksView.Source = result;
+            OnPropertyChanged(nameof(BooksView));
+        }
+
+        #endregion
+
+        #endregion
 
         public BooksUserControlViewModel()
         {
-            Books = new(Enumerable.Range(0, 50000).Select(p => new Book
+            Books = new(Enumerable.Range(0, 100000).Select(p => new Book
             {
                 Id = p,
                 BBK = Random.Shared.Next(0, 100).ToString(),
@@ -225,7 +276,7 @@ namespace BookObserver.ViewModels
                 },
                 Publish = $"Publish {p}",
                 YearPublish = p,
-                Stock = Random.Shared.Next(0, 2) == 0
+                Stock = Random.Shared.Next(0, 2) == 0 ? "Да" : "Нет"
             }));
             _stockView.Filter += StockView_Filter;
             _bbkView.Filter += BBKView_Filter;
@@ -236,6 +287,9 @@ namespace BookObserver.ViewModels
             _yearPublishView.Filter += YearPublishView_Filter;
         }
 
+        #region Events
+
+        #region YearPublishView_Filter
         private void YearPublishView_Filter(object sender, FilterEventArgs e)
         {
             if (e.Item is not int yearPublish)
@@ -249,7 +303,9 @@ namespace BookObserver.ViewModels
                 || yearPublish_string.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
                 ;
         }
+        #endregion
 
+        #region PublishView_Filter
         private void PublishView_Filter(object sender, FilterEventArgs e)
         {
             if (e.Item is not string publish)
@@ -262,9 +318,7 @@ namespace BookObserver.ViewModels
                 || publish.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
                 ;
         }
-
-
-        #region Events
+        #endregion
 
         #region BBKView_Filter
         private void BBKView_Filter(object sender, FilterEventArgs e)
@@ -284,15 +338,14 @@ namespace BookObserver.ViewModels
         #region StockView_Filter
         private void StockView_Filter(object sender, FilterEventArgs e)
         {
-            if (e.Item is not bool stock)
+            if (e.Item is not string stock)
             {
                 e.Accepted = false;
                 return;
             }
-            var stock_string = stock ? "да" : "нет";
             var filter_text = _stockFilterText;
             e.Accepted = string.IsNullOrWhiteSpace(filter_text)
-                || stock_string.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
+                || stock.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
                 ;
         }
         #endregion
