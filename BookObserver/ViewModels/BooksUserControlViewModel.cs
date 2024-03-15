@@ -30,6 +30,7 @@ namespace BookObserver.ViewModels
                 _authorsView.Source = value?.Select(p => p.Author).ToImmutableSortedSet();
                 _namesView.Source = value?.Select(p => p.Name).ToImmutableSortedSet();
                 _publishView.Source = value?.Select(p => p.Publish).ToImmutableSortedSet();
+                _yearPublishView.Source = value?.Select(p => p.YearPublish).ToImmutableSortedSet();
 
             }
         }
@@ -162,15 +163,15 @@ namespace BookObserver.ViewModels
 
         #region PublishView : ICollectionView - Вывод списка издательства
         private readonly CollectionViewSource _publishView = new();
-        public ICollectionView PublishView => _publishView.View; 
+        public ICollectionView PublishView => _publishView.View;
         #endregion
 
-        #region PublishFilterText : string? - Фильтр издательства
+        #region PublishFilterText : string? - Фильтр издательств
 
-        ///<summary>Фильтр издательства</summary>
+        ///<summary>Фильтр издательств</summary>
         private string? _publishFilterText;
 
-        ///<summary>Фильтр издательства</summary>
+        ///<summary>Фильтр издательств</summary>
         public string? PublishFilterText
         {
             get => _publishFilterText;
@@ -179,6 +180,30 @@ namespace BookObserver.ViewModels
                 if (!Set(ref _publishFilterText, value)) return;
 
                 _publishView.View.Refresh();
+            }
+        }
+
+        #endregion
+
+        #region YearPublishView : ICollectionView - Вывод списка года издательств
+        private readonly CollectionViewSource _yearPublishView = new();
+        public ICollectionView YearPublishView => _yearPublishView.View;
+        #endregion
+
+        #region YearPublishFilterText : string? - Фильтр годов издания
+
+        ///<summary>Фильтр годов издания</summary>
+        private string? _yearPublishFilterText;
+
+        ///<summary>Фильтр годов издания</summary>
+        public string? YearPublishFilterText
+        {
+            get => _yearPublishFilterText;
+            set
+            {
+                if (!Set(ref _yearPublishFilterText, value)) return;
+
+                _yearPublishView.View.Refresh();
             }
         }
 
@@ -199,6 +224,7 @@ namespace BookObserver.ViewModels
                     FirstName = "Амплитуда"
                 },
                 Publish = $"Publish {p}",
+                YearPublish = p,
                 Stock = Random.Shared.Next(0, 2) == 0
             }));
             _stockView.Filter += StockView_Filter;
@@ -207,6 +233,21 @@ namespace BookObserver.ViewModels
             _namesView.Filter += NamesView_Filter;
             _booksView.Filter += BooksView_Filter;
             _publishView.Filter += PublishView_Filter;
+            _yearPublishView.Filter += YearPublishView_Filter;
+        }
+
+        private void YearPublishView_Filter(object sender, FilterEventArgs e)
+        {
+            if (e.Item is not int yearPublish)
+            {
+                e.Accepted = false;
+                return;
+            }
+            var yearPublish_string = Convert.ToString(yearPublish);
+            var filter_text = _publishFilterText;
+            e.Accepted = string.IsNullOrWhiteSpace(filter_text)
+                || yearPublish_string.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
+                ;
         }
 
         private void PublishView_Filter(object sender, FilterEventArgs e)

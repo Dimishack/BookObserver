@@ -71,7 +71,8 @@
                         <ComboBox ItemsSource="{Binding PublishView}"
                                   Text="{Binding PublishFilterText, UpdateSourceTrigger=PropertyChanged}"/>
                         <TextBlock Text="Год издания"/>
-                        <ComboBox/>
+                        <ComboBox ItemsSource="{Binding YearPublishView}"
+                                  Text="{Binding YearPublishFilterText, UpdateSourceTrigger=PropertyChanged}"/>
                     </StackPanel>
                 </DockPanel>
             </GroupBox>
@@ -135,7 +136,7 @@
                                     <TextBlock Text="{Binding BBK, StringFormat=ББК: {0}}"/>
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Text="{Binding Publish, StringFormat=Издательство: {0}}"/>
-                                        <TextBlock Text="{Binding Publish, StringFormat=', год издания: {0}'}"/>
+                                        <TextBlock Text="{Binding YearPublish, StringFormat=', год издания: {0}'}"/>
                                     </StackPanel>
                                     <TextBlock Text="{Binding Pages, StringFormat='Количество страниц: {0}'}"/>
                                     <TextBlock Text="{Binding Author, StringFormat=Автор: {0}}"/>
