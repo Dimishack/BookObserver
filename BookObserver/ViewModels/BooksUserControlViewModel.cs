@@ -29,6 +29,7 @@ namespace BookObserver.ViewModels
                 _bbkView.Source = value?.Select(p => p.BBK).ToImmutableSortedSet();
                 _authorsView.Source = value?.Select(p => p.Author).ToImmutableSortedSet();
                 _namesView.Source = value?.Select(p => p.Name).ToImmutableSortedSet();
+                _publishView.Source = value?.Select(p => p.Publish).ToImmutableSortedSet();
 
             }
         }
@@ -137,7 +138,7 @@ namespace BookObserver.ViewModels
 
         #region BBKView : ICollectionView - Вывод списка BBK
         private readonly CollectionViewSource _bbkView = new();
-        public ICollectionView BBKView => _bbkView.View; 
+        public ICollectionView BBKView => _bbkView.View;
         #endregion
 
         #region BBKFilterText : string? - Фильтр ББК
@@ -159,6 +160,31 @@ namespace BookObserver.ViewModels
 
         #endregion
 
+        #region PublishView : ICollectionView - Вывод списка издательства
+        private readonly CollectionViewSource _publishView = new();
+        public ICollectionView PublishView => _publishView.View; 
+        #endregion
+
+        #region PublishFilterText : string? - Фильтр издательства
+
+        ///<summary>Фильтр издательства</summary>
+        private string? _publishFilterText;
+
+        ///<summary>Фильтр издательства</summary>
+        public string? PublishFilterText
+        {
+            get => _publishFilterText;
+            set
+            {
+                if (!Set(ref _publishFilterText, value)) return;
+
+                _publishView.View.Refresh();
+            }
+        }
+
+        #endregion
+
+
         public BooksUserControlViewModel()
         {
             Books = new(Enumerable.Range(0, 50000).Select(p => new Book
@@ -172,6 +198,7 @@ namespace BookObserver.ViewModels
                 {
                     FirstName = "Амплитуда"
                 },
+                Publish = $"Publish {p}",
                 Stock = Random.Shared.Next(0, 2) == 0
             }));
             _stockView.Filter += StockView_Filter;
@@ -179,6 +206,20 @@ namespace BookObserver.ViewModels
             _authorsView.Filter += AuthorsView_Filter;
             _namesView.Filter += NamesView_Filter;
             _booksView.Filter += BooksView_Filter;
+            _publishView.Filter += PublishView_Filter;
+        }
+
+        private void PublishView_Filter(object sender, FilterEventArgs e)
+        {
+            if (e.Item is not string publish)
+            {
+                e.Accepted = false;
+                return;
+            }
+            var filter_text = _publishFilterText;
+            e.Accepted = string.IsNullOrWhiteSpace(filter_text)
+                || publish.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
+                ;
         }
 
 
@@ -196,7 +237,7 @@ namespace BookObserver.ViewModels
             e.Accepted = string.IsNullOrWhiteSpace(filter_text)
                 || bbk.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
                 ;
-        } 
+        }
         #endregion
 
         #region StockView_Filter
@@ -255,13 +296,13 @@ namespace BookObserver.ViewModels
             }
             var filter_text = _booksFilterText;
             e.Accepted = string.IsNullOrWhiteSpace(filter_text)
-                || book.BBK.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
-                || book.Author.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
-                || book.Name.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
-                || book.Publish.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
-                || book.YearPublish.ToString().Contains(filter_text, StringComparison.OrdinalIgnoreCase)
-                || book.CodeAuthor.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
-                ;
+                    || book.BBK.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
+                    || book.Author.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
+                    || book.Name.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
+                    || book.Publish.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
+                    || book.YearPublish.ToString().Contains(filter_text, StringComparison.OrdinalIgnoreCase)
+                    || book.CodeAuthor.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
+                    ;
         }
         #endregion
 

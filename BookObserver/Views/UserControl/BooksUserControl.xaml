@@ -68,7 +68,8 @@
                         <ComboBox ItemsSource="{Binding NamesView}"
                                   Text="{Binding NameFilterText, UpdateSourceTrigger=PropertyChanged}"/>
                         <TextBlock Text="Издательство"/>
-                        <ComboBox/>
+                        <ComboBox ItemsSource="{Binding PublishView}"
+                                  Text="{Binding PublishFilterText, UpdateSourceTrigger=PropertyChanged}"/>
                         <TextBlock Text="Год издания"/>
                         <ComboBox/>
                     </StackPanel>
