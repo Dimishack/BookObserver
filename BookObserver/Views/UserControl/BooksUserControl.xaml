@@ -58,7 +58,8 @@
                         <ComboBox ItemsSource="{Binding StockView, Converter={StaticResource CollectionStockConverter}}"
                                   Text="{Binding StockFilterText, UpdateSourceTrigger=PropertyChanged}"/>
                         <TextBlock Text="ББК"/>
-                        <ComboBox/>
+                        <ComboBox ItemsSource="{Binding BBKView}"
+                                  Text="{Binding BBKFilterText, UpdateSourceTrigger=PropertyChanged}"/>
                         <TextBlock Text="Автор"/>
                         <ComboBox ItemsSource="{Binding AuthorsView}" 
                                   Text="{Binding AuthorsFilterText, UpdateSourceTrigger=PropertyChanged}">

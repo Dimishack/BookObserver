@@ -25,9 +25,11 @@ namespace BookObserver.ViewModels
                 if (!Set(ref _books, value)) return;
 
                 _booksView.Source = value;
+                _stockView.Source = value?.Select(p => p.Stock).ToImmutableSortedSet();
+                _bbkView.Source = value?.Select(p => p.BBK).ToImmutableSortedSet();
                 _authorsView.Source = value?.Select(p => p.Author).ToImmutableSortedSet();
                 _namesView.Source = value?.Select(p => p.Name).ToImmutableSortedSet();
-                _stockView.Source = value?.Select(p => p.Stock).ToImmutableSortedSet();
+
             }
         }
 
@@ -40,12 +42,12 @@ namespace BookObserver.ViewModels
 
         #endregion
 
-        #region BooksFilterText : string? - фильтр книг
+        #region BooksFilterText : string? - Фильтр книг
 
-        ///<summary>фильтр книг</summary>
+        ///<summary>Фильтр книг</summary>
         private string? _booksFilterText;
 
-        ///<summary>фильтр книг</summary>
+        ///<summary>Фильтр книг</summary>
         public string? BooksFilterText
         {
             get => _booksFilterText;
@@ -59,6 +61,30 @@ namespace BookObserver.ViewModels
 
         #endregion
 
+        #region StockView : ICollectionView - Вывод списка "в наличии"
+        private readonly CollectionViewSource _stockView = new();
+        public ICollectionView StockView => _stockView.View;
+        #endregion
+
+        #region StockFilterText : string? - Фильтр "в наличии"
+
+        ///<summary>Фильтр "в наличии"</summary>
+        private string? _stockFilterText;
+
+        ///<summary>Фильтр "в наличии"</summary>
+        public string? StockFilterText
+        {
+            get => _stockFilterText;
+            set
+            {
+                if (!Set(ref _stockFilterText, value)) return;
+
+                _stockView.View.Refresh();
+            }
+        }
+
+        #endregion
+
         #region AuthorsView : ICollectionView - Вывод списка авторов
 
         private readonly CollectionViewSource _authorsView = new();
@@ -66,12 +92,12 @@ namespace BookObserver.ViewModels
 
         #endregion
 
-        #region AuthorsFilterText : string? - фильтр авторов
+        #region AuthorsFilterText : string? - Фильтр авторов
 
-        ///<summary>фильтр авторов</summary>
+        ///<summary>Фильтр авторов</summary>
         private string? _authorsFilterText;
 
-        ///<summary>фильтр авторов</summary>
+        ///<summary>Фильтр авторов</summary>
         public string? AuthorsFilterText
         {
             get => _authorsFilterText;
@@ -90,12 +116,12 @@ namespace BookObserver.ViewModels
         public ICollectionView NamesView => _namesView.View;
         #endregion
 
-        #region NameFilterText : string? - фильтр названий
+        #region NameFilterText : string? - Фильтр названий
 
-        ///<summary>фильтр названий</summary>
+        ///<summary>Фильтр названий</summary>
         private string? _nameFilterText;
 
-        ///<summary>фильтр названий</summary>
+        ///<summary>Фильтр названий</summary>
         public string? NameFilterText
         {
             get => _nameFilterText;
@@ -109,35 +135,36 @@ namespace BookObserver.ViewModels
 
         #endregion
 
-        private readonly CollectionViewSource _stockView = new();
-        public ICollectionView StockView => _stockView.View;
+        #region BBKView : ICollectionView - Вывод списка BBK
+        private readonly CollectionViewSource _bbkView = new();
+        public ICollectionView BBKView => _bbkView.View; 
+        #endregion
 
-        #region StockFilterText : string? - фильтр "в наличии"
+        #region BBKFilterText : string? - Фильтр ББК
 
-        ///<summary>фильтр "в наличии"</summary>
-        private string? _stockFilterText;
+        ///<summary>Фильтр ББК</summary>
+        private string? _bbkFilterText;
 
-        ///<summary>фильтр "в наличии"</summary>
-        public string? StockFilterText
+        ///<summary>Фильтр ББК</summary>
+        public string? BBKFilterText
         {
-            get => _stockFilterText;
+            get => _bbkFilterText;
             set
             {
-                if (!Set(ref _stockFilterText, value)) return;
+                if (!Set(ref _bbkFilterText, value)) return;
 
-                _stockView.View.Refresh();
+                _bbkView.View.Refresh();
             }
         }
 
         #endregion
-
 
         public BooksUserControlViewModel()
         {
             Books = new(Enumerable.Range(0, 50000).Select(p => new Book
             {
                 Id = p,
-                BBK = $"{p}{p}",
+                BBK = Random.Shared.Next(0, 100).ToString(),
                 Pages = p + Random.Shared.Next(0, 100),
                 Author = $"Author {p}",
                 Name = new string('ü', Random.Shared.Next(15, 30)),
@@ -147,12 +174,32 @@ namespace BookObserver.ViewModels
                 },
                 Stock = Random.Shared.Next(0, 2) == 0
             }));
-            _booksView.Filter += BooksView_Filter;
+            _stockView.Filter += StockView_Filter;
+            _bbkView.Filter += BBKView_Filter;
             _authorsView.Filter += AuthorsView_Filter;
             _namesView.Filter += NamesView_Filter;
-            _stockView.Filter += StockView_Filter;
+            _booksView.Filter += BooksView_Filter;
         }
 
+
+        #region Events
+
+        #region BBKView_Filter
+        private void BBKView_Filter(object sender, FilterEventArgs e)
+        {
+            if (e.Item is not string bbk)
+            {
+                e.Accepted = false;
+                return;
+            }
+            var filter_text = _bbkFilterText;
+            e.Accepted = string.IsNullOrWhiteSpace(filter_text)
+                || bbk.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
+                ;
+        } 
+        #endregion
+
+        #region StockView_Filter
         private void StockView_Filter(object sender, FilterEventArgs e)
         {
             if (e.Item is not bool stock)
@@ -166,9 +213,9 @@ namespace BookObserver.ViewModels
                 || stock_string.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
                 ;
         }
+        #endregion
 
-        #region Events
-
+        #region StockViewFilter
         private void NamesView_Filter(object sender, FilterEventArgs e)
         {
             if (e.Item is not string name)
@@ -181,7 +228,9 @@ namespace BookObserver.ViewModels
                 || name.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
                 ;
         }
+        #endregion
 
+        #region AuthorView_Filter
         private void AuthorsView_Filter(object sender, FilterEventArgs e)
         {
             if (e.Item is not string author)
@@ -194,7 +243,9 @@ namespace BookObserver.ViewModels
                 || author.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
                 ;
         }
+        #endregion
 
+        #region BooksView_Filter
         private void BooksView_Filter(object sender, FilterEventArgs e)
         {
             if (e.Item is not Book book)
@@ -212,6 +263,7 @@ namespace BookObserver.ViewModels
                 || book.CodeAuthor.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
                 ;
         }
+        #endregion
 
         #endregion
     }
