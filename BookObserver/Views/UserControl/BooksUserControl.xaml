@@ -62,24 +62,25 @@
                     <StackPanel Orientation="Vertical">
                         <TextBlock Text="В наличии"/>
                         <ComboBox ItemsSource="{Binding StockView}"
-                                  Text="{Binding StockFilterText, UpdateSourceTrigger=PropertyChanged}"/>
+                                  Text="{Binding StockFilterText}"/>
                         <TextBlock Text="ББК"/>
                         <ComboBox ItemsSource="{Binding BBKView}"
-                                  Text="{Binding BBKFilterText, UpdateSourceTrigger=PropertyChanged}"/>
+                                  Text="{Binding BBKFilterText}"/>
                         <TextBlock Text="Автор"/>
                         <ComboBox ItemsSource="{Binding AuthorsView}" 
-                                  Text="{Binding AuthorsFilterText, UpdateSourceTrigger=PropertyChanged}">
+                                  Text="{Binding AuthorsFilterText}">
                         </ComboBox>
                         <TextBlock Text="Название"/>
                         <ComboBox ItemsSource="{Binding NamesView}"
-                                  Text="{Binding NameFilterText, UpdateSourceTrigger=PropertyChanged}"/>
+                                  Text="{Binding NameFilterText}"/>
                         <TextBlock Text="Издательство"/>
                         <ComboBox ItemsSource="{Binding PublishView}"
-                                  Text="{Binding PublishFilterText, UpdateSourceTrigger=PropertyChanged}"/>
+                                  Text="{Binding PublishFilterText}"/>
                         <TextBlock Text="Год издания"/>
                         <ComboBox ItemsSource="{Binding YearPublishView}"
-                                  Text="{Binding YearPublishFilterText, UpdateSourceTrigger=PropertyChanged}"/>
-                        <Button Content="Очистить фильтры" Margin="10"/>
+                                  Text="{Binding YearPublishFilterText}"/>
+                        <Button Content="Очистить фильтры" Margin="10"
+                                Command="{Binding ClearFiltersCommand}"/>
                     </StackPanel>
                 </DockPanel>
             </GroupBox>

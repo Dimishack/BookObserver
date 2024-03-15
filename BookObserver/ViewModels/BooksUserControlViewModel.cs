@@ -259,6 +259,37 @@ namespace BookObserver.ViewModels
 
         #endregion
 
+        #region ClearFiltersCommand - Команда для очистки фильтров
+
+        ///<summary>Команда для очистки фильтров</summary>
+        private ICommand? _clearFiltersCommand;
+
+        ///<summary>Команда для очистки фильтров</summary>
+        public ICommand ClearFiltersCommand => _clearFiltersCommand
+            ??= new LambdaCommand(OnClearFiltersCommandExecuted, CanClearFiltersCommandExecute);
+
+        ///<summary>Проверка возможности выполнения - Команда для очистки фильтров</summary>
+        private bool CanClearFiltersCommandExecute(object? p) => 
+            !string.IsNullOrWhiteSpace(_stockFilterText)
+            || !string.IsNullOrWhiteSpace(_bbkFilterText)
+            || !string.IsNullOrWhiteSpace(_authorsFilterText)
+            || !string.IsNullOrWhiteSpace(_nameFilterText)
+            || !string.IsNullOrWhiteSpace(_publishFilterText)
+            || !string.IsNullOrWhiteSpace(_yearPublishFilterText);
+
+        ///<summary>Логика выполнения - Команда для очистки фильтров</summary>
+        private void OnClearFiltersCommandExecuted(object? p)
+        {
+            StockFilterText = null;
+            BBKFilterText = null;
+            AuthorsFilterText = null;
+            NameFilterText = null;
+            PublishFilterText = null;
+            YearPublishFilterText = null;
+        }
+
+        #endregion
+
         #endregion
 
         public BooksUserControlViewModel()
@@ -275,8 +306,8 @@ namespace BookObserver.ViewModels
                     FirstName = "Амплитуда"
                 },
                 Publish = $"Publish {p}",
-                YearPublish = p,
-                Stock = Random.Shared.Next(0, 2) == 0 ? "Да" : "Нет"
+                YearPublish = $"{p}"
+                //Stock = Random.Shared.Next(0, 2) == 0 ? "Да" : "Нет"
             }));
             _stockView.Filter += StockView_Filter;
             _bbkView.Filter += BBKView_Filter;
@@ -292,15 +323,15 @@ namespace BookObserver.ViewModels
         #region YearPublishView_Filter
         private void YearPublishView_Filter(object sender, FilterEventArgs e)
         {
-            if (e.Item is not int yearPublish)
+            if (e.Item is not string yearPublish)
             {
                 e.Accepted = false;
                 return;
             }
-            var yearPublish_string = Convert.ToString(yearPublish);
-            var filter_text = _publishFilterText;
+            //var yearPublish_string = Convert.ToString(yearPublish);
+            var filter_text = _yearPublishFilterText;
             e.Accepted = string.IsNullOrWhiteSpace(filter_text)
-                || yearPublish_string.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
+                || yearPublish.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
                 ;
         }
         #endregion
@@ -350,7 +381,7 @@ namespace BookObserver.ViewModels
         }
         #endregion
 
-        #region StockViewFilter
+        #region NamesView_Filter
         private void NamesView_Filter(object sender, FilterEventArgs e)
         {
             if (e.Item is not string name)
