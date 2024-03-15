@@ -51,8 +51,12 @@
                 <DockPanel>
                     <Button DockPanel.Dock="Bottom" Content="Поиск"/>
                     <StackPanel Orientation="Vertical">
+                        <StackPanel.Resources>
+                            <c:BoolToStringCollectionStockConverter x:Key="CollectionStockConverter"/>
+                        </StackPanel.Resources>
                         <TextBlock Text="В наличии"/>
-                        <ComboBox/>
+                        <ComboBox ItemsSource="{Binding StockView, Converter={StaticResource CollectionStockConverter}}"
+                                  Text="{Binding StockFilterText, UpdateSourceTrigger=PropertyChanged}"/>
                         <TextBlock Text="ББК"/>
                         <ComboBox/>
                         <TextBlock Text="Автор"/>

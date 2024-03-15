@@ -27,6 +27,7 @@ namespace BookObserver.ViewModels
                 _booksView.Source = value;
                 _authorsView.Source = value?.Select(p => p.Author).ToImmutableSortedSet();
                 _namesView.Source = value?.Select(p => p.Name).ToImmutableSortedSet();
+                _stockView.Source = value?.Select(p => p.Stock).ToImmutableSortedSet();
             }
         }
 
@@ -86,7 +87,7 @@ namespace BookObserver.ViewModels
 
         #region NamesView : ICollectionView - Вывод списка названий книг
         private readonly CollectionViewSource _namesView = new();
-        public ICollectionView NamesView => _namesView.View; 
+        public ICollectionView NamesView => _namesView.View;
         #endregion
 
         #region NameFilterText : string? - фильтр названий
@@ -108,6 +109,28 @@ namespace BookObserver.ViewModels
 
         #endregion
 
+        private readonly CollectionViewSource _stockView = new();
+        public ICollectionView StockView => _stockView.View;
+
+        #region StockFilterText : string? - фильтр "в наличии"
+
+        ///<summary>фильтр "в наличии"</summary>
+        private string? _stockFilterText;
+
+        ///<summary>фильтр "в наличии"</summary>
+        public string? StockFilterText
+        {
+            get => _stockFilterText;
+            set
+            {
+                if (!Set(ref _stockFilterText, value)) return;
+
+                _stockView.View.Refresh();
+            }
+        }
+
+        #endregion
+
 
         public BooksUserControlViewModel()
         {
@@ -117,15 +140,31 @@ namespace BookObserver.ViewModels
                 BBK = $"{p}{p}",
                 Pages = p + Random.Shared.Next(0, 100),
                 Author = $"Author {p}",
-                Name = new string('ü', Random.Shared.Next(15,30)),
+                Name = new string('ü', Random.Shared.Next(15, 30)),
                 Reader = new Models.Readers.Reader
                 {
                     FirstName = "Амплитуда"
-                }
+                },
+                Stock = Random.Shared.Next(0, 2) == 0
             }));
             _booksView.Filter += BooksView_Filter;
             _authorsView.Filter += AuthorsView_Filter;
             _namesView.Filter += NamesView_Filter;
+            _stockView.Filter += StockView_Filter;
+        }
+
+        private void StockView_Filter(object sender, FilterEventArgs e)
+        {
+            if (e.Item is not bool stock)
+            {
+                e.Accepted = false;
+                return;
+            }
+            var stock_string = stock ? "да" : "нет";
+            var filter_text = _stockFilterText;
+            e.Accepted = string.IsNullOrWhiteSpace(filter_text)
+                || stock_string.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
+                ;
         }
 
         #region Events
@@ -138,7 +177,9 @@ namespace BookObserver.ViewModels
                 return;
             }
             var filter_text = _nameFilterText;
-            e.Accepted = string.IsNullOrWhiteSpace(filter_text) || name.Contains(filter_text);
+            e.Accepted = string.IsNullOrWhiteSpace(filter_text)
+                || name.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
+                ;
         }
 
         private void AuthorsView_Filter(object sender, FilterEventArgs e)
@@ -149,7 +190,9 @@ namespace BookObserver.ViewModels
                 return;
             }
             var filter_text = _authorsFilterText;
-            e.Accepted = string.IsNullOrWhiteSpace(filter_text) || author.Contains(filter_text);
+            e.Accepted = string.IsNullOrWhiteSpace(filter_text)
+                || author.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
+                ;
         }
 
         private void BooksView_Filter(object sender, FilterEventArgs e)
@@ -160,15 +203,15 @@ namespace BookObserver.ViewModels
                 return;
             }
             var filter_text = _booksFilterText;
-            e.Accepted = string.IsNullOrWhiteSpace(filter_text) ||
-                book.BBK.Contains(filter_text, StringComparison.OrdinalIgnoreCase) ||
-                book.Author.Contains(filter_text, StringComparison.OrdinalIgnoreCase) ||
-                book.Name.Contains(filter_text, StringComparison.OrdinalIgnoreCase) ||
-                book.Publish.Contains(filter_text, StringComparison.OrdinalIgnoreCase) ||
-                book.YearPublish.ToString().Contains(filter_text, StringComparison.OrdinalIgnoreCase) ||
-                book.CodeAuthor.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
+            e.Accepted = string.IsNullOrWhiteSpace(filter_text)
+                || book.BBK.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
+                || book.Author.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
+                || book.Name.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
+                || book.Publish.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
+                || book.YearPublish.ToString().Contains(filter_text, StringComparison.OrdinalIgnoreCase)
+                || book.CodeAuthor.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
                 ;
-        } 
+        }
 
         #endregion
     }
