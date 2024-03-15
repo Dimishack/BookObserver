@@ -23,7 +23,7 @@
         </Menu>
         <TabControl>
             <TabItem Header="Книги">
-                <us:BooksUserControl DataContext="{Binding BookUC}"/>
+                <us:BooksUserControl DataContext="{Binding Source={StaticResource Locator}, Path=BooksUC}"/>
             </TabItem>
             <TabItem Header="Читатели"/>
         </TabControl>

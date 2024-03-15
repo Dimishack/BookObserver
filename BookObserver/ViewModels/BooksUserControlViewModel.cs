@@ -7,7 +7,9 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 
@@ -28,13 +30,23 @@ namespace BookObserver.ViewModels
             {
                 if (!Set(ref _books, value)) return;
 
-                _booksView.Source = value;
-                _stockView.Source = value?.Select(p => p.Stock).ToImmutableSortedSet();
-                _bbkView.Source = value?.Select(p => p.BBK).ToImmutableSortedSet();
-                _authorsView.Source = value?.Select(p => p.Author).ToImmutableSortedSet();
-                _namesView.Source = value?.Select(p => p.Name).ToImmutableSortedSet();
-                _publishView.Source = value?.Select(p => p.Publish).ToImmutableSortedSet();
-                _yearPublishView.Source = value?.Select(p => p.YearPublish).ToImmutableSortedSet();
+                if (value is not null)
+                {
+                    _booksView.Source = value;
+                    OnPropertyChanged(nameof(BooksView));
+                    _stockView.Source = value.Select(p => p.Stock).ToImmutableSortedSet();
+                    OnPropertyChanged(nameof(StockView));
+                    _bbkView.Source = value.Select(p => p.BBK).ToImmutableSortedSet();
+                    OnPropertyChanged(nameof(BBKView));
+                    _authorsView.Source = value.Select(p => p.Author).ToImmutableSortedSet();
+                    OnPropertyChanged(nameof(AuthorsView));
+                    _namesView.Source = value.Select(p => p.Name).ToImmutableSortedSet();
+                    OnPropertyChanged(nameof(NamesView));
+                    _publishView.Source = value.Select(p => p.Publish).ToImmutableSortedSet();
+                    OnPropertyChanged(nameof(PublishView));
+                    _yearPublishView.Source = value.Select(p => p.YearPublish).ToImmutableSortedSet();
+                    OnPropertyChanged(nameof(YearPublishView)); 
+                }
 
             }
         }
@@ -227,6 +239,17 @@ namespace BookObserver.ViewModels
 
         #endregion
 
+        #region SelectedBook : Book? - Выбранная книга
+
+        ///<summary>Выбранная книга</summary>
+        private Book? _selectedBook;
+
+        ///<summary>Выбранная книга</summary>
+        public Book? SelectedBook { get => _selectedBook; set => Set(ref _selectedBook, value); }
+
+        #endregion
+
+
         #region Команды
 
         #region FindBooksCommand - Поиск книг
@@ -328,6 +351,43 @@ namespace BookObserver.ViewModels
             ((Command)ResetToZeroFindCommand).Executable = false;
             if (!((Command)FindBooksCommand).Executable)
                 ((Command)FindBooksCommand).Executable = true;
+        }
+
+        #endregion
+
+        #region DeleteBookCommand - Команда удаления книги
+
+        ///<summary>Команда удаления книги</summary>
+        private ICommand? _deleteBookCommand;
+
+        ///<summary>Команда удаления книги</summary>
+        public ICommand DeleteBookCommand => _deleteBookCommand
+            ??= new LambdaCommand(OnDeleteBookCommandExecuted, CanDeleteBookCommandExecute);
+
+        ///<summary>Проверка возможности выполнения - Команда удаления книги</summary>
+        private bool CanDeleteBookCommandExecute(object? p) =>
+            _books is not null
+            && p is not null 
+            && p is Book;
+
+        ///<summary>Логика выполнения - Команда удаления книги</summary>
+        private void OnDeleteBookCommandExecuted(object? p)
+        {
+            var listbooks = new ObservableCollection<Book>(_books!);
+            listbooks.Remove((p as Book)!);
+            Books = null;
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+            Books = new (listbooks);
+            //MessageBox.Show($"{(int)System.Diagnostics.Process.GetCurrentProcess().WorkingSet64 / 1024/1024}");
+            SelectedBook = null; 
+            StockFilterText = null;
+            BBKFilterText = null;
+            AuthorsFilterText = null;
+            NameFilterText = null;
+            PublishFilterText = null;
+            YearPublishFilterText = null;
         }
 
         #endregion

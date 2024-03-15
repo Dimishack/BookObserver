@@ -115,7 +115,7 @@
                         Редактировать <LineBreak/> книгу
                     </TextBlock>
                 </Button>
-                <Button>
+                <Button Command="{Binding DeleteBookCommand}" CommandParameter="{Binding SelectedBook}">
                     <TextBlock TextAlignment="Center">
                         Удалить <LineBreak/> книгу
                     </TextBlock>
@@ -127,7 +127,8 @@
                 </Button>
             </UniformGrid>
             <ListBox ItemsSource="{Binding BooksView}"
-                     SelectionMode="Single"
+                     SelectedItem="{Binding SelectedBook}"
+                     
                      ScrollViewer.HorizontalScrollBarVisibility="Disabled"
                      
                      VirtualizingPanel.IsVirtualizing="True"
@@ -170,10 +171,12 @@
                                     </StackPanel>
                                 </StackPanel>
                                 <Button Content="X" FontWeight="Bold"
-                                    Background="Transparent"
-                                    BorderThickness="0"
-                                    HorizontalAlignment="Right" VerticalAlignment="Top"
-                                    Margin="7,3" Padding="3">
+                                        Background="Transparent"
+                                        BorderThickness="0"
+                                        HorizontalAlignment="Right" VerticalAlignment="Top"
+                                        Margin="7,3" Padding="3"
+                                        Command="{Binding Source={StaticResource Locator}, Path=BooksUC.DeleteBookCommand}"
+                                        CommandParameter="{Binding}">
                                     <Button.Resources>
                                         <Style TargetType="Button">
                                             <Setter Property="Foreground" Value="Red"/>

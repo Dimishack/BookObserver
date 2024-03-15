@@ -7,7 +7,6 @@ namespace BookObserver.ViewModels
 {
     class MainWindowViewModel : ViewModel
     {
-        public BooksUserControlViewModel BookUC { get; }
         #region Title : string? - Заголовок окна
 
         ///<summary>Заголовок окна</summary>
@@ -36,7 +35,6 @@ namespace BookObserver.ViewModels
 
 		public MainWindowViewModel()
 		{
-			BookUC = new BooksUserControlViewModel();
 		}
 
 		#endregion

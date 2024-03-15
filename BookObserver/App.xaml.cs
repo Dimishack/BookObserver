@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Hosting;
 using System;
 using System.Windows;
-using BookObserver.ViewModels.Registrator;
+using BookObserver.ViewModels.Registrator_Locator;
 
 namespace BookObserver
 {

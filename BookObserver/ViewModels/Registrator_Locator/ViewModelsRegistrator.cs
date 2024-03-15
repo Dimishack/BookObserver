@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace BookObserver.ViewModels.Registrator
+namespace BookObserver.ViewModels.Registrator_Locator
 {
     public static class ViewModelsRegistrator
     {
