@@ -93,6 +93,8 @@ namespace BookObserver.ViewModels
             {
                 if (!Set(ref _booksFilterText, value)) return;
 
+                if (!((Command)FindBooksCommand).Executable)
+                    ((Command)FindBooksCommand).Executable = true;
                 _booksView.View.Refresh();
             }
         }
@@ -112,6 +114,8 @@ namespace BookObserver.ViewModels
             {
                 if (!Set(ref _stockFilterText, value)) return;
 
+                if (!((Command)FindBooksCommand).Executable)
+                    ((Command)FindBooksCommand).Executable = true;
                 _stockView.View.Refresh();
             }
         }
@@ -131,6 +135,8 @@ namespace BookObserver.ViewModels
             {
                 if (!Set(ref _bbkFilterText, value)) return;
 
+                if (!((Command)FindBooksCommand).Executable)
+                    ((Command)FindBooksCommand).Executable = true;
                 _bbkView.View.Refresh();
             }
         }
@@ -150,6 +156,8 @@ namespace BookObserver.ViewModels
             {
                 if (!Set(ref _nameFilterText, value)) return;
 
+                if (!((Command)FindBooksCommand).Executable)
+                    ((Command)FindBooksCommand).Executable = true;
                 _namesView.View.Refresh();
             }
         }
@@ -169,6 +177,8 @@ namespace BookObserver.ViewModels
             {
                 if (!Set(ref _authorsFilterText, value)) return;
 
+                if (!((Command)FindBooksCommand).Executable)
+                    ((Command)FindBooksCommand).Executable = true;
                 _authorsView.View.Refresh();
             }
         }
@@ -188,6 +198,8 @@ namespace BookObserver.ViewModels
             {
                 if (!Set(ref _publishFilterText, value)) return;
 
+                if (!((Command)FindBooksCommand).Executable)
+                    ((Command)FindBooksCommand).Executable = true;
                 _publishView.View.Refresh();
             }
         }
@@ -207,6 +219,8 @@ namespace BookObserver.ViewModels
             {
                 if (!Set(ref _yearPublishFilterText, value)) return;
 
+                if (!((Command)FindBooksCommand).Executable)
+                    ((Command)FindBooksCommand).Executable = true;
                 _yearPublishView.View.Refresh();
             }
         }
@@ -257,6 +271,7 @@ namespace BookObserver.ViewModels
             _booksView.Source = result;
             OnPropertyChanged(nameof(BooksView));
             ((Command)ResetToZeroFindCommand).Executable = true;
+            ((Command)FindBooksCommand).Executable = false;
         }
 
         #endregion
@@ -271,7 +286,7 @@ namespace BookObserver.ViewModels
             ??= new LambdaCommand(OnClearFiltersCommandExecuted, CanClearFiltersCommandExecute);
 
         ///<summary>Проверка возможности выполнения - Команда для очистки фильтров</summary>
-        private bool CanClearFiltersCommandExecute(object? p) => 
+        private bool CanClearFiltersCommandExecute(object? p) =>
             !string.IsNullOrWhiteSpace(_stockFilterText)
             || !string.IsNullOrWhiteSpace(_bbkFilterText)
             || !string.IsNullOrWhiteSpace(_authorsFilterText)
@@ -311,6 +326,8 @@ namespace BookObserver.ViewModels
             _booksView.Source = p as ObservableCollection<Book>;
             OnPropertyChanged(nameof(BooksView));
             ((Command)ResetToZeroFindCommand).Executable = false;
+            if (!((Command)FindBooksCommand).Executable)
+                ((Command)FindBooksCommand).Executable = true;
         }
 
         #endregion
