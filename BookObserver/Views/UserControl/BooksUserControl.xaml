@@ -56,8 +56,9 @@
                             </Style>
                         </UniformGrid.Resources>
                         <Button Content="Поиск"
-                            Command="{Binding FindBooksCommand}" CommandParameter="{Binding Books}"/>
-                        <Button Content="Обнулить поиск"/>
+                                Command="{Binding FindBooksCommand}" CommandParameter="{Binding Books}"/>
+                        <Button Content="Обнулить поиск"
+                                Command="{Binding ResetToZeroFindCommand}" CommandParameter="{Binding Books}"/>
                     </UniformGrid>
                     <StackPanel Orientation="Vertical">
                         <TextBlock Text="В наличии"/>

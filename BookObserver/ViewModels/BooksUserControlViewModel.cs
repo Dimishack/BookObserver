@@ -1,4 +1,5 @@
 ﻿using BookObserver.Infrastructure.Commands;
+using BookObserver.Infrastructure.Commands.Base;
 using BookObserver.Models.Books;
 using BookObserver.ViewModels.Base;
 using System;
@@ -255,6 +256,7 @@ namespace BookObserver.ViewModels
 
             _booksView.Source = result;
             OnPropertyChanged(nameof(BooksView));
+            ((Command)ResetToZeroFindCommand).Executable = true;
         }
 
         #endregion
@@ -290,6 +292,29 @@ namespace BookObserver.ViewModels
 
         #endregion
 
+        #region ResetToZeroFindCommand - Команда обнуления поиска книг
+
+        ///<summary>Команда обнуления поиска книг</summary>
+        private ICommand? _resetToZeroCommandCommand;
+
+        ///<summary>Команда обнуления поиска книг</summary>
+        public ICommand ResetToZeroFindCommand => _resetToZeroCommandCommand
+            ??= new LambdaCommand(OnResetToZeroFindCommandExecuted, CanResetToZeroFindCommandExecute);
+
+        ///<summary>Проверка возможности выполнения - Команда обнуления поиска книг</summary>
+        private bool CanResetToZeroFindCommandExecute(object? p) => p is not null
+            && p is ObservableCollection<Book>;
+
+        ///<summary>Логика выполнения - Команда обнуления поиска книг</summary>
+        private void OnResetToZeroFindCommandExecuted(object? p)
+        {
+            _booksView.Source = p as ObservableCollection<Book>;
+            OnPropertyChanged(nameof(BooksView));
+            ((Command)ResetToZeroFindCommand).Executable = false;
+        }
+
+        #endregion
+
         #endregion
 
         public BooksUserControlViewModel()
@@ -306,8 +331,8 @@ namespace BookObserver.ViewModels
                     FirstName = "Амплитуда"
                 },
                 Publish = $"Publish {p}",
-                YearPublish = $"{p}"
-                //Stock = Random.Shared.Next(0, 2) == 0 ? "Да" : "Нет"
+                YearPublish = $"{p}",
+                Stock = Random.Shared.Next(0, 2) == 0 ? "Да" : "Нет"
             }));
             _stockView.Filter += StockView_Filter;
             _bbkView.Filter += BBKView_Filter;
@@ -316,6 +341,8 @@ namespace BookObserver.ViewModels
             _booksView.Filter += BooksView_Filter;
             _publishView.Filter += PublishView_Filter;
             _yearPublishView.Filter += YearPublishView_Filter;
+
+            ((Command)ResetToZeroFindCommand).Executable = false;
         }
 
         #region Events
