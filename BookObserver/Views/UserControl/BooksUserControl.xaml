@@ -120,7 +120,7 @@
                         Удалить <LineBreak/> книгу
                     </TextBlock>
                 </Button>
-                <Button>
+                <Button Command="{Binding SaveBooksCommand}" CommandParameter="{Binding Books}">
                     <TextBlock TextAlignment="Center">
                     Сохранить<LineBreak/>список
                     </TextBlock>

@@ -2,9 +2,12 @@
 using BookObserver.Infrastructure.Commands.Base;
 using BookObserver.Models.Books;
 using BookObserver.ViewModels.Base;
+using Newtonsoft.Json;
 using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 
@@ -40,7 +43,7 @@ namespace BookObserver.ViewModels
                     _publishView.Source = value.Select(p => p.Publish).ToImmutableSortedSet();
                     OnPropertyChanged(nameof(PublishView));
                     _yearPublishView.Source = value.Select(p => p.YearPublish).ToImmutableSortedSet();
-                    OnPropertyChanged(nameof(YearPublishView)); 
+                    OnPropertyChanged(nameof(YearPublishView));
                 }
 
             }
@@ -244,7 +247,6 @@ namespace BookObserver.ViewModels
 
         #endregion
 
-
         #region Команды
 
         #region FindBooksCommand - Поиск книг
@@ -362,7 +364,7 @@ namespace BookObserver.ViewModels
         ///<summary>Проверка возможности выполнения - Команда удаления книги</summary>
         private bool CanDeleteBookCommandExecute(object? p) =>
             _books is not null
-            && p is not null 
+            && p is not null
             && p is Book;
 
         ///<summary>Логика выполнения - Команда удаления книги</summary>
@@ -374,15 +376,42 @@ namespace BookObserver.ViewModels
             GC.Collect();
             GC.WaitForPendingFinalizers();
             GC.Collect();
-            Books = new (listbooks);
+            Books = new(listbooks);
             //MessageBox.Show($"{(int)System.Diagnostics.Process.GetCurrentProcess().WorkingSet64 / 1024/1024}");
-            SelectedBook = null; 
+            SelectedBook = null;
             StockFilterText = null;
             BBKFilterText = null;
             AuthorsFilterText = null;
             NameFilterText = null;
             PublishFilterText = null;
             YearPublishFilterText = null;
+            ((Command)SaveBooksCommand).Executable = true;
+        }
+
+        #endregion
+
+        #region SaveBooksCommand - Команда сохранения книг в файл
+
+        ///<summary>Команда сохранения книг в файл</summary>
+        private ICommand? _saveBooksCommand;
+
+        ///<summary>Команда сохранения книг в файл</summary>
+        public ICommand SaveBooksCommand => _saveBooksCommand
+            ??= new LambdaCommand(OnSaveBooksCommandExecuted, CanSaveBooksCommandExecute);
+
+        ///<summary>Проверка возможности выполнения - Команда сохранения книг в файл</summary>
+        private bool CanSaveBooksCommandExecute(object? p) => p is not null
+            && p is IList<Book>;
+
+        ///<summary>Логика выполнения - Команда сохранения книг в файл</summary>
+        private async void OnSaveBooksCommandExecuted(object? p)
+        {
+            using (var writer = new StreamWriter($@"{Environment.CurrentDirectory}/Data/Books.json"))
+            {
+                await writer.WriteAsync(JsonConvert.SerializeObject(p, Formatting.Indented));
+            }
+            ((Command)SaveBooksCommand).Executable = false;
+            MessageBox.Show("Файл успешно сохранен");
         }
 
         #endregion
@@ -391,7 +420,7 @@ namespace BookObserver.ViewModels
 
         public BooksUserControlViewModel()
         {
-            Books = new(Enumerable.Range(0, 100000).Select(p => new Book
+            Books = new(Enumerable.Range(0, 10000).Select(p => new Book
             {
                 Id = p,
                 BBK = Random.Shared.Next(0, 100).ToString(),
