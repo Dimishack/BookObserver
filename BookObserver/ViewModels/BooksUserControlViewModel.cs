@@ -2,6 +2,8 @@
 using BookObserver.Infrastructure.Commands.Base;
 using BookObserver.Models.Books;
 using BookObserver.ViewModels.Base;
+using BookObserver.Views.Windows;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using System.Collections.Immutable;
 using System.Collections.ObjectModel;
@@ -15,6 +17,7 @@ namespace BookObserver.ViewModels
 {
     class BooksUserControlViewModel : ViewModel
     {
+
         #region Books : ObservableCollection<Book> - Список книг
 
         ///<summary>Список книг</summary>
@@ -412,6 +415,29 @@ namespace BookObserver.ViewModels
             }
             ((Command)SaveBooksCommand).Executable = false;
             MessageBox.Show("Файл успешно сохранен");
+        }
+
+        #endregion
+
+        #region AddBookCommand - Команда добавить книгу
+
+        ///<summary>Команда добавить книгу</summary>
+        private ICommand? _addBookCommand;
+
+        ///<summary>Команда добавить книгу</summary>
+        public ICommand AddBookCommand => _addBookCommand
+            ??= new LambdaCommand(OnAddBookCommandExecuted, CanAddBookCommandExecute);
+
+        ///<summary>Проверка возможности выполнения - Команда добавить книгу</summary>
+        private bool CanAddBookCommandExecute(object? p) => true;
+
+        ///<summary>Логика выполнения - Команда добавить книгу</summary>
+        private void OnAddBookCommandExecuted(object? p)
+        {
+            var model = new Creator_EditorBookViewModel(this);
+            var window = new Creator_EditorBookWindow { DataContext = model };
+            window.Closed += (_,_) => window.DataContext = null;
+            window.ShowDialog();
         }
 
         #endregion

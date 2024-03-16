@@ -105,7 +105,7 @@
                         <Setter Property="Padding" Value="3"/>
                     </Style>
                 </UniformGrid.Resources>
-                <Button>
+                <Button Command="{Binding AddBookCommand}">
                     <TextBlock TextAlignment="Center">
                         Добавить <LineBreak/> книгу
                     </TextBlock>
