@@ -1,5 +1,4 @@
 ﻿using BookObserver.Models.Books;
-using System;
 
 namespace BookObserver.Models.Readers
 {

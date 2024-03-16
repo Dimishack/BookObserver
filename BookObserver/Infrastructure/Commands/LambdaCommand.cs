@@ -1,5 +1,4 @@
 ﻿using BookObserver.Infrastructure.Commands.Base;
-using System;
 
 namespace BookObserver.Infrastructure.Commands
 {
