@@ -115,11 +115,6 @@
                         Редактировать <LineBreak/> книгу
                     </TextBlock>
                 </Button>
-                <Button Command="{Binding DeleteBookCommand}" CommandParameter="{Binding SelectedBook}">
-                    <TextBlock TextAlignment="Center">
-                        Удалить <LineBreak/> книгу
-                    </TextBlock>
-                </Button>
                 <Button Command="{Binding SaveBooksCommand}" CommandParameter="{Binding Books}">
                     <TextBlock TextAlignment="Center">
                     Сохранить<LineBreak/>список
@@ -176,7 +171,8 @@
                                         HorizontalAlignment="Right" VerticalAlignment="Top"
                                         Margin="7,3" Padding="3"
                                         Command="{Binding Source={StaticResource Locator}, Path=BooksUC.DeleteBookCommand}"
-                                        CommandParameter="{Binding}">
+                                        CommandParameter="{Binding}"
+                                        ToolTip="Удалить книгу">
                                     <Button.Resources>
                                         <Style TargetType="Button">
                                             <Setter Property="Foreground" Value="Red"/>
