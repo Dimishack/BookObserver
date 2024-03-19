@@ -5,6 +5,7 @@ using BookObserver.ViewModels.Base;
 using BookObserver.Views.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -17,42 +18,8 @@ namespace BookObserver.ViewModels
 {
     class BooksUserControlViewModel : ViewModel
     {
-
-        #region Books : ObservableCollection<Book> - Список книг
-
         ///<summary>Список книг</summary>
-        private ObservableCollection<Book>? _books;
-
-        ///<summary>Список книг</summary>
-        public ObservableCollection<Book>? Books
-        {
-            get => _books;
-            set
-            {
-                if (!Set(ref _books, value)) return;
-
-                if (value is not null)
-                {
-                    _booksView.Source = value;
-                    OnPropertyChanged(nameof(BooksView));
-                    _stockView.Source = value.Select(p => p.Stock).ToImmutableSortedSet();
-                    OnPropertyChanged(nameof(StockView));
-                    _bbkView.Source = value.Select(p => p.BBK).ToImmutableSortedSet();
-                    OnPropertyChanged(nameof(BBKView));
-                    _authorsView.Source = value.Select(p => p.Author).ToImmutableSortedSet();
-                    OnPropertyChanged(nameof(AuthorsView));
-                    _namesView.Source = value.Select(p => p.Name).ToImmutableSortedSet();
-                    OnPropertyChanged(nameof(NamesView));
-                    _publishView.Source = value.Select(p => p.Publish).ToImmutableSortedSet();
-                    OnPropertyChanged(nameof(PublishView));
-                    _yearPublishView.Source = value.Select(p => p.YearPublish).ToImmutableSortedSet();
-                    OnPropertyChanged(nameof(YearPublishView));
-                }
-
-            }
-        }
-
-        #endregion
+        public ObservableCollection<Book>? Books { get; }
 
         #region BooksView : ICollectionView - Вывод списка книг
 
@@ -366,21 +333,15 @@ namespace BookObserver.ViewModels
 
         ///<summary>Проверка возможности выполнения - Команда удаления книги</summary>
         private bool CanDeleteBookCommandExecute(object? p) =>
-            _books is not null
+            Books is not null
             && p is not null
             && p is Book;
 
         ///<summary>Логика выполнения - Команда удаления книги</summary>
         private void OnDeleteBookCommandExecuted(object? p)
         {
-            var listbooks = new ObservableCollection<Book>(_books!);
-            listbooks.Remove((p as Book)!);
-            Books = null;
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-            GC.Collect();
-            Books = new(listbooks);
-            //MessageBox.Show($"{(int)System.Diagnostics.Process.GetCurrentProcess().WorkingSet64 / 1024/1024}");
+            Books?.Remove((p as Book)!);
+            CollectionsViewSourcePropertyChanged();
             SelectedBook = null;
             StockFilterText = null;
             BBKFilterText = null;
@@ -461,6 +422,7 @@ namespace BookObserver.ViewModels
                 YearPublish = $"{p}",
                 Stock = Random.Shared.Next(0, 2) == 0 ? "Да" : "Нет"
             }));
+            CollectionsViewSourcePropertyChanged();
             _stockView.Filter += StockView_Filter;
             _bbkView.Filter += BBKView_Filter;
             _authorsView.Filter += AuthorsView_Filter;
@@ -470,6 +432,24 @@ namespace BookObserver.ViewModels
             _yearPublishView.Filter += YearPublishView_Filter;
 
             ((Command)ResetToZeroFindCommand).Executable = false;
+        }
+
+        private void CollectionsViewSourcePropertyChanged()
+        {
+            _booksView.Source = Books;
+            OnPropertyChanged(nameof(BooksView));
+            _stockView.Source = Books?.Select(p => p.Stock).ToImmutableSortedSet();
+            OnPropertyChanged(nameof(StockView));
+            _bbkView.Source = Books?.Select(p => p.BBK).ToImmutableSortedSet();
+            OnPropertyChanged(nameof(BBKView));
+            _authorsView.Source = Books?.Select(p => p.Author).ToImmutableSortedSet();
+            OnPropertyChanged(nameof(AuthorsView));
+            _namesView.Source = Books?.Select(p => p.Name).ToImmutableSortedSet();
+            OnPropertyChanged(nameof(NamesView));
+            _publishView.Source = Books?.Select(p => p.Publish).ToImmutableSortedSet();
+            OnPropertyChanged(nameof(PublishView));
+            _yearPublishView.Source = Books?.Select(p => p.YearPublish).ToImmutableSortedSet();
+            OnPropertyChanged(nameof(YearPublishView));
         }
 
         #region Events
