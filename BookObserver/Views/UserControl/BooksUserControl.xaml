@@ -63,7 +63,7 @@
                     <StackPanel Orientation="Vertical">
                         <TextBlock Text="В наличии"/>
                         <ComboBox ItemsSource="{Binding StockView}"
-                                  Text="{Binding StockFilterText}">
+                                  Text="{Binding SelectedStock}">
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="MouseEnter">
                                     <i:InvokeCommandAction Command="{Binding MouseEnterComboBoxStockCommand}"/>
@@ -75,7 +75,7 @@
                         </ComboBox>
                         <TextBlock Text="ББК"/>
                         <ComboBox ItemsSource="{Binding BBKView}"
-                                  Text="{Binding BBKFilterText}">
+                                  Text="{Binding SelectedBBK}">
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="MouseEnter">
                                     <i:InvokeCommandAction Command="{Binding MouseEnterComboBoxBBKCommand}"/>
@@ -87,7 +87,7 @@
                         </ComboBox>
                         <TextBlock Text="Автор"/>
                         <ComboBox ItemsSource="{Binding AuthorsView}" 
-                                  Text="{Binding AuthorsFilterText}">
+                                  Text="{Binding SelectedAuthor}">
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="MouseEnter">
                                     <i:InvokeCommandAction Command="{Binding MouseEnterComboBoxAuthorCommand}"/>
@@ -99,7 +99,7 @@
                         </ComboBox>
                         <TextBlock Text="Название"/>
                         <ComboBox ItemsSource="{Binding NamesView}"
-                                  Text="{Binding NameFilterText}">
+                                  Text="{Binding SelectedName}">
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="MouseEnter">
                                     <i:InvokeCommandAction Command="{Binding MouseEnterComboBoxNameCommand}"/>
@@ -111,7 +111,7 @@
                         </ComboBox>
                         <TextBlock Text="Издательство"/>
                         <ComboBox ItemsSource="{Binding PublishView}"
-                                  Text="{Binding PublishFilterText}">
+                                  Text="{Binding SelectedPublish}">
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="MouseEnter">
                                     <i:InvokeCommandAction Command="{Binding MouseEnterComboBoxPublishCommand}"/>
@@ -123,7 +123,7 @@
                         </ComboBox>
                         <TextBlock Text="Год издания"/>
                         <ComboBox ItemsSource="{Binding YearPublishView}"
-                                  Text="{Binding YearPublishFilterText}">
+                                  Text="{Binding SelectedYearPublish}">
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="MouseEnter">
                                     <i:InvokeCommandAction Command="{Binding MouseEnterComboBoxYearPublishCommand}"/>

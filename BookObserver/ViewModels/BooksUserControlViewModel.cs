@@ -80,18 +80,18 @@ namespace BookObserver.ViewModels
 
         #endregion
 
-        #region StockFilterText : string? - Фильтр "в наличии"
+        #region SelectedStock : string? - Выбранное наличие книги
 
-        ///<summary>Фильтр "в наличии"</summary>
-        private string? _stockFilterText;
+        ///<summary>Выбранное наличие книги</summary>
+        private string? _selectedStock;
 
-        ///<summary>Фильтр "в наличии"</summary>
-        public string? StockFilterText
+        ///<summary>Выбранное наличие книги</summary>
+        public string? SelectedStock
         {
-            get => _stockFilterText;
+            get => _selectedStock;
             set
             {
-                if (!Set(ref _stockFilterText, value)) return;
+                if (!Set(ref _selectedStock, value)) return;
 
                 if (!((Command)FindBooksCommand).Executable)
                     ((Command)FindBooksCommand).Executable = true;
@@ -101,18 +101,18 @@ namespace BookObserver.ViewModels
 
         #endregion
 
-        #region BBKFilterText : string? - Фильтр ББК
+        #region SelectedBBK : string? - Выбранный ББК
 
-        ///<summary>Фильтр ББК</summary>
-        private string? _bbkFilterText;
+        ///<summary>Выбранный ББК</summary>
+        private string? _selectedBBK;
 
-        ///<summary>Фильтр ББК</summary>
-        public string? BBKFilterText
+        ///<summary>Выбранный ББК</summary>
+        public string? SelectedBBK
         {
-            get => _bbkFilterText;
+            get => _selectedBBK;
             set
             {
-                if (!Set(ref _bbkFilterText, value)) return;
+                if (!Set(ref _selectedBBK, value)) return;
 
                 if (!((Command)FindBooksCommand).Executable)
                     ((Command)FindBooksCommand).Executable = true;
@@ -122,18 +122,18 @@ namespace BookObserver.ViewModels
 
         #endregion
 
-        #region NameFilterText : string? - Фильтр названий
+        #region SelectedName : string? - Выбранное название
 
-        ///<summary>Фильтр названий</summary>
-        private string? _nameFilterText;
+        ///<summary>Выбранное название</summary>
+        private string? _selectedName;
 
-        ///<summary>Фильтр названий</summary>
-        public string? NameFilterText
+        ///<summary>Выбранное название</summary>
+        public string? SelectedName
         {
-            get => _nameFilterText;
+            get => _selectedName;
             set
             {
-                if (!Set(ref _nameFilterText, value)) return;
+                if (!Set(ref _selectedName, value)) return;
 
                 if (!((Command)FindBooksCommand).Executable)
                     ((Command)FindBooksCommand).Executable = true;
@@ -143,13 +143,13 @@ namespace BookObserver.ViewModels
 
         #endregion
 
-        #region AuthorsFilterText : string? - Фильтр авторов
+        #region SelectedAuthor : string? - Выбранный автор
 
-        ///<summary>Фильтр авторов</summary>
+        ///<summary>Выбранный автор</summary>
         private string? _authorsFilterText;
 
-        ///<summary>Фильтр авторов</summary>
-        public string? AuthorsFilterText
+        ///<summary>Выбранный автор</summary>
+        public string? SelectedAuthor
         {
             get => _authorsFilterText;
             set
@@ -164,18 +164,18 @@ namespace BookObserver.ViewModels
 
         #endregion
 
-        #region PublishFilterText : string? - Фильтр издательств
+        #region SelectedPublish : string? - Выбранное издательство
 
-        ///<summary>Фильтр издательств</summary>
-        private string? _publishFilterText;
+        ///<summary>Выбранное издательство</summary>
+        private string? _selectedPublish;
 
-        ///<summary>Фильтр издательств</summary>
-        public string? PublishFilterText
+        ///<summary>Выбранное издательство</summary>
+        public string? SelectedPublish
         {
-            get => _publishFilterText;
+            get => _selectedPublish;
             set
             {
-                if (!Set(ref _publishFilterText, value)) return;
+                if (!Set(ref _selectedPublish, value)) return;
 
                 if (!((Command)FindBooksCommand).Executable)
                     ((Command)FindBooksCommand).Executable = true;
@@ -185,18 +185,18 @@ namespace BookObserver.ViewModels
 
         #endregion
 
-        #region YearPublishFilterText : string? - Фильтр годов издания
+        #region SelectedYearPublish : string? - Выбранный год издания
 
-        ///<summary>Фильтр годов издания</summary>
-        private string? _yearPublishFilterText;
+        ///<summary>Выбранный год издания</summary>
+        private string? _selectedYearPublish;
 
-        ///<summary>Фильтр годов издания</summary>
-        public string? YearPublishFilterText
+        ///<summary>Выбранный год издания</summary>
+        public string? SelectedYearPublish
         {
-            get => _yearPublishFilterText;
+            get => _selectedYearPublish;
             set
             {
-                if (!Set(ref _yearPublishFilterText, value)) return;
+                if (!Set(ref _selectedYearPublish, value)) return;
 
                 if (!((Command)FindBooksCommand).Executable)
                     ((Command)FindBooksCommand).Executable = true;
@@ -233,31 +233,31 @@ namespace BookObserver.ViewModels
         private bool CanFindBooksCommandExecute(object? p) =>
             p is not null
             && p is IList<Book>
-            && (!string.IsNullOrWhiteSpace(_stockFilterText)
-            || !string.IsNullOrWhiteSpace(_bbkFilterText)
+            && (!string.IsNullOrWhiteSpace(_selectedStock)
+            || !string.IsNullOrWhiteSpace(_selectedBBK)
             || !string.IsNullOrWhiteSpace(_authorsFilterText)
-            || !string.IsNullOrWhiteSpace(_nameFilterText)
-            || !string.IsNullOrWhiteSpace(_publishFilterText)
-            || !string.IsNullOrWhiteSpace(_yearPublishFilterText)
+            || !string.IsNullOrWhiteSpace(_selectedName)
+            || !string.IsNullOrWhiteSpace(_selectedPublish)
+            || !string.IsNullOrWhiteSpace(_selectedYearPublish)
             );
 
         ///<summary>Логика выполнения - Поиск книг</summary>
         private void OnFindBooksCommandExecuted(object? p)
         {
             IList<Book> result = (p as IList<Book>)!;
-            if (!string.IsNullOrWhiteSpace(_stockFilterText)) result = result.Where(
-                p => p.Stock.Contains(_stockFilterText, StringComparison.OrdinalIgnoreCase)).ToList();
-            if (!string.IsNullOrWhiteSpace(_bbkFilterText)) result = result.Where(
-                p => p.BBK.Contains(_bbkFilterText, StringComparison.OrdinalIgnoreCase)).ToList();
+            if (!string.IsNullOrWhiteSpace(_selectedStock)) result = result.Where(
+                p => p.Stock.Contains(_selectedStock, StringComparison.OrdinalIgnoreCase)).ToList();
+            if (!string.IsNullOrWhiteSpace(_selectedBBK)) result = result.Where(
+                p => p.BBK.Contains(_selectedBBK, StringComparison.OrdinalIgnoreCase)).ToList();
             if (!string.IsNullOrWhiteSpace(_authorsFilterText)) result = result.Where(
                 p => p.Author.Contains(_authorsFilterText, StringComparison.OrdinalIgnoreCase)).ToList();
-            if (!string.IsNullOrWhiteSpace(_nameFilterText)) result = result.Where(
-                p => p.Name.Contains(_nameFilterText, StringComparison.OrdinalIgnoreCase)).ToList();
-            if (!string.IsNullOrWhiteSpace(_publishFilterText)) result = result.Where(
-                p => p.Publish.Contains(_publishFilterText, StringComparison.OrdinalIgnoreCase)).ToList();
-            if (!string.IsNullOrWhiteSpace(_yearPublishFilterText)) result = result.Where(
+            if (!string.IsNullOrWhiteSpace(_selectedName)) result = result.Where(
+                p => p.Name.Contains(_selectedName, StringComparison.OrdinalIgnoreCase)).ToList();
+            if (!string.IsNullOrWhiteSpace(_selectedPublish)) result = result.Where(
+                p => p.Publish.Contains(_selectedPublish, StringComparison.OrdinalIgnoreCase)).ToList();
+            if (!string.IsNullOrWhiteSpace(_selectedYearPublish)) result = result.Where(
                 p => Convert.ToString(p.YearPublish)
-                .Contains(_yearPublishFilterText, StringComparison.OrdinalIgnoreCase)).ToList();
+                .Contains(_selectedYearPublish, StringComparison.OrdinalIgnoreCase)).ToList();
 
             _booksView.Source = result;
             OnPropertyChanged(nameof(BooksView));
@@ -278,22 +278,22 @@ namespace BookObserver.ViewModels
 
         ///<summary>Проверка возможности выполнения - Команда для очистки фильтров</summary>
         private bool CanClearFiltersCommandExecute(object? p) =>
-            !string.IsNullOrWhiteSpace(_stockFilterText)
-            || !string.IsNullOrWhiteSpace(_bbkFilterText)
+            !string.IsNullOrWhiteSpace(_selectedStock)
+            || !string.IsNullOrWhiteSpace(_selectedBBK)
             || !string.IsNullOrWhiteSpace(_authorsFilterText)
-            || !string.IsNullOrWhiteSpace(_nameFilterText)
-            || !string.IsNullOrWhiteSpace(_publishFilterText)
-            || !string.IsNullOrWhiteSpace(_yearPublishFilterText);
+            || !string.IsNullOrWhiteSpace(_selectedName)
+            || !string.IsNullOrWhiteSpace(_selectedPublish)
+            || !string.IsNullOrWhiteSpace(_selectedYearPublish);
 
         ///<summary>Логика выполнения - Команда для очистки фильтров</summary>
         private void OnClearFiltersCommandExecuted(object? p)
         {
-            StockFilterText = null;
-            BBKFilterText = null;
-            AuthorsFilterText = null;
-            NameFilterText = null;
-            PublishFilterText = null;
-            YearPublishFilterText = null;
+            SelectedStock = null;
+            SelectedBBK = null;
+            SelectedAuthor = null;
+            SelectedName = null;
+            SelectedPublish = null;
+            SelectedYearPublish = null;
         }
 
         #endregion
@@ -342,16 +342,15 @@ namespace BookObserver.ViewModels
         private void OnDeleteBookCommandExecuted(object? p)
         {
             Books?.Remove((p as Book)!);
-            CallFinalizer();
             _booksView.Source = Books;
             OnPropertyChanged(nameof(BooksView));
             SelectedBook = null;
-            StockFilterText = null;
-            BBKFilterText = null;
-            AuthorsFilterText = null;
-            NameFilterText = null;
-            PublishFilterText = null;
-            YearPublishFilterText = null;
+            SelectedStock = null;
+            SelectedBBK = null;
+            SelectedAuthor = null;
+            SelectedName = null;
+            SelectedPublish = null;
+            SelectedYearPublish = null;
             ((Command)SaveBooksCommand).Executable = true;
         }
 
@@ -420,11 +419,11 @@ namespace BookObserver.ViewModels
         ///<summary>Логика выполнения - Команда когда курсор наводится на ComboBox (В наличии)</summary>
         private void OnMouseEnterComboBoxStockCommandExecuted(object? p)
         {
-            var value = _stockFilterText;
+            var value = _selectedStock;
             _stockView.Source = Books?.Select(book => book.Stock).Distinct().Order().ToList();
             OnPropertyChanged(nameof(StockView));
             _stockView.Filter += StockView_Filter;
-            StockFilterText = value;
+            SelectedStock = value;
         }
 
         #endregion
@@ -441,11 +440,11 @@ namespace BookObserver.ViewModels
         ///<summary>Логика выполнения - Команда когда курсор наводится на ComboBox (ББК)</summary>
         private void OnMouseEnterComboBoxBBKCommandExecuted(object? p)
         {
-            var value = _bbkFilterText;
+            var value = _selectedBBK;
             _bbkView.Source = Books?.Select(book => book.BBK).Distinct().Order().ToList();
             OnPropertyChanged(nameof(BBKView));
             _bbkView.Filter += BBKView_Filter;
-            BBKFilterText = value;
+            SelectedBBK = value;
         }
 
         #endregion
@@ -466,7 +465,7 @@ namespace BookObserver.ViewModels
             _authorsView.Source = Books?.Select(book => book.Author).Distinct().Order().ToList();
             OnPropertyChanged(nameof(AuthorsView));
             _authorsView.Filter += AuthorsView_Filter;
-            AuthorsFilterText = value;
+            SelectedAuthor = value;
         }
 
         #endregion
@@ -483,11 +482,11 @@ namespace BookObserver.ViewModels
         ///<summary>Логика выполнения - Команда когда курсор наводится на ComboBox (Название)</summary>
         private void OnMouseEnterComboBoxNameCommandExecuted(object? p)
         {
-            var value = _nameFilterText;
+            var value = _selectedName;
             _namesView.Source = Books?.Select(book => book.Name).Distinct().Order().ToList();
             OnPropertyChanged(nameof(NamesView));
             _namesView.Filter += NamesView_Filter;
-            NameFilterText = value;
+            SelectedName = value;
         }
 
         #endregion
@@ -504,11 +503,11 @@ namespace BookObserver.ViewModels
         ///<summary>Логика выполнения - Команда когда курсор наводится на ComboBox (Издательство)</summary>
         private void OnMouseEnterComboBoxPublishCommandExecuted(object? p)
         {
-            var value = _publishFilterText;
+            var value = _selectedPublish;
             _publishView.Source = Books?.Select(book => book.Publish).Distinct().Order().ToList();
             OnPropertyChanged(nameof(PublishView));
             _publishView.Filter += PublishView_Filter;
-            PublishFilterText = value;
+            SelectedPublish = value;
         }
 
         #endregion
@@ -525,11 +524,11 @@ namespace BookObserver.ViewModels
         ///<summary>Логика выполнения - Команда когда курсор наводится на ComboBox (Год издательства)</summary>
         private void OnMouseEnterComboBoxYearPublishCommandExecuted(object? p)
         {
-            var value = _yearPublishFilterText;
+            var value = _selectedYearPublish;
             _yearPublishView.Source = Books?.Select(book => book.YearPublish).Distinct().Order().ToList();
             OnPropertyChanged(nameof(YearPublishView));
             _yearPublishView.Filter += YearPublishView_Filter;
-            YearPublishFilterText = value;
+            SelectedYearPublish = value;
         }
 
         #endregion
@@ -696,7 +695,7 @@ namespace BookObserver.ViewModels
                 return;
             }
             //var yearPublish_string = Convert.ToString(yearPublish);
-            var filter_text = _yearPublishFilterText;
+            var filter_text = _selectedYearPublish;
             e.Accepted = string.IsNullOrWhiteSpace(filter_text)
                 || yearPublish.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
                 ;
@@ -711,7 +710,7 @@ namespace BookObserver.ViewModels
                 e.Accepted = false;
                 return;
             }
-            var filter_text = _publishFilterText;
+            var filter_text = _selectedPublish;
             e.Accepted = string.IsNullOrWhiteSpace(filter_text)
                 || publish.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
                 ;
@@ -726,7 +725,7 @@ namespace BookObserver.ViewModels
                 e.Accepted = false;
                 return;
             }
-            var filter_text = _bbkFilterText;
+            var filter_text = _selectedBBK;
             e.Accepted = string.IsNullOrWhiteSpace(filter_text)
                 || bbk.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
                 ;
@@ -741,7 +740,7 @@ namespace BookObserver.ViewModels
                 e.Accepted = false;
                 return;
             }
-            var filter_text = _stockFilterText;
+            var filter_text = _selectedStock;
             e.Accepted = string.IsNullOrWhiteSpace(filter_text)
                 || stock.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
                 ;
@@ -756,7 +755,7 @@ namespace BookObserver.ViewModels
                 e.Accepted = false;
                 return;
             }
-            var filter_text = _nameFilterText;
+            var filter_text = _selectedName;
             e.Accepted = string.IsNullOrWhiteSpace(filter_text)
                 || name.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
                 ;
