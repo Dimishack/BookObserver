@@ -3,10 +3,7 @@ using BookObserver.Infrastructure.Commands.Base;
 using BookObserver.Models.Books;
 using BookObserver.ViewModels.Base;
 using BookObserver.Views.Windows;
-using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
@@ -18,6 +15,8 @@ namespace BookObserver.ViewModels
 {
     class BooksUserControlViewModel : ViewModel
     {
+        #region Properties
+
         ///<summary>Список книг</summary>
         public ObservableCollection<Book>? Books { get; }
 
@@ -217,7 +216,9 @@ namespace BookObserver.ViewModels
 
         #endregion
 
-        #region Команды
+        #endregion
+
+        #region Commands
 
         #region FindBooksCommand - Поиск книг
 
@@ -341,7 +342,11 @@ namespace BookObserver.ViewModels
         private void OnDeleteBookCommandExecuted(object? p)
         {
             Books?.Remove((p as Book)!);
-            CollectionsViewSourcePropertyChanged();
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+            _booksView.Source = Books;
+            OnPropertyChanged(nameof(BooksView));
             SelectedBook = null;
             StockFilterText = null;
             BBKFilterText = null;
@@ -397,9 +402,300 @@ namespace BookObserver.ViewModels
         {
             var model = new Creator_EditorBookViewModel(this);
             var window = new Creator_EditorBookWindow { DataContext = model };
-            window.Closed += (_,_) => window.DataContext = null;
+            window.Closed += (_, _) => window.DataContext = null;
             window.ShowDialog();
         }
+
+        #endregion
+
+        #region MouseEnter (Commands)...
+
+        #region MouseEnterComboBoxStockCommand - Команда когда курсор наводится на ComboBox (В наличии)
+
+        ///<summary>Команда когда курсор наводится на ComboBox (В наличии)</summary>
+        private ICommand? _mouseEnterComboBoxStockCommand;
+
+        ///<summary>Команда когда курсор наводится на ComboBox (В наличии)</summary>
+        public ICommand MouseEnterComboBoxStockCommand => _mouseEnterComboBoxStockCommand
+            ??= new LambdaCommand(OnMouseEnterComboBoxStockCommandExecuted);
+
+        ///<summary>Логика выполнения - Команда когда курсор наводится на ComboBox (В наличии)</summary>
+        private void OnMouseEnterComboBoxStockCommandExecuted(object? p)
+        {
+            var value = _stockFilterText;
+            _stockView.Source = Books?.Select(book => book.Stock).Distinct().Order().ToList();
+            OnPropertyChanged(nameof(StockView));
+            _stockView.Filter += StockView_Filter;
+            StockFilterText = value;
+        }
+
+        #endregion
+
+        #region MouseEnterComboBoxBBKCommand - Команда когда курсор наводится на ComboBox (ББК)
+
+        ///<summary>Команда когда курсор наводится на ComboBox (ББК)</summary>
+        private ICommand? _mouseEnterComboBoxBBKCommand;
+
+        ///<summary>Команда когда курсор наводится на ComboBox (ББК)</summary>
+        public ICommand MouseEnterComboBoxBBKCommand => _mouseEnterComboBoxBBKCommand
+            ??= new LambdaCommand(OnMouseEnterComboBoxBBKCommandExecuted);
+
+        ///<summary>Логика выполнения - Команда когда курсор наводится на ComboBox (ББК)</summary>
+        private void OnMouseEnterComboBoxBBKCommandExecuted(object? p)
+        {
+            var value = _bbkFilterText;
+            _bbkView.Source = Books?.Select(book => book.BBK).Distinct().Order().ToList();
+            OnPropertyChanged(nameof(BBKView));
+            _bbkView.Filter += BBKView_Filter;
+            BBKFilterText = value;
+        }
+
+        #endregion
+
+        #region MouseEnterComboBoxAuthorCommand - Команда когда курсор наводится на ComboBox (Автор)
+
+        ///<summary>Команда когда курсор наводится на ComboBox (Автор)</summary>
+        private ICommand? _mouseEnterComboBoxAuthorCommand;
+
+        ///<summary>Команда когда курсор наводится на ComboBox (Автор)</summary>
+        public ICommand MouseEnterComboBoxAuthorCommand => _mouseEnterComboBoxAuthorCommand
+            ??= new LambdaCommand(OnMouseEnterComboBoxAuthorCommandExecuted);
+
+        ///<summary>Логика выполнения - Команда когда курсор наводится на ComboBox (Автор)</summary>
+        private void OnMouseEnterComboBoxAuthorCommandExecuted(object? p)
+        {
+            var value = _authorsFilterText;
+            _authorsView.Source = Books?.Select(book => book.Author).Distinct().Order().ToList();
+            OnPropertyChanged(nameof(AuthorsView));
+            _authorsView.Filter += AuthorsView_Filter;
+            AuthorsFilterText = value;
+        }
+
+        #endregion
+
+        #region MouseEnterComboBoxNameCommand - Команда когда курсор наводится на ComboBox (Название)
+
+        ///<summary>Команда когда курсор наводится на ComboBox (Название)</summary>
+        private ICommand? _mouseEnterComboBoxNameCommand;
+
+        ///<summary>Команда когда курсор наводится на ComboBox (Название)</summary>
+        public ICommand MouseEnterComboBoxNameCommand => _mouseEnterComboBoxNameCommand
+            ??= new LambdaCommand(OnMouseEnterComboBoxNameCommandExecuted);
+
+        ///<summary>Логика выполнения - Команда когда курсор наводится на ComboBox (Название)</summary>
+        private void OnMouseEnterComboBoxNameCommandExecuted(object? p)
+        {
+            var value = _nameFilterText;
+            _namesView.Source = Books?.Select(book => book.Name).Distinct().Order().ToList();
+            OnPropertyChanged(nameof(NamesView));
+            _namesView.Filter += NamesView_Filter;
+            NameFilterText = value;
+        }
+
+        #endregion
+
+        #region MouseEnterComboBoxPublishCommand - Команда когда курсор наводится на ComboBox (Издательство)
+
+        ///<summary>Команда когда курсор наводится на ComboBox (Издательство)</summary>
+        private ICommand? _mouseEnterComboBoxPublishCommand;
+
+        ///<summary>Команда когда курсор наводится на ComboBox (Издательство)</summary>
+        public ICommand MouseEnterComboBoxPublishCommand => _mouseEnterComboBoxPublishCommand
+            ??= new LambdaCommand(OnMouseEnterComboBoxPublishCommandExecuted);
+
+        ///<summary>Логика выполнения - Команда когда курсор наводится на ComboBox (Издательство)</summary>
+        private void OnMouseEnterComboBoxPublishCommandExecuted(object? p)
+        {
+            var value = _publishFilterText;
+            _publishView.Source = Books?.Select(book => book.Publish).Distinct().Order().ToList();
+            OnPropertyChanged(nameof(PublishView));
+            _publishView.Filter += PublishView_Filter;
+            PublishFilterText = value;
+        }
+
+        #endregion
+
+        #region MouseEnterComboBoxYearPublishCommand - Команда когда курсор наводится на ComboBox (Год издательства)
+
+        ///<summary>Команда когда курсор наводится на ComboBox (Год издательства)</summary>
+        private ICommand? _mouseEnterComboBoxYearPublishCommand;
+
+        ///<summary>Команда когда курсор наводится на ComboBox (Год издательства)</summary>
+        public ICommand MouseEnterComboBoxYearPublishCommand => _mouseEnterComboBoxYearPublishCommand
+            ??= new LambdaCommand(OnMouseEnterComboBoxYearPublishCommandExecuted);
+
+        ///<summary>Логика выполнения - Команда когда курсор наводится на ComboBox (Год издательства)</summary>
+        private void OnMouseEnterComboBoxYearPublishCommandExecuted(object? p)
+        {
+            var value = _yearPublishFilterText;
+            _yearPublishView.Source = Books?.Select(book => book.YearPublish).Distinct().Order().ToList();
+            OnPropertyChanged(nameof(YearPublishView));
+            _yearPublishView.Filter += YearPublishView_Filter;
+            YearPublishFilterText = value;
+        }
+
+        #endregion
+
+        #region MouseEnterTextBoxBookCommand - Команда когда курсор наводится на TextBox
+
+        ///<summary>Команда когда курсор наводится на TextBox</summary>
+        private ICommand? _mouseEnterTextBoxBookCommand;
+
+        ///<summary>Команда когда курсор наводится на TextBox</summary>
+        public ICommand MouseEnterTextBoxBookCommand => _mouseEnterTextBoxBookCommand
+            ??= new LambdaCommand(OnMouseEnterTextBoxBookCommandExecuted);
+
+        ///<summary>Логика выполнения - Команда когда курсор наводится на TextBox</summary>
+        private void OnMouseEnterTextBoxBookCommandExecuted(object? p)
+        {
+            _booksView.Filter += BooksView_Filter;
+        }
+
+        #endregion
+
+        #endregion
+
+        #region MouseLeave (Commands)...
+
+        #region MouseLeaveComboBoxStockCommand - Команда когда курсор выходит с ComboBox (В наличии)
+
+        ///<summary>Команда когда курсор выходит с ComboBox (В наличии)</summary>
+        private ICommand? _mouseLeaveComboBoxStockCommand;
+
+        ///<summary>Команда когда курсор выходит с ComboBox (В наличии)</summary>
+        public ICommand MouseLeaveComboBoxStockCommand => _mouseLeaveComboBoxStockCommand
+            ??= new LambdaCommand(OnMouseLeaveComboBoxStockCommandExecuted);
+
+        ///<summary>Логика выполнения - Команда когда курсор выходит с ComboBox (В наличии)</summary>
+        private void OnMouseLeaveComboBoxStockCommandExecuted(object? p)
+        {
+            _stockView.Filter -= StockView_Filter;
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+        }
+
+        #endregion
+
+        #region MouseLeaveComboBoxBBKCommand - Команда когда курсор выходит с ComboBox (ББК)
+
+        ///<summary>Команда когда курсор выходит с ComboBox (ББК)</summary>
+        private ICommand? _mouseLeaveComboBoxBBKCommand;
+
+        ///<summary>Команда когда курсор выходит с ComboBox (ББК)</summary>
+        public ICommand MouseLeaveComboBoxBBKCommand => _mouseLeaveComboBoxBBKCommand
+            ??= new LambdaCommand(OnMouseLeaveComboBoxBBKCommandExecuted);
+
+        ///<summary>Логика выполнения - Команда когда курсор выходит с ComboBox (ББК)</summary>
+        private void OnMouseLeaveComboBoxBBKCommandExecuted(object? p)
+        {
+            _bbkView.Filter -= BBKView_Filter;
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+        }
+
+        #endregion
+
+        #region MouseLeaveComboBoxAuthorCommand - Команда когда курсор выходит с ComboBox (Автор)
+
+        ///<summary>Команда когда курсор выходит с ComboBox (Автор)</summary>
+        private ICommand? _mouseLeaveComboBoxAuthorCommand;
+
+        ///<summary>Команда когда курсор выходит с ComboBox (Автор)</summary>
+        public ICommand MouseLeaveComboBoxAuthorCommand => _mouseLeaveComboBoxAuthorCommand
+            ??= new LambdaCommand(OnMouseLeaveComboBoxAuthorCommandExecuted);
+
+        ///<summary>Логика выполнения - Команда когда курсор выходит с ComboBox (Автор)</summary>
+        private void OnMouseLeaveComboBoxAuthorCommandExecuted(object? p)
+        {
+            _authorsView.Filter -= AuthorsView_Filter;
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+        }
+
+        #endregion
+
+        #region MouseLeaveComboBoxNameCommand - Команда когда курсор выходит с ComboBox (Название)
+
+        ///<summary>Команда когда курсор выходит с ComboBox (Название)</summary>
+        private ICommand? _mouseLeaveComboBoxNameCommand;
+
+        ///<summary>Команда когда курсор выходит с ComboBox (Название)</summary>
+        public ICommand MouseLeaveComboBoxNameCommand => _mouseLeaveComboBoxNameCommand
+            ??= new LambdaCommand(OnMouseLeaveComboBoxNameCommandExecuted);
+
+        ///<summary>Логика выполнения - Команда когда курсор выходит с ComboBox (Название)</summary>
+        private void OnMouseLeaveComboBoxNameCommandExecuted(object? p)
+        {
+            _namesView.Filter -= NamesView_Filter;
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+        }
+
+        #endregion
+
+        #region MouseLeaveComboBoxPublishCommand - Команда когда курсор выходит с ComboBox (Издательство)
+
+        ///<summary>Команда когда курсор выходит с ComboBox (Издательство)</summary>
+        private ICommand? _mouseLeaveComboBoxPublishCommand;
+
+        ///<summary>Команда когда курсор выходит с ComboBox (Издательство)</summary>
+        public ICommand MouseLeaveComboBoxPublishCommand => _mouseLeaveComboBoxPublishCommand
+            ??= new LambdaCommand(OnMouseLeaveComboBoxPublishCommandExecuted);
+
+        ///<summary>Логика выполнения - Команда когда курсор выходит с ComboBox (Издательство)</summary>
+        private void OnMouseLeaveComboBoxPublishCommandExecuted(object? p)
+        {
+            _publishView.Filter -= PublishView_Filter;
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+        }
+
+        #endregion
+
+        #region MouseLeaveComboBoxYearPublishCommand - Команда когда курсор выходит с ComboBox (Год издания)
+
+        ///<summary>Команда когда курсор выходит с ComboBox (Год издания)</summary>
+        private ICommand? _mouseLeaveComboBoxYearPublishCommand;
+
+        ///<summary>Команда когда курсор выходит с ComboBox (Год издания)</summary>
+        public ICommand MouseLeaveComboBoxYearPublishCommand => _mouseLeaveComboBoxYearPublishCommand
+            ??= new LambdaCommand(OnMouseLeaveComboBoxYearPublishCommandExecuted);
+
+        ///<summary>Логика выполнения - Команда когда курсор выходит с ComboBox (Год издания)</summary>
+        private void OnMouseLeaveComboBoxYearPublishCommandExecuted(object? p)
+        {
+            _yearPublishView.Filter -= YearPublishView_Filter;
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+        }
+
+        #endregion
+
+        #region MouseLeaveTextBoxBooksCommand - Команда когда курсор выходит с TextBox
+
+        ///<summary>Команда когда курсор выходит с TextBox</summary>
+        private ICommand? _mouseLeaveTextBoxBooksCommand;
+
+        ///<summary>Команда когда курсор выходит с TextBox</summary>
+        public ICommand MouseLeaveTextBoxBooksCommand => _mouseLeaveTextBoxBooksCommand
+            ??= new LambdaCommand(OnMouseLeaveTextBoxBooksCommandExecuted);
+
+        ///<summary>Логика выполнения - Команда когда курсор выходит с TextBox</summary>
+        private void OnMouseLeaveTextBoxBooksCommandExecuted(object? p)
+        {
+            _booksView.Filter -= BooksView_Filter;
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+        }
+
+        #endregion
 
         #endregion
 
@@ -407,7 +703,7 @@ namespace BookObserver.ViewModels
 
         public BooksUserControlViewModel()
         {
-            Books = new(Enumerable.Range(0, 10000).Select(p => new Book
+            Books = new(Enumerable.Range(0, 100000).Select(p => new Book
             {
                 Id = p,
                 BBK = Random.Shared.Next(0, 100).ToString(),
@@ -422,34 +718,9 @@ namespace BookObserver.ViewModels
                 YearPublish = $"{p}",
                 Stock = Random.Shared.Next(0, 2) == 0 ? "Да" : "Нет"
             }));
-            CollectionsViewSourcePropertyChanged();
-            _stockView.Filter += StockView_Filter;
-            _bbkView.Filter += BBKView_Filter;
-            _authorsView.Filter += AuthorsView_Filter;
-            _namesView.Filter += NamesView_Filter;
-            _booksView.Filter += BooksView_Filter;
-            _publishView.Filter += PublishView_Filter;
-            _yearPublishView.Filter += YearPublishView_Filter;
-
-            ((Command)ResetToZeroFindCommand).Executable = false;
-        }
-
-        private void CollectionsViewSourcePropertyChanged()
-        {
             _booksView.Source = Books;
             OnPropertyChanged(nameof(BooksView));
-            _stockView.Source = Books?.Select(p => p.Stock).ToImmutableSortedSet();
-            OnPropertyChanged(nameof(StockView));
-            _bbkView.Source = Books?.Select(p => p.BBK).ToImmutableSortedSet();
-            OnPropertyChanged(nameof(BBKView));
-            _authorsView.Source = Books?.Select(p => p.Author).ToImmutableSortedSet();
-            OnPropertyChanged(nameof(AuthorsView));
-            _namesView.Source = Books?.Select(p => p.Name).ToImmutableSortedSet();
-            OnPropertyChanged(nameof(NamesView));
-            _publishView.Source = Books?.Select(p => p.Publish).ToImmutableSortedSet();
-            OnPropertyChanged(nameof(PublishView));
-            _yearPublishView.Source = Books?.Select(p => p.YearPublish).ToImmutableSortedSet();
-            OnPropertyChanged(nameof(YearPublishView));
+            ((Command)ResetToZeroFindCommand).Executable = false;
         }
 
         #region Events
