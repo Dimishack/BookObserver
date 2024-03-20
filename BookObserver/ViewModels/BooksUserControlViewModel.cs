@@ -342,9 +342,7 @@ namespace BookObserver.ViewModels
         private void OnDeleteBookCommandExecuted(object? p)
         {
             Books?.Remove((p as Book)!);
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-            GC.Collect();
+            CallFinalizer();
             _booksView.Source = Books;
             OnPropertyChanged(nameof(BooksView));
             SelectedBook = null;
@@ -570,9 +568,7 @@ namespace BookObserver.ViewModels
         private void OnMouseLeaveComboBoxStockCommandExecuted(object? p)
         {
             _stockView.Filter -= StockView_Filter;
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-            GC.Collect();
+            CallFinalizer();
         }
 
         #endregion
@@ -590,9 +586,7 @@ namespace BookObserver.ViewModels
         private void OnMouseLeaveComboBoxBBKCommandExecuted(object? p)
         {
             _bbkView.Filter -= BBKView_Filter;
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-            GC.Collect();
+            CallFinalizer();
         }
 
         #endregion
@@ -610,9 +604,7 @@ namespace BookObserver.ViewModels
         private void OnMouseLeaveComboBoxAuthorCommandExecuted(object? p)
         {
             _authorsView.Filter -= AuthorsView_Filter;
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-            GC.Collect();
+            CallFinalizer();
         }
 
         #endregion
@@ -630,9 +622,7 @@ namespace BookObserver.ViewModels
         private void OnMouseLeaveComboBoxNameCommandExecuted(object? p)
         {
             _namesView.Filter -= NamesView_Filter;
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-            GC.Collect();
+            CallFinalizer();
         }
 
         #endregion
@@ -650,9 +640,7 @@ namespace BookObserver.ViewModels
         private void OnMouseLeaveComboBoxPublishCommandExecuted(object? p)
         {
             _publishView.Filter -= PublishView_Filter;
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-            GC.Collect();
+            CallFinalizer();
         }
 
         #endregion
@@ -670,9 +658,7 @@ namespace BookObserver.ViewModels
         private void OnMouseLeaveComboBoxYearPublishCommandExecuted(object? p)
         {
             _yearPublishView.Filter -= YearPublishView_Filter;
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-            GC.Collect();
+            CallFinalizer();
         }
 
         #endregion
@@ -690,9 +676,7 @@ namespace BookObserver.ViewModels
         private void OnMouseLeaveTextBoxBooksCommandExecuted(object? p)
         {
             _booksView.Filter -= BooksView_Filter;
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-            GC.Collect();
+            CallFinalizer();
         }
 
         #endregion
@@ -700,28 +684,6 @@ namespace BookObserver.ViewModels
         #endregion
 
         #endregion
-
-        public BooksUserControlViewModel()
-        {
-            Books = new(Enumerable.Range(0, 100000).Select(p => new Book
-            {
-                Id = p,
-                BBK = Random.Shared.Next(0, 100).ToString(),
-                Pages = p + Random.Shared.Next(0, 100),
-                Author = $"Author {p}",
-                Name = new string('ü', Random.Shared.Next(15, 30)),
-                Reader = new Models.Readers.Reader
-                {
-                    FirstName = "Амплитуда"
-                },
-                Publish = $"Publish {p}",
-                YearPublish = $"{p}",
-                Stock = Random.Shared.Next(0, 2) == 0 ? "Да" : "Нет"
-            }));
-            _booksView.Source = Books;
-            OnPropertyChanged(nameof(BooksView));
-            ((Command)ResetToZeroFindCommand).Executable = false;
-        }
 
         #region Events
 
@@ -837,5 +799,35 @@ namespace BookObserver.ViewModels
         #endregion
 
         #endregion
+
+        public BooksUserControlViewModel()
+        {
+            Books = new(Enumerable.Range(0, 100000).Select(p => new Book
+            {
+                Id = p,
+                BBK = Random.Shared.Next(0, 100).ToString(),
+                Pages = p + Random.Shared.Next(0, 100),
+                Author = $"Author {p}",
+                Name = new string('ü', Random.Shared.Next(15, 30)),
+                Reader = new Models.Readers.Reader
+                {
+                    FirstName = "Амплитуда"
+                },
+                Publish = $"Publish {p}",
+                YearPublish = $"{p}",
+                Stock = Random.Shared.Next(0, 2) == 0 ? "Да" : "Нет"
+            }));
+            _booksView.Source = Books;
+            OnPropertyChanged(nameof(BooksView));
+            ((Command)ResetToZeroFindCommand).Executable = false;
+        }
+
+        private void CallFinalizer()
+        {
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+        }
+
     }
 }

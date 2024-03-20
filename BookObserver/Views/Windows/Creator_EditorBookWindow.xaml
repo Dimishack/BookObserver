@@ -9,8 +9,50 @@
         
         d:DataContext="{d:DesignInstance vm:Creator_EditorBookViewModel}"
         mc:Ignorable="d"
-        Title="{Binding Title}" Height="450" Width="800">
-    <Grid>
-        
-    </Grid>
+        Height="550" Width="400">
+    <DockPanel>
+        <TextBlock DockPanel.Dock="Top" Text="Добавить книгу" Margin="10"
+                   HorizontalAlignment="Center" VerticalAlignment="Center"
+                   FontWeight="Bold" FontSize="24"
+                   />
+        <UniformGrid DockPanel.Dock="Bottom" Rows="1"
+                      HorizontalAlignment="Right">
+            <UniformGrid.Resources>
+                <Style TargetType="Button">
+                    <Setter Property="Padding" Value="25,15"/>
+                    <Setter Property="Margin" Value="10"/>
+                </Style>
+            </UniformGrid.Resources>
+            <Button Content="Добавить"/>
+            <Button Content="Отмена"/>
+        </UniformGrid>
+        <StackPanel Orientation="Vertical" Margin="5">
+            <TextBlock Text="Код автора"/>
+            <ComboBox Text="{Binding SelectedCodeAuthor}"/>
+            <TextBlock Text="ББК"/>
+            <ComboBox Text="{Binding SelectedBBK}"/>
+            <TextBlock Text="Автор"/>
+            <ComboBox Text="{Binding SelectedAuthor}"/>
+            <TextBlock Text="Название"/>
+            <ComboBox Text="{Binding SelectedName}"/>
+            <TextBlock Text="Издательство"/>
+            <ComboBox Text="{Binding SelectedPublish}"/>
+            <TextBlock Text="Год издания"/>
+            <ComboBox Text="{Binding SelectedYearPublish}"/>
+            <TextBlock Text="Количество страниц"/>
+            <ComboBox Text="{Binding SelectedPages}"/>
+            <TextBlock Text="ISBN"/>
+            <ComboBox Text="{Binding SelectedISBN}"/>
+            <UniformGrid Rows="1"
+                        Margin="3,14">
+                <StackPanel Orientation="Horizontal">
+                    <CheckBox IsChecked="{Binding Stock}" 
+                              VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                    <TextBlock Text="В наличии" Margin="3,0" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                </StackPanel>
+                <Button Content="Очистить поля" HorizontalAlignment="Stretch"
+                        Padding="5"/>
+            </UniformGrid>
+        </StackPanel>
+    </DockPanel>
 </Window>
