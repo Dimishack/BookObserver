@@ -140,8 +140,7 @@
                 </DockPanel>
             </GroupBox>
         </DockPanel>
-        <GridSplitter Grid.Column="1" Background="Transparent"
-                          HorizontalAlignment="Stretch"/>
+        <GridSplitter Grid.Column="1"/>
         <DockPanel Grid.Column="2">
             <GroupBox DockPanel.Dock="Top" Header="Быстрый поиск">
                 <DockPanel >
