@@ -115,6 +115,56 @@ namespace BookObserver.ViewModels
 
 		#endregion
 
+		#region SelectedFirstName : string? - Выбранное имя
+
+		///<summary>Выбранное имя</summary>
+		private string? _selectedFirstName;
+
+		///<summary>Выбранное имя</summary>
+		public string? SelectedFirstName { get => _selectedFirstName; set => Set(ref _selectedFirstName, value); }
+
+		#endregion
+
+		#region SelectedLastName : string? - Выбранная фамилия
+
+		///<summary>Выбранная фамилия</summary>
+		private string? _selectedLastName;
+
+		///<summary>Выбранная фамилия</summary>
+		public string? SelectedLastName { get => _selectedLastName; set => Set(ref _selectedLastName, value); }
+
+		#endregion
+
+		#region SelectedPatronymic : string? - Выбранное отчество
+
+		///<summary>Выбранное отчество</summary>
+		private string? _selectedPatronymic;
+
+		///<summary>Выбранное отчество</summary>
+		public string? SelectedPatronymic { get => _selectedPatronymic; set => Set(ref _selectedPatronymic, value); }
+
+		#endregion
+
+		#region DateGetBook : DateTime - Дата получения книги
+
+		///<summary>Дата получения книги</summary>
+		private DateTime _dateGetBook;
+
+		///<summary>Дата получения книги</summary>
+		public DateTime DateGetBook { get => _dateGetBook; set => Set(ref _dateGetBook, value); }
+
+		#endregion
+
+		#region DateSetBook : DateTime - Дата возврата книги
+
+		///<summary>Дата возврата книги</summary>
+		private DateTime _dateSetBook;
+
+		///<summary>Дата возврата книги</summary>
+		public DateTime DateSetBook { get => _dateSetBook; set => Set(ref _dateSetBook, value); }
+
+		#endregion
+
 
 
 		public Creator_EditorBookViewModel(BooksUserControlViewModel booksViewModel)

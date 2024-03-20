@@ -9,14 +9,83 @@
         
         d:DataContext="{d:DesignInstance vm:Creator_EditorBookViewModel}"
         mc:Ignorable="d"
-        Height="550" Width="400">
-    <DockPanel>
-        <TextBlock DockPanel.Dock="Top" Text="Добавить книгу" Margin="10"
+        Height="600" Width="600">
+    <Grid Margin="3">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Row="0" Text="Добавить книгу" Margin="5"
                    HorizontalAlignment="Center" VerticalAlignment="Center"
-                   FontWeight="Bold" FontSize="24"
+                   FontWeight="Bold" FontSize="20"
                    />
-        <UniformGrid DockPanel.Dock="Bottom" Rows="1"
-                      HorizontalAlignment="Right">
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition MinWidth="200"/>
+                <ColumnDefinition Width="3"/>
+                <ColumnDefinition MinWidth="200"/>
+            </Grid.ColumnDefinitions>
+            <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch"/>
+            <GroupBox Grid.Column="0" Header="Книга">
+                <StackPanel Orientation="Vertical" Margin="5">
+                    <TextBlock Text="Код автора"/>
+                    <ComboBox Text="{Binding SelectedCodeAuthor}"/>
+                    <TextBlock Text="ББК"/>
+                    <ComboBox Text="{Binding SelectedBBK}"/>
+                    <TextBlock Text="Автор"/>
+                    <ComboBox Text="{Binding SelectedAuthor}"/>
+                    <TextBlock Text="Название"/>
+                    <ComboBox Text="{Binding SelectedName}"/>
+                    <TextBlock Text="Издательство"/>
+                    <ComboBox Text="{Binding SelectedPublish}"/>
+                    <TextBlock Text="Год издания"/>
+                    <ComboBox Text="{Binding SelectedYearPublish}"/>
+                    <TextBlock Text="Количество страниц"/>
+                    <ComboBox Text="{Binding SelectedPages}"/>
+                    <TextBlock Text="ISBN"/>
+                    <ComboBox Text="{Binding SelectedISBN}"/>
+                    <UniformGrid Rows="1"
+                        Margin="3,14">
+                        <Button Content="Очистить поля" HorizontalAlignment="Stretch"
+                        Padding="5"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                            <CheckBox x:Name="CBStock" IsChecked="{Binding Stock}" 
+                              VerticalAlignment="Center">
+                            </CheckBox>
+                            <TextBlock Text="В наличии" Margin="3,0" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </UniformGrid>
+                </StackPanel>
+            </GroupBox>
+            <GroupBox Grid.Column="2" Header="Читатель">
+                <GroupBox.Resources>
+                    <Style TargetType="GroupBox">
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding ElementName=CBStock, Path=IsChecked}" Value="False">
+                                <Setter Property="IsEnabled" Value="False"/>
+                                <Setter Property="Background" Value="WhiteSmoke"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </GroupBox.Resources>
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Text="Фамилия"/>
+                    <ComboBox/>
+                    <TextBlock Text="Имя"/>
+                    <ComboBox/>
+                    <TextBlock Text="Отчество"/>
+                    <ComboBox/>
+                    <TextBlock Text="Дата получения"/>
+                    <DatePicker IsTodayHighlighted="True" SelectedDateFormat="Short"/>
+                    <TextBlock Text="Дата возврата"/>
+                    <DatePicker/>
+                    <Button Content="Очистить поля" Margin="3,14"/>
+                </StackPanel>
+            </GroupBox>
+        </Grid>
+        <UniformGrid Grid.Row="2" Rows="1">
             <UniformGrid.Resources>
                 <Style TargetType="Button">
                     <Setter Property="Padding" Value="25,15"/>
@@ -26,33 +95,23 @@
             <Button Content="Добавить"/>
             <Button Content="Отмена"/>
         </UniformGrid>
-        <StackPanel Orientation="Vertical" Margin="5">
-            <TextBlock Text="Код автора"/>
-            <ComboBox Text="{Binding SelectedCodeAuthor}"/>
-            <TextBlock Text="ББК"/>
-            <ComboBox Text="{Binding SelectedBBK}"/>
-            <TextBlock Text="Автор"/>
-            <ComboBox Text="{Binding SelectedAuthor}"/>
-            <TextBlock Text="Название"/>
-            <ComboBox Text="{Binding SelectedName}"/>
-            <TextBlock Text="Издательство"/>
-            <ComboBox Text="{Binding SelectedPublish}"/>
-            <TextBlock Text="Год издания"/>
-            <ComboBox Text="{Binding SelectedYearPublish}"/>
-            <TextBlock Text="Количество страниц"/>
-            <ComboBox Text="{Binding SelectedPages}"/>
-            <TextBlock Text="ISBN"/>
-            <ComboBox Text="{Binding SelectedISBN}"/>
-            <UniformGrid Rows="1"
-                        Margin="3,14">
-                <StackPanel Orientation="Horizontal">
-                    <CheckBox IsChecked="{Binding Stock}" 
-                              VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                    <TextBlock Text="В наличии" Margin="3,0" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                </StackPanel>
-                <Button Content="Очистить поля" HorizontalAlignment="Stretch"
-                        Padding="5"/>
-            </UniformGrid>
-        </StackPanel>
-    </DockPanel>
+        <UniformGrid Grid.Row="3" Columns="1">
+            <UniformGrid.Resources>
+                <Style TargetType="StackPanel">
+                    <Setter Property="Margin" Value="5"/>
+                </Style>
+                <Style TargetType="TextBlock">
+                    <Setter Property="Margin" Value="3,0,0,0"/>
+                </Style>
+            </UniformGrid.Resources>
+            <StackPanel Orientation="Horizontal">
+                <CheckBox/>
+                <TextBlock Text="Закрыть окно после добавления книги в список"/>
+            </StackPanel>
+            <StackPanel Orientation="Horizontal">
+                <CheckBox/>
+                <TextBlock Text="Уведомлять о добавлении книги в список"/>
+            </StackPanel>
+        </UniformGrid>
+    </Grid>
 </Window>
