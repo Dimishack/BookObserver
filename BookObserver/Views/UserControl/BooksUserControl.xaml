@@ -13,7 +13,7 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="250" MaxWidth="250" MinWidth="85"/>
+            <ColumnDefinition MaxWidth="250" MinWidth="85"/>
             <ColumnDefinition Width="3"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
