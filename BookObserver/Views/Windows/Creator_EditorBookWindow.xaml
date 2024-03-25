@@ -49,7 +49,8 @@
                     <UniformGrid Rows="1"
                         Margin="3,14">
                         <Button Content="Очистить поля" HorizontalAlignment="Stretch"
-                        Padding="5"/>
+                                Command="{Binding ClearFieldsForBookCommand}"
+                                Padding="5"/>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                             <CheckBox x:Name="CBStock" IsChecked="{Binding Stock}" 
                               VerticalAlignment="Center">

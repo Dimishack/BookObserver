@@ -22,13 +22,13 @@ namespace BookObserver.ViewModels
 
         #endregion
 
-        #region SelectedCodeAuthor : string - Выбранный код автора
+        #region SelectedCodeAuthor : string? - Выбранный код автора
 
         ///<summary>Выбранный код автора</summary>
-        private string _selectedCodeAuthor = string.Empty;
+        private string? _selectedCodeAuthor;
 
         ///<summary>Выбранный код автора</summary>
-        public string SelectedCodeAuthor { get => _selectedCodeAuthor; set => Set(ref _selectedCodeAuthor, value); }
+        public string? SelectedCodeAuthor { get => _selectedCodeAuthor; set => Set(ref _selectedCodeAuthor, value); }
 
         #endregion
 
@@ -42,33 +42,33 @@ namespace BookObserver.ViewModels
 
         #endregion
 
-        #region SelectedAuthor : string - Выбранный автор
+        #region SelectedAuthor : string? - Выбранный автор
 
         ///<summary>Выбранный автор</summary>
-        private string _selectedAuthor = string.Empty;
+        private string? _selectedAuthor;
 
         ///<summary>Выбранный автор</summary>
-        public string SelectedAuthor { get => _selectedAuthor; set => Set(ref _selectedAuthor, value); }
+        public string? SelectedAuthor { get => _selectedAuthor; set => Set(ref _selectedAuthor, value); }
 
         #endregion
 
-        #region SelectedName : string - Выбранное название
+        #region SelectedName : string? - Выбранное название
 
         ///<summary>Выбранное название</summary>
-        private string _selectedName = string.Empty;
+        private string? _selectedName;
 
         ///<summary>Выбранное название</summary>
-        public string SelectedName { get => _selectedName; set => Set(ref _selectedName, value); }
+        public string? SelectedName { get => _selectedName; set => Set(ref _selectedName, value); }
 
         #endregion
 
-        #region SelectedPublish : string - Выбранное издательство
+        #region SelectedPublish : string? - Выбранное издательство
 
         ///<summary>Выбранное издательство</summary>
-        private string _selectedPublish = string.Empty;
+        private string? _selectedPublish;
 
         ///<summary>Выбранное издательство</summary>
-        public string SelectedPublish { get => _selectedPublish; set => Set(ref _selectedPublish, value); }
+        public string? SelectedPublish { get => _selectedPublish; set => Set(ref _selectedPublish, value); }
 
         #endregion
 
@@ -92,13 +92,13 @@ namespace BookObserver.ViewModels
 
         #endregion
 
-        #region SelectedISBN : string - Выбранный ISBN
+        #region SelectedISBN : string? - Выбранный ISBN
 
         ///<summary>Выбранный ISBN</summary>
-        private string _selectedISBN = string.Empty;
+        private string? _selectedISBN = string.Empty;
 
         ///<summary>Выбранный ISBN</summary>
-        public string SelectedISBN { get => _selectedISBN; set => Set(ref _selectedISBN, value); }
+        public string? SelectedISBN { get => _selectedISBN; set => Set(ref _selectedISBN, value); }
 
         #endregion
 
@@ -226,6 +226,42 @@ namespace BookObserver.ViewModels
             };
             _booksViewModel?.Books?.Add(book);
             _booksViewModel?._booksView.View.Refresh();
+        }
+
+        #endregion
+
+        #region ClearFieldsForBookCommand - Команда очистки полей информации о книге
+
+        ///<summary>Команда очистки полей информации о книге</summary>
+        private ICommand? _clearFieldsForBookCommand;
+
+        ///<summary>Команда очистки полей информации о книге</summary>
+        public ICommand ClearFieldsForBookCommand => _clearFieldsForBookCommand
+            ??= new LambdaCommand(OnClearFieldsForBookCommandExecuted, CanClearFieldsForBookCommandExecute);
+
+        ///<summary>Проверка возможности выполнения - Команда очистки полей информации о книге</summary>
+        private bool CanClearFieldsForBookCommandExecute(object? p) => 
+            _selectedCodeAuthor is not null
+            || _selectedBBK > 0.0
+            || _selectedAuthor is not null
+            || _selectedName is not null
+            || _selectedPublish is not null
+            || _selectedYearPublish > 0
+            || _selectedPages > 0
+            || _selectedISBN is not null
+            ;
+
+        ///<summary>Логика выполнения - Команда очистки полей информации о книге</summary>
+        private void OnClearFieldsForBookCommandExecuted(object? p)
+        {
+            SelectedCodeAuthor = default;
+            SelectedBBK = default;
+            SelectedAuthor = default;
+            SelectedName = default;
+            SelectedPublish = default;
+            SelectedYearPublish = default;
+            SelectedPages = default;
+            SelectedISBN = default;
         }
 
         #endregion
