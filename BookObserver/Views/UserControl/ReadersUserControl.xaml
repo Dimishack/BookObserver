@@ -1,0 +1,132 @@
+﻿<UserControl x:Class="BookObserver.Views.UserControl.ReadersUserControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" mc:Ignorable="d" 
+             xmlns:local="clr-namespace:BookObserver.Views.UserControl"
+             
+             xmlns:vm="clr-namespace:BookObserver.ViewModels"
+             xmlns:fa5="http://schemas.fontawesome.com/icons/"
+             
+             d:DataContext="{d:DesignInstance vm:ReadersViewModel}"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition MinWidth="150" MaxWidth="250"/>
+            <ColumnDefinition Width="3"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <GridSplitter Grid.Column="1"/>
+        <DockPanel Grid.Column="0">
+            <GroupBox DockPanel.Dock="Top">
+                <GroupBox.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Name="TBSort" Text="Сортировка"/>
+                        <fa5:ImageAwesome Icon="Solid_Sort" 
+                                          Height="{Binding ElementName=TBSort, Path=FontSize}"
+                                          Margin="3,0"/>
+                    </StackPanel>
+                </GroupBox.Header>
+                <ComboBox/>
+            </GroupBox>
+            <GroupBox>
+                <GroupBox.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Name="TBSearch" Text="Поиск"/>
+                        <fa5:ImageAwesome Icon="Solid_Search"
+                                      Height="{Binding ElementName=TBSearch, Path=FontSize}"
+                                      Margin="3,0"/>
+                    </StackPanel>
+                </GroupBox.Header>
+                <DockPanel>
+                    <UniformGrid DockPanel.Dock="Bottom" Columns="1">
+                        <Button Content="Поиск" Style="{StaticResource ButtonUG}"/>
+                        <Button Content="Обнулить список" Style="{StaticResource ButtonUG}"/>
+                    </UniformGrid>
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Text="Фамилия"/>
+                        <ComboBox/>
+                        <TextBlock Text="Имя"/>
+                        <ComboBox/>
+                        <TextBlock Text="Отчество"/>
+                        <ComboBox/>
+                        <GroupBox Header="Получение книги">
+                            <StackPanel Orientation="Vertical">
+                                <StackPanel.Resources>
+                                    <Style TargetType="DatePicker">
+                                        <Setter Property="Margin" Value="3,0,0,0"/>
+                                        <Setter Property="Language" Value="ru-RU"/>
+                                        <Setter Property="IsTodayHighlighted" Value="True"/>
+                                    </Style>
+                                </StackPanel.Resources>
+                                <DockPanel>
+                                    <TextBlock DockPanel.Dock="Left" Text="От:" 
+                                               VerticalAlignment="Center"/>
+                                    <DatePicker Language="ru-RU"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock DockPanel.Dock="Left" Text="До:" 
+                                               VerticalAlignment="Center"/>
+                                    <DatePicker/>
+                                </DockPanel>
+                            </StackPanel>
+                        </GroupBox>
+                        <GroupBox Header="Возврат книги">
+                            <StackPanel Orientation="Vertical">
+                                <StackPanel.Resources>
+                                    <Style TargetType="DatePicker">
+                                        <Setter Property="Margin" Value="3,0,0,0"/>
+                                        <Setter Property="Language" Value="ru-RU"/>
+                                        <Setter Property="IsTodayHighlighted" Value="True"/>
+                                    </Style>
+                                </StackPanel.Resources>
+                                <DockPanel>
+                                    <TextBlock DockPanel.Dock="Left" Text="От:" 
+                                               VerticalAlignment="Center"/>
+                                    <DatePicker/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock DockPanel.Dock="Left" Text="До:" 
+                                               VerticalAlignment="Center"/>
+                                    <DatePicker/>
+                                </DockPanel>
+                            </StackPanel>
+                        </GroupBox>
+                        <Button Content="Очистить поля" Margin="10"/>
+                    </StackPanel>
+                </DockPanel>
+            </GroupBox>
+        </DockPanel>
+        <DockPanel Grid.Column="2">
+            <GroupBox DockPanel.Dock="Top" Header="Быстрый поиск">
+                <DockPanel>
+                    <fa5:ImageAwesome DockPanel.Dock="Left" 
+                                      Icon="Solid_Search" 
+                                      Height="{Binding ElementName=TBFastSearch, Path=FontSize}"/>
+                    <TextBox Name="TBFastSearch" HorizontalAlignment="Stretch"
+                             Margin="3,0,0,0"/>
+                </DockPanel>
+            </GroupBox>
+            <UniformGrid DockPanel.Dock="Bottom" Rows="1">
+                <Button Style="{StaticResource ButtonUG}">
+                    <TextBlock TextAlignment="Center">
+                        Добавить<LineBreak/>читателя
+                    </TextBlock>
+                </Button>
+                <Button Style="{StaticResource ButtonUG}">
+                    <TextBlock TextAlignment="Center">
+                        Редактировать<LineBreak/>читателя
+                    </TextBlock>
+                </Button>
+                <Button Style="{StaticResource ButtonUG}">
+                    <TextBlock TextAlignment="Center">
+                        Сохранить<LineBreak/>список
+                    </TextBlock>
+                </Button>
+            </UniformGrid>
+            <GroupBox Header="Читатели">
+                <ListBox/>
+            </GroupBox>
+        </DockPanel>
+    </Grid>
+</UserControl>

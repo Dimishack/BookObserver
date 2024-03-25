@@ -13,6 +13,5 @@ namespace BookObserver.Models.Readers
         public string? Address { get; set; }
         public DateTime DateGet { get; set; }
         public DateTime DateSet { get; set; }
-        public Book? Book { get; set; }
     }
 }

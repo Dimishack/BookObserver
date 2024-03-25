@@ -49,15 +49,9 @@
                 </GroupBox.Header>
                 <DockPanel>
                     <UniformGrid DockPanel.Dock="Bottom" Columns="1" Background="WhiteSmoke">
-                        <UniformGrid.Resources>
-                            <Style TargetType="Button">
-                                <Setter Property="Padding" Value="3"/>
-                                <Setter Property="Margin" Value="3"/>
-                            </Style>
-                        </UniformGrid.Resources>
-                        <Button Content="Поиск"
+                        <Button Content="Поиск" Style="{StaticResource ButtonUG}"
                                 Command="{Binding FindBooksCommand}" CommandParameter="{Binding Books}"/>
-                        <Button Content="Обнулить поиск"
+                        <Button Content="Обнулить поиск" Style="{StaticResource ButtonUG}"
                                 Command="{Binding ResetToZeroFindCommand}" CommandParameter="{Binding Books}"/>
                     </UniformGrid>
                     <StackPanel Orientation="Vertical">
@@ -161,23 +155,18 @@
                 </DockPanel>
             </GroupBox>
             <UniformGrid DockPanel.Dock="Bottom" Rows="1" Margin="5">
-                <UniformGrid.Resources>
-                    <Style TargetType="Button">
-                        <Setter Property="Margin" Value="3"/>
-                        <Setter Property="Padding" Value="3"/>
-                    </Style>
-                </UniformGrid.Resources>
-                <Button Command="{Binding AddBookCommand}">
+                <Button Command="{Binding AddBookCommand}" Style="{StaticResource ButtonUG}">
                     <TextBlock TextAlignment="Center">
                         Добавить <LineBreak/> книгу
                     </TextBlock>
                 </Button>
-                <Button>
+                <Button Style="{StaticResource ButtonUG}">
                     <TextBlock TextAlignment="Center">
                         Редактировать <LineBreak/> книгу
                     </TextBlock>
                 </Button>
-                <Button Command="{Binding SaveBooksCommand}" CommandParameter="{Binding Books}">
+                <Button Command="{Binding SaveBooksCommand}" CommandParameter="{Binding Books}"
+                        Style="{StaticResource ButtonUG}">
                     <TextBlock TextAlignment="Center">
                     Сохранить<LineBreak/>список
                     </TextBlock>
