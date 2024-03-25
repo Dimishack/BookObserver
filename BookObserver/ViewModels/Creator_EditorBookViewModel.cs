@@ -1,4 +1,5 @@
-﻿using BookObserver.Models.Books;
+﻿using BookObserver.Infrastructure.Commands;
+using BookObserver.Models.Books;
 using BookObserver.ViewModels.Base;
 using System;
 using System.Collections.Generic;
@@ -6,6 +7,8 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Input;
 
 namespace BookObserver.ViewModels
 {
@@ -165,9 +168,35 @@ namespace BookObserver.ViewModels
 
 		#endregion
 
+		#region NotifyAddBook : bool - Уведомление о добавлении книги
 
+		///<summary>Уведомление о добавлении книги</summary>
+		private bool _notifyAddBook = false;
 
-		public Creator_EditorBookViewModel(BooksUserControlViewModel booksViewModel)
+		///<summary>Уведомление о добавлении книги</summary>
+		public bool NotifyAddBook { get => _notifyAddBook; set => Set(ref _notifyAddBook, value); }
+
+		#endregion
+
+		#region Commands
+
+		#region CloseWindowCommand - Команда закрытия окна
+
+		///<summary>Команда закрытия окна</summary>
+		private ICommand? _closewindowCommand;
+
+		///<summary>Команда закрытия окна</summary>
+		public ICommand CloseWindowCommand => _closewindowCommand
+			??= new LambdaCommand(OnCloseWindowCommandExecuted);
+
+        ///<summary>Логика выполнения - Команда закрытия окна</summary>
+        private void OnCloseWindowCommandExecuted(object? p) => App.ActiveWindow.Close();
+
+        #endregion
+
+        #endregion
+
+        public Creator_EditorBookViewModel(BooksUserControlViewModel booksViewModel)
 		{
             _booksViewModel = booksViewModel;
 			if (_booksViewModel.Books is null) return;

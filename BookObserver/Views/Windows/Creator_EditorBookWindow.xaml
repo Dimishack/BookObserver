@@ -93,25 +93,12 @@
                 </Style>
             </UniformGrid.Resources>
             <Button Content="Добавить"/>
-            <Button Content="Отмена"/>
+            <Button Content="Закрыть окно" Command="{Binding CloseWindowCommand}"/>
         </UniformGrid>
-        <UniformGrid Grid.Row="3" Columns="1">
-            <UniformGrid.Resources>
-                <Style TargetType="StackPanel">
-                    <Setter Property="Margin" Value="5"/>
-                </Style>
-                <Style TargetType="TextBlock">
-                    <Setter Property="Margin" Value="3,0,0,0"/>
-                </Style>
-            </UniformGrid.Resources>
-            <StackPanel Orientation="Horizontal">
-                <CheckBox/>
-                <TextBlock Text="Закрыть окно после добавления книги в список"/>
-            </StackPanel>
-            <StackPanel Orientation="Horizontal">
-                <CheckBox/>
-                <TextBlock Text="Уведомлять о добавлении книги в список"/>
-            </StackPanel>
-        </UniformGrid>
+        <StackPanel Grid.Row="3" Margin="5" Orientation="Horizontal">
+            <CheckBox IsChecked="{Binding NotifyAddBook}"/>
+            <TextBlock Text="Уведомлять о добавлении книги в список"
+                           Margin="3,0,0,0"/>
+        </StackPanel>
     </Grid>
 </Window>

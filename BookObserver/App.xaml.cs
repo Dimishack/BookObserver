@@ -6,6 +6,8 @@ namespace BookObserver
 {
     public partial class App : Application
     {
+        public static Window ActiveWindow => Current.Windows.Cast<Window>().First(p => p.IsActive);
+
         private static IHost? __host;
 
         public static IHost Host => __host ??= Microsoft.Extensions.Hosting.Host
