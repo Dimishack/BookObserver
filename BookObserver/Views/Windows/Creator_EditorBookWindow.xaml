@@ -92,7 +92,7 @@
                     <Setter Property="Margin" Value="10"/>
                 </Style>
             </UniformGrid.Resources>
-            <Button Content="Добавить"/>
+            <Button Content="Добавить" Command="{Binding AddBookCommand}"/>
             <Button Content="Закрыть окно" Command="{Binding CloseWindowCommand}"/>
         </UniformGrid>
         <StackPanel Grid.Row="3" Margin="5" Orientation="Horizontal">

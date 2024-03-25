@@ -18,11 +18,11 @@ namespace BookObserver.ViewModels
         #region Properties
 
         ///<summary>Список книг</summary>
-        public ObservableCollection<Book>? Books { get; }
+        public ObservableCollection<Book> Books { get; }
 
         #region BooksView : ICollectionView - Вывод списка книг
 
-        private readonly CollectionViewSource _booksView = new();
+        public readonly CollectionViewSource _booksView = new();
         public ICollectionView BooksView => _booksView.View;
 
         #endregion
