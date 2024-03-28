@@ -1,4 +1,5 @@
 ﻿using BookObserver.Infrastructure.Commands;
+using BookObserver.Infrastructure.Commands.Base;
 using BookObserver.Models.Readers;
 using BookObserver.ViewModels.Base;
 using System.Collections.ObjectModel;
@@ -59,12 +60,91 @@ namespace BookObserver.ViewModels
                 if (!Set(ref _selectedLastName, value)) return;
 
                 _lastNamesView.View.Refresh();
+
+                ExecutableOnSearchCommandChangedOnTrue();
             }
         }
 
         #endregion
 
         #region Commands
+
+        #region ClearFieldsForSearchCommand - Команда очистка полей для поиска
+
+        ///<summary>Команда очистка полей для поиска</summary>
+        private ICommand? _clearFieldsForSearchCommand;
+
+        ///<summary>Команда очистка полей для поиска</summary>
+        public ICommand ClearFieldsForSearchCommand => _clearFieldsForSearchCommand
+            ??= new LambdaCommand(OnClearFieldsForSearchCommandExecuted, CanClearFieldsForSearchCommandExecute);
+
+        ///<summary>Проверка возможности выполнения - Команда очистка полей для поиска</summary>
+        private bool CanClearFieldsForSearchCommandExecute(object? p) =>
+            !string.IsNullOrWhiteSpace(_selectedLastName)
+            ;
+
+        ///<summary>Логика выполнения - Команда очистка полей для поиска</summary>
+        private void OnClearFieldsForSearchCommandExecuted(object? p)
+        {
+            SelectedLastName = null;
+        }
+
+        #endregion
+
+        #region SearchCommand - Команда поиска
+
+        ///<summary>Команда поиска</summary>
+        private ICommand? _searchCommand;
+
+        ///<summary>Команда поиска</summary>
+        public ICommand SearchCommand => _searchCommand
+            ??= new LambdaCommand(OnSearchCommandExecuted, CanSearchCommandExecute);
+
+        ///<summary>Проверка возможности выполнения - Команда поиска</summary>
+        private bool CanSearchCommandExecute(object? p) =>
+            (p is not null && p is IList<Reader>)
+            && !string.IsNullOrWhiteSpace(_selectedLastName)
+            ;
+
+        ///<summary>Логика выполнения - Команда поиска</summary>
+        private void OnSearchCommandExecuted(object? p)
+        {
+            IList<Reader> result = new ObservableCollection<Reader>((p as IList<Reader>)!);
+            if (!string.IsNullOrWhiteSpace(_selectedLastName))
+                result = result.Where(r => r.LastName.Contains(_selectedLastName)).ToList();
+
+            _readersView.Source = result;
+            OnPropertyChanged(nameof(ReadersView));
+            ((Command)SearchCommand).Executable = false;
+            if (!((Command)ResetToZeroSearchCommand).Executable)
+                ((Command)ResetToZeroSearchCommand).Executable = true;
+        }
+
+        #endregion
+
+        #region ResetToZeroSearchCommand - Команда обнуления поиска
+
+        ///<summary>Команда обнуления поиска</summary>
+        private ICommand? _resetToZeroSearchCommand;
+
+        ///<summary>Команда обнуления поиска</summary>
+        public ICommand ResetToZeroSearchCommand => _resetToZeroSearchCommand
+            ??= new LambdaCommand(OnResetToZeroSearchCommandExecuted, CanResetToZeroSearchCommandExecute);
+
+        ///<summary>Проверка возможности выполнения - Команда обнуления поиска</summary>
+        private bool CanResetToZeroSearchCommandExecute(object? p) =>
+            p is not null && p is IList<Reader>;
+
+        ///<summary>Логика выполнения - Команда обнуления поиска</summary>
+        private void OnResetToZeroSearchCommandExecuted(object? p)
+        {
+            _readersView.Source = Readers;
+            OnPropertyChanged(nameof(ReadersView));
+            ((Command)ResetToZeroSearchCommand).Executable = false;
+            ExecutableOnSearchCommandChangedOnTrue();
+        }
+
+        #endregion
 
         #region MouseEnterComboBoxLastNamesCommand - Команда наведения курсора на ComboBox (список фамилий)
 
@@ -122,6 +202,7 @@ namespace BookObserver.ViewModels
                         Telephone = $"Телефон {p}",
                         Address = $"Адрес {p}"
                     }));
+            ((Command)ResetToZeroSearchCommand).Executable = false;
             _readersView.Source = Readers;
             _readersView.Filter += ReadersView_Filter;
         }
@@ -141,8 +222,8 @@ namespace BookObserver.ViewModels
                 || reader.Patronymic.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
                 || reader.Telephone.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
                 || reader.Address.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
-                || reader.DateGet.ToShortDateString().Contains(filter_text, StringComparison.OrdinalIgnoreCase)
-                || reader.DateSet.ToShortDateString().Contains(filter_text, StringComparison.OrdinalIgnoreCase)
+                || reader.DateGet.ToString("dd.MM.yyyy").Contains(filter_text, StringComparison.OrdinalIgnoreCase)
+                || reader.DateSet.ToString("dd.MM.yyyy").Contains(filter_text, StringComparison.OrdinalIgnoreCase)
                 ;
         }
 
@@ -158,6 +239,13 @@ namespace BookObserver.ViewModels
             e.Accepted = string.IsNullOrWhiteSpace(filter_text)
                 || lastName.Contains(filter_text)
                 ;
+        }
+
+
+        private void ExecutableOnSearchCommandChangedOnTrue()
+        {
+            if (!((Command)SearchCommand).Executable)
+                ((Command)SearchCommand).Executable = true;
         }
     }
 }

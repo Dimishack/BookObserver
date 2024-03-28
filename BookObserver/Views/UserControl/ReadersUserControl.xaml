@@ -41,8 +41,10 @@
                 </GroupBox.Header>
                 <DockPanel>
                     <UniformGrid DockPanel.Dock="Bottom" Columns="1">
-                        <Button Content="Поиск" Style="{StaticResource ButtonUG}"/>
-                        <Button Content="Обнулить список" Style="{StaticResource ButtonUG}"/>
+                        <Button Content="Поиск" Style="{StaticResource ButtonUG}"
+                                Command="{Binding SearchCommand}" CommandParameter="{Binding Readers}"/>
+                        <Button Content="Обнулить список" Style="{StaticResource ButtonUG}"
+                                Command="{Binding ResetToZeroSearchCommand}" CommandParameter="{Binding Readers}"/>
                     </UniformGrid>
                     <StackPanel Orientation="Vertical">
                         <TextBlock Text="Фамилия"/>
@@ -103,7 +105,8 @@
                                 </DockPanel>
                             </StackPanel>
                         </GroupBox>
-                        <Button Content="Очистить поля" Margin="10"/>
+                        <Button Content="Очистить поля" Margin="10"
+                                Command="{Binding ClearFieldsForSearchCommand}"/>
                     </StackPanel>
                 </DockPanel>
             </GroupBox>
