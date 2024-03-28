@@ -44,7 +44,7 @@
                     <UniformGrid DockPanel.Dock="Bottom" Columns="1">
                         <Button Content="Поиск" Style="{StaticResource ButtonUG}"
                                 Command="{Binding SearchCommand}" CommandParameter="{Binding Readers}"/>
-                        <Button Content="Обнулить список" Style="{StaticResource ButtonUG}"
+                        <Button Content="Обнулить поиск" Style="{StaticResource ButtonUG}"
                                 Command="{Binding ResetToZeroSearchCommand}" CommandParameter="{Binding Readers}"/>
                     </UniformGrid>
                     <StackPanel Orientation="Vertical">
@@ -52,16 +52,26 @@
                         <ComboBox Text="{Binding SelectedLastName, UpdateSourceTrigger=PropertyChanged}"
                                   ItemsSource="{Binding LastNamesView}">
                             <i:Interaction.Triggers>
-                                <i:EventTrigger EventName="MouseEnter">
-                                    <i:InvokeCommandAction Command="{Binding MouseEnterComboBoxLastNamesCommand}"/>
+                                <i:EventTrigger EventName="GotFocus">
+                                    <i:InvokeCommandAction Command="{Binding GotFocusComboBoxLastNamesCommand}"/>
                                 </i:EventTrigger>
-                                <i:EventTrigger EventName="MouseLeave">
-                                    <i:InvokeCommandAction Command="{Binding MouseLeaveComboBoxLastNamesCommand}"/>
+                                <i:EventTrigger EventName="LostFocus">
+                                    <i:InvokeCommandAction Command="{Binding LostFocusComboBoxLastNamesCommand}"/>
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </ComboBox>
                         <TextBlock Text="Имя"/>
-                        <ComboBox/>
+                        <ComboBox Text="{Binding SelectedFirstName, UpdateSourceTrigger=PropertyChanged}"
+                                  ItemsSource="{Binding FirstNamesView}">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="GotFocus">
+                                    <i:InvokeCommandAction Command="{Binding GotFocusComboBoxFirstNamesCommand}"/>
+                                </i:EventTrigger>
+                                <i:EventTrigger EventName="LostFocus">
+                                    <i:InvokeCommandAction Command="{Binding LostFocusComboBoxFirstNamesCommand}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </ComboBox>
                         <TextBlock Text="Отчество"/>
                         <ComboBox/>
                         <GroupBox Header="Получение книги">
@@ -113,15 +123,6 @@
             </GroupBox>
         </DockPanel>
         <DockPanel Grid.Column="2">
-            <GroupBox DockPanel.Dock="Top" Header="Быстрый поиск">
-                <DockPanel>
-                    <fa5:ImageAwesome DockPanel.Dock="Left" 
-                                      Icon="Solid_Search" 
-                                      Height="{Binding ElementName=TBFastSearch, Path=FontSize}"/>
-                    <TextBox Name="TBFastSearch" HorizontalAlignment="Stretch"
-                             Margin="3,0,0,0" Text="{Binding ReadersFilterText, UpdateSourceTrigger=PropertyChanged}"/>
-                </DockPanel>
-            </GroupBox>
             <UniformGrid DockPanel.Dock="Bottom" Rows="1">
                 <Button Style="{StaticResource ButtonUG}">
                     <TextBlock TextAlignment="Center">
@@ -145,7 +146,7 @@
                         <DataTemplate>
                             <Border BorderBrush="SandyBrown" BorderThickness="2">
                                 <Grid>
-                                    <StackPanel Orientation="Vertical">
+                                    <StackPanel Orientation="Vertical" Margin="3">
                                         <TextBlock Text="{Binding LastName, StringFormat=' Фамилия: {0}'}"/>
                                         <TextBlock Text="{Binding FirstName, StringFormat=' Имя: {0}'}"/>
                                         <TextBlock Text="{Binding Patronymic, StringFormat=' Отчество: {0}'}"/>
