@@ -44,7 +44,12 @@ namespace BookObserver.ViewModels
 
         #region FirstNamesView : ICollectionView - Вывод списка имен
         private readonly CollectionViewSource _firstNamesView = new();
-        public ICollectionView FirstNamesView => _firstNamesView.View; 
+        public ICollectionView FirstNamesView => _firstNamesView.View;
+        #endregion
+
+        #region PatronymicsView : ICollectionView - Вывод списка отчеств
+        private readonly CollectionViewSource _patronymicsView = new();
+        public ICollectionView PatronymicsView => _patronymicsView.View; 
         #endregion
 
         #region ReadersFilterText : string? - фильтрация списка читателей
@@ -106,6 +111,26 @@ namespace BookObserver.ViewModels
 
         #endregion
 
+        #region SelectedPatronymic : string? - Выбранное отчество
+
+        ///<summary>Выбранное отчество</summary>
+        private string? _selectedPatronymic;
+
+        ///<summary>Выбранное отчество</summary>
+        public string? SelectedPatronymic
+        {
+            get => _selectedPatronymic;
+            set
+            {
+                if (!Set(ref _selectedPatronymic, value)) return;
+
+                _patronymicsView.View.Refresh();
+            }
+        }
+
+        #endregion
+
+
         #region SelectedSorting : string? - Выбранная сортировка списка читателей
 
         ///<summary>Выбранная сортировка списка читателей</summary>
@@ -158,12 +183,16 @@ namespace BookObserver.ViewModels
         ///<summary>Проверка возможности выполнения - Команда очистка полей для поиска</summary>
         private bool CanClearFieldsForSearchCommandExecute(object? p) =>
             !string.IsNullOrWhiteSpace(_selectedLastName)
+            || !string.IsNullOrWhiteSpace(_selectedFirstName)
+            || !string.IsNullOrWhiteSpace(_selectedPatronymic)
             ;
 
         ///<summary>Логика выполнения - Команда очистка полей для поиска</summary>
         private void OnClearFieldsForSearchCommandExecuted(object? p)
         {
             SelectedLastName = null;
+            SelectedFirstName = null;
+            SelectedPatronymic = null;
         }
 
         #endregion
@@ -180,9 +209,10 @@ namespace BookObserver.ViewModels
         ///<summary>Проверка возможности выполнения - Команда поиска</summary>
         private bool CanSearchCommandExecute(object? p) =>
             (p is not null && p is IList<Reader>)
-            && 
+            &&
             (!string.IsNullOrWhiteSpace(_selectedLastName)
             || !string.IsNullOrWhiteSpace(_selectedFirstName)
+            || !string.IsNullOrWhiteSpace(_selectedPatronymic)
             );
 
         ///<summary>Логика выполнения - Команда поиска</summary>
@@ -193,6 +223,8 @@ namespace BookObserver.ViewModels
                 result = result.Where(r => r.LastName.Contains(_selectedLastName)).ToList();
             if (!string.IsNullOrWhiteSpace(_selectedFirstName))
                 result = result.Where(r => r.FirstName.Contains(_selectedFirstName)).ToList();
+            if (!string.IsNullOrWhiteSpace(_selectedPatronymic))
+                result = result.Where(r => r.Patronymic.Contains(_selectedPatronymic)).ToList();
 
             _readersView.Source = result;
             _readersView.View.SortDescriptions.Clear();
@@ -245,12 +277,12 @@ namespace BookObserver.ViewModels
             var value = _selectedLastName;
             _lastNamesView.Source = Readers.Select(p => p.LastName).Distinct().Order().ToList();
             OnPropertyChanged(nameof(LastNamesView));
-            _lastNamesView.Filter += LastNamesView_Filter;
             SelectedLastName = value;
+            _lastNamesView.Filter += LastNamesView_Filter;
         }
 
         #endregion
-        
+
         #region GotFocusComboBoxFirstNamesCommand - Команда при получении фокуса (ComboBox имена)
 
         ///<summary>Команда при получении фокуса (ComboBox имена)</summary>
@@ -266,8 +298,29 @@ namespace BookObserver.ViewModels
             var value = _selectedFirstName;
             _firstNamesView.Source = Readers.Select(p => p.FirstName).Distinct().Order().ToList();
             OnPropertyChanged(nameof(FirstNamesView));
-            _firstNamesView.Filter += FirstNamesView_Filter;
             SelectedFirstName = value;
+            _firstNamesView.Filter += FirstNamesView_Filter;
+        }
+
+        #endregion
+
+        #region GotFocusComboBoxPatronymicsCommand - Команда при получении фокуса (ComboBox отчества)
+
+        ///<summary>Команда при получении фокуса (ComboBox отчества)</summary>
+        private ICommand? _gotFocusComboBoxPatronymicsCommand;
+
+        ///<summary>Команда при получении фокуса (ComboBox отчества)</summary>
+        public ICommand GotFocusComboBoxPatronymicsCommand => _gotFocusComboBoxPatronymicsCommand
+            ??= new LambdaCommand(OnGotFocusComboBoxPatronymicsCommandExecuted);
+
+        ///<summary>Логика выполнения - Команда при получении фокуса (ComboBox отчества)</summary>
+        private void OnGotFocusComboBoxPatronymicsCommandExecuted(object? p)
+        {
+            var value = _selectedPatronymic;
+            _patronymicsView.Source = (p as IList<Reader>)?.Select(r => r.Patronymic).Distinct().Order().ToList();
+            OnPropertyChanged(nameof(PatronymicsView));
+            SelectedPatronymic = value;
+            _patronymicsView.Filter += PatronymicsView_Filter;
         }
 
         #endregion
@@ -289,7 +342,7 @@ namespace BookObserver.ViewModels
         }
 
         #endregion
-        
+
         #region LostFocusComboBoxFirstNamesCommand - Команда при потере фокуса (ComboBox имена)
 
         ///<summary>Команда при потере фокуса (ComboBox имена)</summary>
@@ -307,7 +360,25 @@ namespace BookObserver.ViewModels
         }
 
         #endregion
-        
+
+        #region LostFocusComboBoxPatronymicsCommand - Команда при потере фокуса (ComboBox отчества)
+
+        ///<summary>Команда при потере фокуса (ComboBox отчества)</summary>
+        private ICommand? _lostFocusComboBoxPatronymicCommand;
+
+        ///<summary>Команда при потере фокуса (ComboBox отчества)</summary>
+        public ICommand LostFocusComboBoxPatronymicsCommand => _lostFocusComboBoxPatronymicCommand
+            ??= new LambdaCommand(OnLostFocusComboBoxPatronymicsCommandExecuted);
+
+        ///<summary>Логика выполнения - Команда при потере фокуса (ComboBox отчества)</summary>
+        private void OnLostFocusComboBoxPatronymicsCommandExecuted(object? p)
+        {
+            _patronymicsView.Filter -= PatronymicsView_Filter;
+            ClearGarbage();
+        }
+
+        #endregion
+
         #endregion
 
         public ReadersViewModel()
@@ -374,6 +445,19 @@ namespace BookObserver.ViewModels
             e.Accepted = string.IsNullOrWhiteSpace(filter_text)
                 || firstName.Contains(filter_text)
                 ;
+        }
+
+        private void PatronymicsView_Filter(object sender, FilterEventArgs e)
+        {
+            if (e.Item is not string patronymic)
+            {
+                e.Accepted = false;
+                return;
+            }
+
+            var filter_text = _selectedPatronymic;
+            e.Accepted = string.IsNullOrWhiteSpace(filter_text)
+                || patronymic.Contains(filter_text);
         }
 
 

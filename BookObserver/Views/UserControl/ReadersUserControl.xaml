@@ -73,7 +73,18 @@
                             </i:Interaction.Triggers>
                         </ComboBox>
                         <TextBlock Text="Отчество"/>
-                        <ComboBox/>
+                        <ComboBox Text="{Binding SelectedPatronymic, UpdateSourceTrigger=PropertyChanged}" 
+                                  ItemsSource="{Binding PatronymicsView}">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="GotFocus">
+                                    <i:InvokeCommandAction Command="{Binding GotFocusComboBoxPatronymicsCommand}"
+                                                           CommandParameter="{Binding Readers}"/>
+                                </i:EventTrigger>
+                                <i:EventTrigger EventName="LostFocus">
+                                    <i:InvokeCommandAction Command="{Binding LostFocusComboBoxPatronymicsCommand}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </ComboBox>
                         <GroupBox Header="Получение книги">
                             <StackPanel Orientation="Vertical">
                                 <StackPanel.Resources>
