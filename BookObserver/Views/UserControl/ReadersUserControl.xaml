@@ -27,7 +27,7 @@
                                           Margin="3,0"/>
                     </StackPanel>
                 </GroupBox.Header>
-                <ComboBox/>
+                <ComboBox IsEditable="False" SelectedIndex="0"/>
             </GroupBox>
             <GroupBox>
                 <GroupBox.Header>
@@ -104,7 +104,7 @@
                                       Icon="Solid_Search" 
                                       Height="{Binding ElementName=TBFastSearch, Path=FontSize}"/>
                     <TextBox Name="TBFastSearch" HorizontalAlignment="Stretch"
-                             Margin="3,0,0,0"/>
+                             Margin="3,0,0,0" Text="{Binding ReadersFilterText, UpdateSourceTrigger=PropertyChanged}"/>
                 </DockPanel>
             </GroupBox>
             <UniformGrid DockPanel.Dock="Bottom" Rows="1">
@@ -125,7 +125,46 @@
                 </Button>
             </UniformGrid>
             <GroupBox Header="Читатели">
-                <ListBox/>
+                <ListBox ItemsSource="{Binding ReadersView}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border BorderBrush="SandyBrown" BorderThickness="2">
+                                <Grid>
+                                    <StackPanel Orientation="Vertical">
+                                        <TextBlock Text="{Binding LastName, StringFormat=' Фамилия: {0}'}"/>
+                                        <TextBlock Text="{Binding FirstName, StringFormat=' Имя: {0}'}"/>
+                                        <TextBlock Text="{Binding Patronymic, StringFormat=' Отчество: {0}'}"/>
+                                        <TextBlock Text="{Binding Telephone, StringFormat=' Телефон: {0}'}"/>
+                                        <TextBlock Text="{Binding Address, StringFormat=' Адрес: {0}'}"/>
+                                        <TextBlock Text="{Binding DateGet, StringFormat=' Дата получения: {0:dd.MM.yyyy}'}"/>
+                                        <TextBlock Text="{Binding DateSet, StringFormat=' Дата возврата: {0:dd.MM.yyyy}'}"/>
+                                    </StackPanel>
+
+                                    <Button Content="X" FontWeight="Bold"
+                                            Background="Transparent"
+                                            BorderThickness="0"
+                                            HorizontalAlignment="Right" VerticalAlignment="Top"
+                                            Margin="7,3" Padding="3"
+                                            ToolTip="Удалить книгу" CommandParameter="{Binding}">
+                                        <Button.Resources>
+                                            <Style TargetType="Button">
+                                                <Setter Property="Foreground" Value="Red"/>
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsPressed" Value="True">
+                                                        <Setter Property="Foreground" Value="Green"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Resources>
+                                        <Button.Command>
+                                            <Binding Path="BooksUC.DeleteBookCommand" Source="{StaticResource Locator}"/>
+                                        </Button.Command>
+                                    </Button>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
             </GroupBox>
         </DockPanel>
     </Grid>

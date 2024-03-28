@@ -173,23 +173,7 @@
                 </Button>
             </UniformGrid>
             <ListBox ItemsSource="{Binding BooksView}"
-                     SelectedItem="{Binding SelectedBook}"
-                     
-                     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                     
-                     VirtualizingPanel.IsVirtualizing="True"
-                     VirtualizingPanel.IsContainerVirtualizable="True"
-                     VirtualizingPanel.VirtualizationMode="Recycling" VirtualizingPanel.CacheLength="3">
-                <ListBox.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <VirtualizingStackPanel/>
-                    </ItemsPanelTemplate>
-                </ListBox.ItemsPanel>
-                <ListBox.ItemContainerStyle>
-                    <Style TargetType="ListBoxItem">
-                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                    </Style>
-                </ListBox.ItemContainerStyle>
+                     SelectedItem="{Binding SelectedBook}">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <Border BorderBrush="SandyBrown" BorderThickness="2">
