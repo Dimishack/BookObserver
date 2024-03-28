@@ -160,7 +160,10 @@
                                             BorderThickness="0"
                                             HorizontalAlignment="Right" VerticalAlignment="Top"
                                             Margin="7,3" Padding="3"
-                                            ToolTip="Удалить книгу" CommandParameter="{Binding}">
+                                            ToolTip="Удалить читателя" 
+                                            Command="{Binding Source={StaticResource Locator}, Path=ReadersVM.DeleteReaderCommand}" 
+                                            CommandParameter="{Binding}"
+                                            >
                                         <Button.Resources>
                                             <Style TargetType="Button">
                                                 <Setter Property="Foreground" Value="Red"/>
@@ -171,9 +174,6 @@
                                                 </Style.Triggers>
                                             </Style>
                                         </Button.Resources>
-                                        <Button.Command>
-                                            <Binding Path="BooksUC.DeleteBookCommand" Source="{StaticResource Locator}"/>
-                                        </Button.Command>
                                     </Button>
                                 </Grid>
                             </Border>

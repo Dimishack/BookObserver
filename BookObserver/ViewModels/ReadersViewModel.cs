@@ -2,7 +2,6 @@
 using BookObserver.Infrastructure.Commands.Base;
 using BookObserver.Models.Readers;
 using BookObserver.ViewModels.Base;
-using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Data;
@@ -107,6 +106,23 @@ namespace BookObserver.ViewModels
 
 
         #region Commands
+
+        #region DeleteReaderCommand - Команда удаления читателя
+
+        ///<summary>Команда удаления читателя</summary>
+        private ICommand? _deleteReaderCommand;
+
+        ///<summary>Команда удаления читателя</summary>
+        public ICommand DeleteReaderCommand => _deleteReaderCommand
+            ??= new LambdaCommand(OnDeleteReaderCommandExecuted, CanDeleteReaderCommandExecute);
+
+        ///<summary>Проверка возможности выполнения - Команда удаления читателя</summary>
+        private bool CanDeleteReaderCommandExecute(object? p) => p is Reader;
+
+        ///<summary>Логика выполнения - Команда удаления читателя</summary>
+        private void OnDeleteReaderCommandExecuted(object? p) => Readers.Remove((p as Reader)!);
+
+        #endregion
 
         #region ClearFieldsForSearchCommand - Команда очистка полей для поиска
 
