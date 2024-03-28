@@ -2,6 +2,7 @@
 using BookObserver.Infrastructure.Commands.Base;
 using BookObserver.Models.Readers;
 using BookObserver.ViewModels.Base;
+using Newtonsoft.Json.Linq;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Data;
@@ -12,6 +13,22 @@ namespace BookObserver.ViewModels
     internal class ReadersViewModel : ViewModel
     {
         public ObservableCollection<Reader> Readers { get; }
+
+        public Dictionary<string, SortDescription> Sorting { get; } = new()
+        {
+            {"Сначала старые записи", new SortDescription("Id", ListSortDirection.Ascending)},
+            {"Сначала новые записи", new SortDescription("Id", ListSortDirection.Descending)},
+            {"Фамилии (по возрастанию)", new SortDescription("LastName", ListSortDirection.Ascending)},
+            {"Фамилии (по убыванию)", new SortDescription("LastName", ListSortDirection.Descending)},
+            {"Имена (по возрастанию)", new SortDescription("FirstName", ListSortDirection.Ascending)},
+            {"Имена (по убыванию)", new SortDescription("FirstName", ListSortDirection.Descending)},
+            {"Отчества (по возрастанию)", new SortDescription("Patronymic", ListSortDirection.Ascending)},
+            {"Отчества (по убыванию)", new SortDescription("Patronymic", ListSortDirection.Descending)},
+            {"Дата получения (по возрастанию)", new SortDescription("DateGet", ListSortDirection.Ascending)},
+            {"Дата получения (по убыванию)", new SortDescription("DateGet", ListSortDirection.Descending)},
+            {"Дата возврата (по возрастанию)", new SortDescription("DateSet", ListSortDirection.Ascending)},
+            {"Дата возврата (по убыванию)", new SortDescription("DateSet", ListSortDirection.Descending)},
+        };
 
         #region ReadersView : ICollectionView - Вывод списка читателей
 
@@ -67,6 +84,28 @@ namespace BookObserver.ViewModels
 
         #endregion
 
+        #region SelectedSorting : string? - Выбранная сортировка списка читателей
+
+        ///<summary>Выбранная сортировка списка читателей</summary>
+        private string _selectedSorting = "Сначала старые записи";
+
+        ///<summary>Выбранная сортировка списка читателей</summary>
+        public string SelectedSorting
+        {
+            get => _selectedSorting;
+            set
+            {
+                if (!Set(ref _selectedSorting, value)) return;
+
+                _readersView.View.SortDescriptions.Clear();
+                _readersView.View.SortDescriptions.Add(Sorting[value]);
+                ClearGarbage();
+            }
+        }
+
+        #endregion
+
+
         #region Commands
 
         #region ClearFieldsForSearchCommand - Команда очистка полей для поиска
@@ -114,6 +153,9 @@ namespace BookObserver.ViewModels
                 result = result.Where(r => r.LastName.Contains(_selectedLastName)).ToList();
 
             _readersView.Source = result;
+            _readersView.View.SortDescriptions.Clear();
+            _readersView.View.SortDescriptions.Add(Sorting[_selectedSorting]);
+            ClearGarbage();
             OnPropertyChanged(nameof(ReadersView));
             ((Command)SearchCommand).Executable = false;
             if (!((Command)ResetToZeroSearchCommand).Executable)
@@ -180,9 +222,7 @@ namespace BookObserver.ViewModels
         private void OnMouseLeaveComboBoxLastNamesCommandExecuted(object? p)
         {
             _lastNamesView.Filter -= LastNamesView_Filter;
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-            GC.Collect();
+            ClearGarbage();
         }
 
         #endregion

@@ -17,5 +17,12 @@ namespace BookObserver.ViewModels.Base
             OnPropertyChanged(propertyName);
             return true;
         }
+
+        protected virtual void ClearGarbage()
+        {
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+        }
     }
 }

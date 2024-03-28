@@ -28,7 +28,8 @@
                                           Margin="3,0"/>
                     </StackPanel>
                 </GroupBox.Header>
-                <ComboBox IsEditable="False" SelectedIndex="0"/>
+                <ComboBox ItemsSource="{Binding Sorting.Keys}" IsEditable="False"
+                          SelectedItem="{Binding SelectedSorting,UpdateSourceTrigger=PropertyChanged}"/>
             </GroupBox>
             <GroupBox>
                 <GroupBox.Header>
