@@ -13,9 +13,18 @@ namespace BookObserver.ViewModels
         public ObservableCollection<Reader> Readers { get; }
 
         #region ReadersView : ICollectionView - Вывод списка читателей
+
         private readonly CollectionViewSource _readersView = new();
         public ICollectionView ReadersView => _readersView.View;
         #endregion
+
+        #region LastNamesView : ICollectionView - Вывод списка фамилий
+
+        private readonly CollectionViewSource _lastNamesView = new();
+        public ICollectionView LastNamesView => _lastNamesView.View;
+
+        #endregion
+
 
         #region ReadersFilterText : string? - фильтрация списка читателей
 
@@ -36,7 +45,67 @@ namespace BookObserver.ViewModels
 
         #endregion
 
+        #region SelectedLastName : string? - Выбранная фамилия
+
+        ///<summary>Выбранная фамилия</summary>
+        private string? _selectedLastName;
+
+        ///<summary>Выбранная фамилия</summary>
+        public string? SelectedLastName
+        {
+            get => _selectedLastName;
+            set
+            {
+                if (!Set(ref _selectedLastName, value)) return;
+
+                _lastNamesView.View.Refresh();
+            }
+        }
+
+        #endregion
+
         #region Commands
+
+        #region MouseEnterComboBoxLastNamesCommand - Команда наведения курсора на ComboBox (список фамилий)
+
+        ///<summary>Команда наведения курсора на ComboBox (список фамилий)</summary>
+        private ICommand? _mouseEnterComboBoxLastNamesCommand;
+
+        ///<summary>Команда наведения курсора на ComboBox (список фамилий)</summary>
+        public ICommand MouseEnterComboBoxLastNamesCommand => _mouseEnterComboBoxLastNamesCommand
+            ??= new LambdaCommand(OnMouseEnterComboBoxLastNamesCommandExecuted);
+
+        ///<summary>Логика выполнения - Команда наведения курсора на ComboBox (список фамилий)</summary>
+        private void OnMouseEnterComboBoxLastNamesCommandExecuted(object? p)
+        {
+            var value = _selectedLastName;
+            _lastNamesView.Source = Readers.Select(p => p.LastName).Distinct().Order().ToList();
+            OnPropertyChanged(nameof(LastNamesView));
+            _lastNamesView.Filter += LastNamesView_Filter;
+            SelectedLastName = value;
+        }
+
+        #endregion
+
+        #region MouseLeaveComboBoxLastNamesCommand - Команда выхода курсора с ComboBox (список фамилий)
+
+        ///<summary>Команда выхода курсора с ComboBox (список фамилий)</summary>
+        private ICommand? _mouseLeaveComboBoxLastNamesCommand;
+
+        ///<summary>Команда выхода курсора с ComboBox (список фамилий)</summary>
+        public ICommand MouseLeaveComboBoxLastNamesCommand => _mouseLeaveComboBoxLastNamesCommand
+            ??= new LambdaCommand(OnMouseLeaveComboBoxLastNamesCommandExecuted);
+
+        ///<summary>Логика выполнения - Команда выхода курсора с ComboBox (список фамилий)</summary>
+        private void OnMouseLeaveComboBoxLastNamesCommandExecuted(object? p)
+        {
+            _lastNamesView.Filter -= LastNamesView_Filter;
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+        }
+
+        #endregion
 
         #endregion
 
@@ -56,6 +125,7 @@ namespace BookObserver.ViewModels
             _readersView.Source = Readers;
             _readersView.Filter += ReadersView_Filter;
         }
+
         private void ReadersView_Filter(object sender, FilterEventArgs e)
         {
             if (e.Item is not Reader reader)
@@ -73,6 +143,20 @@ namespace BookObserver.ViewModels
                 || reader.Address.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
                 || reader.DateGet.ToShortDateString().Contains(filter_text, StringComparison.OrdinalIgnoreCase)
                 || reader.DateSet.ToShortDateString().Contains(filter_text, StringComparison.OrdinalIgnoreCase)
+                ;
+        }
+
+        private void LastNamesView_Filter(object sender, FilterEventArgs e)
+        {
+            if (e.Item is not string lastName)
+            {
+                e.Accepted = false;
+                return;
+            }
+
+            var filter_text = _selectedLastName;
+            e.Accepted = string.IsNullOrWhiteSpace(filter_text)
+                || lastName.Contains(filter_text)
                 ;
         }
     }
