@@ -60,6 +60,26 @@ namespace BookObserver.ViewModels
 
         #endregion
 
+        #region MinDateSet : DateTime - Минимальный промежуток дат возварата
+
+        ///<summary>Минимальный промежуток дат возварата</summary>
+        private DateTime _minDateSet = DateTime.MinValue;
+
+        ///<summary>Минимальный промежуток дат возварата</summary>
+        public DateTime MinDateSet { get => _minDateSet; set => Set(ref _minDateSet, value); }
+
+        #endregion
+
+        #region MaxDateSet : DateTime - Максимальный промежуток дат возврата
+
+        ///<summary>Максимальный промежуток дат возврата</summary>
+        private DateTime _maxDateSet = DateTime.MaxValue;
+
+        ///<summary>Максимальный промежуток дат возврата</summary>
+        public DateTime MaxDateSet { get => _maxDateSet; set => Set(ref _maxDateSet, value); }
+
+        #endregion
+
         #region ReadersView : ICollectionView - Вывод списка читателей
 
         private readonly CollectionViewSource _readersView = new();
@@ -135,7 +155,7 @@ namespace BookObserver.ViewModels
                     FiltredLastNames = new(_lastNames.Where(ln => ln.Contains(value, StringComparison.OrdinalIgnoreCase)));
                 }
 
-                ExecutableOnSearchCommandChangedOnTrue();
+                ExecutableOnSearchCommandChangeOnTrue();
             }
         }
 
@@ -160,7 +180,7 @@ namespace BookObserver.ViewModels
                     ClearGarbage();
                     FiltredFirstNames = new(_firstNames.Where(fn => fn.Contains(value, StringComparison.OrdinalIgnoreCase)));
                 }
-                ExecutableOnSearchCommandChangedOnTrue();
+                ExecutableOnSearchCommandChangeOnTrue();
             }
         }
 
@@ -183,14 +203,14 @@ namespace BookObserver.ViewModels
                 {
                     _filtredPatronymics = null;
                     ClearGarbage();
-                    FiltredPatronymics = new(_patronymics.Where(p => p.Contains(value, StringComparison.OrdinalIgnoreCase))); 
+                    FiltredPatronymics = new(_patronymics.Where(p => p.Contains(value, StringComparison.OrdinalIgnoreCase)));
                 }
             }
         }
 
         #endregion
 
-        #region SelectedGetDateFrom : DateTime - Выбранный промежуток дат получения (от)
+        #region SelectedGetDateFrom : DateTime? - Выбранный промежуток дат получения (от)
 
         ///<summary>Выбранный промежуток дат получения (от)</summary>
         private DateTime? _selectedGetDateFrom;
@@ -203,13 +223,13 @@ namespace BookObserver.ViewModels
             {
                 if (!Set(ref _selectedGetDateFrom, value)) return;
 
-                ExecutableOnSearchCommandChangedOnTrue();
+                ExecutableOnSearchCommandChangeOnTrue();
             }
         }
 
         #endregion
 
-        #region SelectedGetDateTo : DateTime - Выбранный промежуток дат получения (до)
+        #region SelectedGetDateTo : DateTime? - Выбранный промежуток дат получения (до)
 
         ///<summary>Выбранный промежуток дат получения (до)</summary>
         private DateTime? _selectedGetDateTo;
@@ -222,7 +242,45 @@ namespace BookObserver.ViewModels
             {
                 if (!Set(ref _selectedGetDateTo, value)) return;
 
-                ExecutableOnSearchCommandChangedOnTrue();
+                ExecutableOnSearchCommandChangeOnTrue();
+            }
+        }
+
+        #endregion
+
+        #region SelectedSetDateFrom : DateTime? - Выбранный промежуток дат возврата (от)
+
+        ///<summary>Выбранный промежуток дат возврата (от)</summary>
+        private DateTime? _selectedSetDateFrom;
+
+        ///<summary>Выбранный промежуток дат возврата (от)</summary>
+        public DateTime? SelectedSetDateFrom
+        {
+            get => _selectedSetDateFrom;
+            set
+            {
+                if (!Set(ref _selectedSetDateFrom, value)) return;
+
+                ExecutableOnSearchCommandChangeOnTrue();
+            }
+        }
+
+        #endregion
+
+        #region SelectedSetDateTo : DateTime? - Выбранный промежуток дат возврата (до)
+
+        ///<summary>Выбранный промежуток дат возврата (до)</summary>
+        private DateTime? _selectedSetDateTo;
+
+        ///<summary>Выбранный промежуток дат возврата (до)</summary>
+        public DateTime? SelectedSetDateTo
+        {
+            get => _selectedSetDateTo;
+            set
+            {
+                if (!Set(ref _selectedSetDateTo, value)) return;
+
+                ExecutableOnSearchCommandChangeOnTrue();
             }
         }
 
@@ -288,6 +346,8 @@ namespace BookObserver.ViewModels
             || !string.IsNullOrWhiteSpace(_selectedPatronymic)
             || _selectedGetDateFrom is not null
             || _selectedGetDateTo is not null
+            || _selectedSetDateFrom is not null
+            || _selectedSetDateTo is not null
             ;
 
         ///<summary>Логика выполнения - Команда очистка полей для поиска</summary>
@@ -298,6 +358,8 @@ namespace BookObserver.ViewModels
             SelectedPatronymic = null;
             SelectedGetDateFrom = null;
             SelectedGetDateTo = null;
+            SelectedSetDateFrom = null;
+            SelectedSetDateTo = null;
         }
 
         #endregion
@@ -320,6 +382,8 @@ namespace BookObserver.ViewModels
             || !string.IsNullOrWhiteSpace(_selectedPatronymic)
             || _selectedGetDateFrom is not null
             || _selectedGetDateTo is not null
+            || _selectedSetDateFrom is not null
+            || _selectedSetDateTo is not null
             );
 
         ///<summary>Логика выполнения - Команда поиска</summary>
@@ -334,6 +398,8 @@ namespace BookObserver.ViewModels
                 result = result.Where(r => r.Patronymic.Contains(_selectedPatronymic, StringComparison.OrdinalIgnoreCase)).ToList();
             result = result.Where(r => r.DateGet >= (_selectedGetDateFrom ?? _minDateGet)
                         && r.DateGet <= (_selectedGetDateTo ?? _maxDateGet)).ToList();
+            result = result.Where(r => r.DateSet >= (_selectedSetDateFrom ?? _minDateSet)
+                        && r.DateSet <= (_selectedSetDateTo ?? _maxDateSet)).ToList();
 
             FiltredReaders = null;
             _readersView.View.SortDescriptions.Clear();
@@ -367,7 +433,7 @@ namespace BookObserver.ViewModels
             _readersView.Source = FiltredReaders = Readers;
             OnPropertyChanged(nameof(ReadersView));
             ((Command)ResetToZeroSearchCommand).Executable = false;
-            ExecutableOnSearchCommandChangedOnTrue();
+            ExecutableOnSearchCommandChangeOnTrue();
         }
 
         #endregion
@@ -455,6 +521,29 @@ namespace BookObserver.ViewModels
 
         #endregion
 
+        #region GotFocusDatePickersSetDateCommandCommand - Команда при получении фокуса (DatePickers дат возврата)
+
+        ///<summary>Команда при получении фокуса (DatePickers дат возврата)</summary>
+        private ICommand? _gotFocusDatePickersSetDateCommandCommand;
+
+        ///<summary>Команда при получении фокуса (DatePickers дат возврата)</summary>
+        public ICommand GotFocusDatePickersSetDateCommandCommand => _gotFocusDatePickersSetDateCommandCommand
+            ??= new LambdaCommand(OnGotFocusDatePickersSetDateCommandCommandExecuted, CanGotFocusDatePickersSetDateCommandCommandExecute);
+
+        ///<summary>Проверка возможности выполнения - Команда при получении фокуса (DatePickers дат возврата)</summary>
+        private bool CanGotFocusDatePickersSetDateCommandCommandExecute(object? p) =>
+            p is not null && p is IList<Reader>;
+
+        ///<summary>Логика выполнения - Команда при получении фокуса (DatePickers дат возврата)</summary>
+        private void OnGotFocusDatePickersSetDateCommandCommandExecuted(object? p)
+        {
+            var listReader = (p as IList<Reader>).Select(r => r.DateSet);
+            MinDateSet = listReader.Min();
+            MaxDateSet = listReader.Max();
+        }
+
+        #endregion
+
         #region LostFocusComboBoxLastNamesCommand - Команда при потере фокуса (ComboBox фамилии)
 
         ///<summary>Команда при потере фокуса (ComboBox фамилии)</summary>
@@ -531,7 +620,7 @@ namespace BookObserver.ViewModels
             _readersView.Source = _filtredReaders;
         }
 
-        private void ExecutableOnSearchCommandChangedOnTrue()
+        private void ExecutableOnSearchCommandChangeOnTrue()
         {
             if (!((Command)SearchCommand).Executable)
                 ((Command)SearchCommand).Executable = true;
