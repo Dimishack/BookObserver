@@ -6,7 +6,7 @@ namespace BookObserver.ViewModels.Registrator_Locator
     {
         public static IServiceCollection AddViewModels(this IServiceCollection services) => services
             .AddSingleton<MainWindowViewModel>()
-            .AddSingleton<BooksUserControlViewModel>()
+            .AddSingleton<BooksViewModel>()
             .AddSingleton<ReadersViewModel>()
             ;
     }

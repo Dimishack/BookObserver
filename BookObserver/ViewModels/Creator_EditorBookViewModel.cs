@@ -8,7 +8,7 @@ namespace BookObserver.ViewModels
 {
     internal class Creator_EditorBookViewModel : ViewModel
     {
-        private readonly BooksUserControlViewModel _booksViewModel;
+        private readonly BooksViewModel _booksViewModel;
 
         private ObservableCollection<Book> Books { get; }
 
@@ -268,7 +268,7 @@ namespace BookObserver.ViewModels
 
         #endregion
 
-        public Creator_EditorBookViewModel(BooksUserControlViewModel booksViewModel)
+        public Creator_EditorBookViewModel(BooksViewModel booksViewModel)
         {
             _booksViewModel = booksViewModel;
 

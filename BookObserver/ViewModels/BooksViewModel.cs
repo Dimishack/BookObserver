@@ -13,12 +13,48 @@ using System.Windows.Input;
 
 namespace BookObserver.ViewModels
 {
-    class BooksUserControlViewModel : ViewModel
+    class BooksViewModel : ViewModel
     {
         #region Properties
 
+        public Dictionary<string, SortDescription> Sorting { get; } = new()
+        {
+            {"Сначала старые записи", new SortDescription("Id", ListSortDirection.Ascending)},
+            {"Сначала новые записи", new SortDescription("Id", ListSortDirection.Descending)},
+            {"Сначала в наличии", new SortDescription("Stock", ListSortDirection.Ascending)},
+            {"Сначала не в наличии", new SortDescription("Stock", ListSortDirection.Descending)},
+            {"ББК (по возрастанию)", new SortDescription("BBK", ListSortDirection.Ascending)},
+            {"ББК (по убыванию)", new SortDescription("BBK", ListSortDirection.Descending)},
+            {"Авторы (по возрастанию)", new SortDescription("Author", ListSortDirection.Ascending)},
+            {"Авторы (по убыванию)", new SortDescription("Author", ListSortDirection.Descending)},
+            {"Названия (по возрастанию)", new SortDescription("Name", ListSortDirection.Ascending)},
+            {"Названия (по убыванию)", new SortDescription("Name", ListSortDirection.Descending)}
+        };
+
         ///<summary>Список книг</summary>
         public ObservableCollection<Book> Books { get; }
+
+        #region SelectedSorting : string - Выбранная сортировка списка книг
+
+        ///<summary>Выбранная сортировка списка книг</summary>
+        private string _selectedSorting = "Сначала старые записи";
+
+        ///<summary>Выбранная сортировка списка книг</summary>
+        public string SelectedSorting
+        {
+            get => _selectedSorting;
+            set
+            {
+                if (!Set(ref _selectedSorting, value)) return;
+
+                _booksView.View.SortDescriptions.Clear();
+                ClearGarbage();
+                _booksView.View.SortDescriptions.Add(Sorting[value]);
+            }
+        }
+
+        #endregion
+
 
         #region BooksView : ICollectionView - Вывод списка книг
 
@@ -533,23 +569,6 @@ namespace BookObserver.ViewModels
 
         #endregion
 
-        #region MouseEnterTextBoxBookCommand - Команда когда курсор наводится на TextBox
-
-        ///<summary>Команда когда курсор наводится на TextBox</summary>
-        private ICommand? _mouseEnterTextBoxBookCommand;
-
-        ///<summary>Команда когда курсор наводится на TextBox</summary>
-        public ICommand MouseEnterTextBoxBookCommand => _mouseEnterTextBoxBookCommand
-            ??= new LambdaCommand(OnMouseEnterTextBoxBookCommandExecuted);
-
-        ///<summary>Логика выполнения - Команда когда курсор наводится на TextBox</summary>
-        private void OnMouseEnterTextBoxBookCommandExecuted(object? p)
-        {
-            _booksView.Filter += BooksView_Filter;
-        }
-
-        #endregion
-
         #endregion
 
         #region MouseLeave (Commands)...
@@ -657,24 +676,6 @@ namespace BookObserver.ViewModels
         private void OnMouseLeaveComboBoxYearPublishCommandExecuted(object? p)
         {
             _yearPublishView.Filter -= YearPublishView_Filter;
-            CallFinalizer();
-        }
-
-        #endregion
-
-        #region MouseLeaveTextBoxBooksCommand - Команда когда курсор выходит с TextBox
-
-        ///<summary>Команда когда курсор выходит с TextBox</summary>
-        private ICommand? _mouseLeaveTextBoxBooksCommand;
-
-        ///<summary>Команда когда курсор выходит с TextBox</summary>
-        public ICommand MouseLeaveTextBoxBooksCommand => _mouseLeaveTextBoxBooksCommand
-            ??= new LambdaCommand(OnMouseLeaveTextBoxBooksCommandExecuted);
-
-        ///<summary>Логика выполнения - Команда когда курсор выходит с TextBox</summary>
-        private void OnMouseLeaveTextBoxBooksCommandExecuted(object? p)
-        {
-            _booksView.Filter -= BooksView_Filter;
             CallFinalizer();
         }
 
@@ -799,7 +800,7 @@ namespace BookObserver.ViewModels
 
         #endregion
 
-        public BooksUserControlViewModel()
+        public BooksViewModel()
         {
             Books = new(Enumerable.Range(0, 100000).Select(p => new Book
             {

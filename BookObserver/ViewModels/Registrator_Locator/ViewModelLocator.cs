@@ -4,7 +4,7 @@ namespace BookObserver.ViewModels.Registrator_Locator
 {
     internal class ViewModelLocator
     {
-        public BooksUserControlViewModel BooksUC => App.Services.GetRequiredService<BooksUserControlViewModel>();
+        public BooksViewModel BooksVM => App.Services.GetRequiredService<BooksViewModel>();
         public ReadersViewModel ReadersVM => App.Services.GetRequiredService<ReadersViewModel>();
     }
 }

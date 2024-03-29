@@ -286,7 +286,7 @@ namespace BookObserver.ViewModels
 
         #endregion
 
-        #region SelectedSorting : string? - Выбранная сортировка списка читателей
+        #region SelectedSorting : string - Выбранная сортировка списка читателей
 
         ///<summary>Выбранная сортировка списка читателей</summary>
         private string _selectedSorting = "Сначала старые записи";
