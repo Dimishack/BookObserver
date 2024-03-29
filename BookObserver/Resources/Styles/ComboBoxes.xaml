@@ -6,6 +6,7 @@
         <Setter Property="IsTextSearchCaseSensitive" Value="False"/>
         <Setter Property="StaysOpenOnEdit" Value="True"/>
         <Setter Property="MaxDropDownHeight" Value="140"/>
+        <Setter Property="IsTextSearchEnabled" Value="False"/>
 
         <Setter Property="VirtualizingPanel.IsVirtualizing" Value="True"/>
         <Setter Property="VirtualizingPanel.IsContainerVirtualizable" Value="True"/>

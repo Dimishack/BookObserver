@@ -95,7 +95,7 @@ namespace BookObserver.ViewModels
         #region FitlredPatronymics : ObservableCollection<string>? - Отфильтрованный список отчеств
 
         /// <summary>Список отчеств</summary>
-        private ObservableCollection<string>? _patronymics {  get; set; }
+        private ObservableCollection<string>? _patronymics { get; set; }
 
         ///<summary>Отфильтрованный список отчеств</summary>
         private ObservableCollection<string>? _filtredPatronymics;
@@ -128,9 +128,12 @@ namespace BookObserver.ViewModels
             {
                 if (!Set(ref _selectedLastName, value)) return;
 
-                _filterdLastNames = null;
-                ClearGarbage();
-                FiltredLastNames = new(_lastNames.Where(ln => ln.Contains(value)));
+                if (_lastNames is not null)
+                {
+                    _filterdLastNames = null;
+                    ClearGarbage();
+                    FiltredLastNames = new(_lastNames.Where(ln => ln.Contains(value, StringComparison.OrdinalIgnoreCase)));
+                }
 
                 ExecutableOnSearchCommandChangedOnTrue();
             }
@@ -151,9 +154,12 @@ namespace BookObserver.ViewModels
             {
                 if (!Set(ref _selectedFirstName, value)) return;
 
-                _filtredFirstNames = null;
-                ClearGarbage();
-                FiltredFirstNames = new(_firstNames.Where(fn => fn.Contains(value)));
+                if (_firstNames is not null)
+                {
+                    _filtredFirstNames = null;
+                    ClearGarbage();
+                    FiltredFirstNames = new(_firstNames.Where(fn => fn.Contains(value, StringComparison.OrdinalIgnoreCase)));
+                }
                 ExecutableOnSearchCommandChangedOnTrue();
             }
         }
@@ -173,9 +179,12 @@ namespace BookObserver.ViewModels
             {
                 if (!Set(ref _selectedPatronymic, value)) return;
 
-                _filtredPatronymics = null;
-                ClearGarbage();
-                FiltredPatronymics = new(_patronymics.Where(p => p.Contains(value)));
+                if (_patronymics is not null)
+                {
+                    _filtredPatronymics = null;
+                    ClearGarbage();
+                    FiltredPatronymics = new(_patronymics.Where(p => p.Contains(value, StringComparison.OrdinalIgnoreCase))); 
+                }
             }
         }
 
@@ -318,11 +327,11 @@ namespace BookObserver.ViewModels
         {
             IList<Reader> result = new ObservableCollection<Reader>((p as IList<Reader>)!);
             if (!string.IsNullOrWhiteSpace(_selectedLastName))
-                result = result.Where(r => r.LastName.Contains(_selectedLastName)).ToList();
+                result = result.Where(r => r.LastName.Contains(_selectedLastName, StringComparison.OrdinalIgnoreCase)).ToList();
             if (!string.IsNullOrWhiteSpace(_selectedFirstName))
-                result = result.Where(r => r.FirstName.Contains(_selectedFirstName)).ToList();
+                result = result.Where(r => r.FirstName.Contains(_selectedFirstName, StringComparison.OrdinalIgnoreCase)).ToList();
             if (!string.IsNullOrWhiteSpace(_selectedPatronymic))
-                result = result.Where(r => r.Patronymic.Contains(_selectedPatronymic)).ToList();
+                result = result.Where(r => r.Patronymic.Contains(_selectedPatronymic, StringComparison.OrdinalIgnoreCase)).ToList();
             result = result.Where(r => r.DateGet >= (_selectedGetDateFrom ?? _minDateGet)
                         && r.DateGet <= (_selectedGetDateTo ?? _maxDateGet)).ToList();
 
@@ -416,9 +425,9 @@ namespace BookObserver.ViewModels
             p is not null && p is IList<Reader>;
 
         ///<summary>Логика выполнения - Команда при получении фокуса (ComboBox отчества)</summary>
-        private void OnGotFocusComboBoxPatronymicsCommandExecuted(object? p) => 
-            FiltredPatronymics 
-            = _patronymics 
+        private void OnGotFocusComboBoxPatronymicsCommandExecuted(object? p) =>
+            FiltredPatronymics
+            = _patronymics
             = new((p as IList<Reader>)!.Select(r => r.Patronymic).Distinct().Order()!);
 
         #endregion
@@ -499,51 +508,6 @@ namespace BookObserver.ViewModels
         }
 
         #endregion
-
-        #endregion
-
-        #region Events
-
-        private void LastNamesView_Filter(object sender, FilterEventArgs e)
-        {
-            if (e.Item is not string lastName)
-            {
-                e.Accepted = false;
-                return;
-            }
-
-            var filter_text = _selectedLastName;
-            e.Accepted = string.IsNullOrWhiteSpace(filter_text)
-                || lastName.Contains(filter_text)
-                ;
-        }
-
-        private void FirstNamesView_Filter(object sender, FilterEventArgs e)
-        {
-            if (e.Item is not string firstName)
-            {
-                e.Accepted = false;
-                return;
-            }
-
-            var filter_text = _selectedFirstName;
-            e.Accepted = string.IsNullOrWhiteSpace(filter_text)
-                || firstName.Contains(filter_text)
-                ;
-        }
-
-        private void PatronymicsView_Filter(object sender, FilterEventArgs e)
-        {
-            if (e.Item is not string patronymic)
-            {
-                e.Accepted = false;
-                return;
-            }
-
-            var filter_text = _selectedPatronymic;
-            e.Accepted = string.IsNullOrWhiteSpace(filter_text)
-                || patronymic.Contains(filter_text);
-        }
 
         #endregion
 
