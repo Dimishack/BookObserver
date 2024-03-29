@@ -29,6 +29,27 @@ namespace BookObserver.ViewModels
             {"Дата возврата (по убыванию)", new SortDescription("DateSet", ListSortDirection.Descending)},
         };
 
+        #region MinDateGet : DateTime - Минимальный промежуток дат получения
+
+        ///<summary>Минимальный промежуток дат получения</summary>
+        private DateTime _minDateGet = DateTime.MinValue;
+
+        ///<summary>Минимальный промежуток дат получения</summary>
+        public DateTime MinDateGet { get => _minDateGet; set => Set(ref _minDateGet, value); }
+
+        #endregion
+
+        #region MaxDateGet : DateTime - Максимальный промежуток дат получения
+
+        ///<summary>Максимальный промежуток дат получения</summary>
+        private DateTime _maxDateGet = DateTime.MaxValue;
+
+        ///<summary>Максимальный промежуток дат получения</summary>
+        public DateTime MaxDateGet { get => _maxDateGet; set => Set(ref _maxDateGet, value); }
+
+        #endregion
+
+
         #region ReadersView : ICollectionView - Вывод списка читателей
 
         private readonly CollectionViewSource _readersView = new();
@@ -49,7 +70,7 @@ namespace BookObserver.ViewModels
 
         #region PatronymicsView : ICollectionView - Вывод списка отчеств
         private readonly CollectionViewSource _patronymicsView = new();
-        public ICollectionView PatronymicsView => _patronymicsView.View; 
+        public ICollectionView PatronymicsView => _patronymicsView.View;
         #endregion
 
         #region ReadersFilterText : string? - фильтрация списка читателей
@@ -130,6 +151,44 @@ namespace BookObserver.ViewModels
 
         #endregion
 
+        #region SelectedGetDateFrom : DateTime - Выбранный промежуток дат получения (от)
+
+        ///<summary>Выбранный промежуток дат получения (от)</summary>
+        private DateTime? _selectedGetDateFrom;
+
+        ///<summary>Выбранный промежуток дат получения (от)</summary>
+        public DateTime? SelectedGetDateFrom
+        {
+            get => _selectedGetDateFrom;
+            set
+            {
+                if (!Set(ref _selectedGetDateFrom, value)) return;
+
+                ExecutableOnSearchCommandChangedOnTrue();
+            }
+        }
+
+        #endregion
+
+        #region SelectedGetDateTo : DateTime - Выбранный промежуток дат получения (до)
+
+        ///<summary>Выбранный промежуток дат получения (до)</summary>
+        private DateTime? _selectedGetDateTo;
+
+        ///<summary>Выбранный промежуток дат получения (до)</summary>
+        public DateTime? SelectedGetDateTo
+        {
+            get => _selectedGetDateTo;
+            set
+            {
+                if (!Set(ref _selectedGetDateTo, value)) return;
+
+                ExecutableOnSearchCommandChangedOnTrue();
+            }
+        }
+
+        #endregion
+
 
         #region SelectedSorting : string? - Выбранная сортировка списка читателей
 
@@ -185,6 +244,8 @@ namespace BookObserver.ViewModels
             !string.IsNullOrWhiteSpace(_selectedLastName)
             || !string.IsNullOrWhiteSpace(_selectedFirstName)
             || !string.IsNullOrWhiteSpace(_selectedPatronymic)
+            || _selectedGetDateFrom is not null
+            || _selectedGetDateTo is not null
             ;
 
         ///<summary>Логика выполнения - Команда очистка полей для поиска</summary>
@@ -193,6 +254,8 @@ namespace BookObserver.ViewModels
             SelectedLastName = null;
             SelectedFirstName = null;
             SelectedPatronymic = null;
+            SelectedGetDateFrom = null;
+            SelectedGetDateTo = null;
         }
 
         #endregion
@@ -213,6 +276,8 @@ namespace BookObserver.ViewModels
             (!string.IsNullOrWhiteSpace(_selectedLastName)
             || !string.IsNullOrWhiteSpace(_selectedFirstName)
             || !string.IsNullOrWhiteSpace(_selectedPatronymic)
+            || _selectedGetDateFrom is not null
+            || _selectedGetDateTo is not null
             );
 
         ///<summary>Логика выполнения - Команда поиска</summary>
@@ -225,6 +290,8 @@ namespace BookObserver.ViewModels
                 result = result.Where(r => r.FirstName.Contains(_selectedFirstName)).ToList();
             if (!string.IsNullOrWhiteSpace(_selectedPatronymic))
                 result = result.Where(r => r.Patronymic.Contains(_selectedPatronymic)).ToList();
+            result = result.Where(r => r.DateGet >= (_selectedGetDateFrom ?? _minDateGet)
+                        && r.DateGet <= (_selectedGetDateTo ?? _maxDateGet)).ToList();
 
             _readersView.Source = result;
             _readersView.View.SortDescriptions.Clear();
@@ -325,6 +392,29 @@ namespace BookObserver.ViewModels
 
         #endregion
 
+        #region GotFocusDatePickersGetDateCommand - Команда при получении фокуса (DatePickers дат получения)
+
+        ///<summary>Команда при получении фокуса (DatePickers дат получения)</summary>
+        private ICommand? _gotFocusDatePickersGetDateCommand;
+
+        ///<summary>Команда при получении фокуса (DatePickers дат получения)</summary>
+        public ICommand GotFocusDatePickersGetDateCommand => _gotFocusDatePickersGetDateCommand
+            ??= new LambdaCommand(OnGotFocusDatePickersGetDateCommandExecuted, CanGotFocusDatePickersGetDateCommandExecute);
+
+        ///<summary>Проверка возможности выполнения - Команда при получении фокуса (DatePickers дат получения)</summary>
+        private bool CanGotFocusDatePickersGetDateCommandExecute(object? p) =>
+            p is not null && p is IList<Reader>;
+
+        ///<summary>Логика выполнения - Команда при получении фокуса (DatePickers дат получения)</summary>
+        private void OnGotFocusDatePickersGetDateCommandExecuted(object? p)
+        {
+            var listReader = (p as IList<Reader>).Select(r => r.DateGet);
+            MinDateGet = listReader.Min();
+            MaxDateGet = listReader.Max();
+        }
+
+        #endregion
+
         #region LostFocusComboBoxLastNamesCommand - Команда при потере фокуса (ComboBox фамилии)
 
         ///<summary>Команда при потере фокуса (ComboBox фамилии)</summary>
@@ -379,45 +469,11 @@ namespace BookObserver.ViewModels
 
         #endregion
 
+
+
         #endregion
 
-        public ReadersViewModel()
-        {
-            Readers = new ObservableCollection<Reader>(
-                Enumerable.Range(1, 100000).Select(
-                    p => new Reader
-                    {
-                        Id = p,
-                        LastName = $"Фамилия {p}",
-                        FirstName = $"Имя {p}",
-                        Patronymic = $"Отчество {p}",
-                        Telephone = $"Телефон {p}",
-                        Address = $"Адрес {p}"
-                    }));
-            ((Command)ResetToZeroSearchCommand).Executable = false;
-            _readersView.Source = Readers;
-            //_readersView.Filter += ReadersView_Filter;
-        }
-
-        private void ReadersView_Filter(object sender, FilterEventArgs e)
-        {
-            //if (e.Item is not Reader reader)
-            //{
-            //    e.Accepted = false;
-            //    return;
-            //}
-            //var filter_text = _readersFilterText;
-
-            //e.Accepted = string.IsNullOrWhiteSpace(filter_text)
-            //    || reader.LastName.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
-            //    || reader.FirstName.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
-            //    || reader.Patronymic.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
-            //    || reader.Telephone.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
-            //    || reader.Address.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
-            //    || reader.DateGet.ToString("dd.MM.yyyy").Contains(filter_text, StringComparison.OrdinalIgnoreCase)
-            //    || reader.DateSet.ToString("dd.MM.yyyy").Contains(filter_text, StringComparison.OrdinalIgnoreCase)
-            //    ;
-        }
+        #region Events
 
         private void LastNamesView_Filter(object sender, FilterEventArgs e)
         {
@@ -460,6 +516,48 @@ namespace BookObserver.ViewModels
                 || patronymic.Contains(filter_text);
         }
 
+        #endregion
+
+        public ReadersViewModel()
+        {
+            Readers = new ObservableCollection<Reader>(
+                Enumerable.Range(1, 100000).Select(
+                    p => new Reader
+                    {
+                        Id = p,
+                        LastName = $"Фамилия {p}",
+                        FirstName = $"Имя {p}",
+                        Patronymic = $"Отчество {p}",
+                        Telephone = $"Телефон {p}",
+                        Address = $"Адрес {p}",
+                        DateGet = DateTime.Today.AddDays(Random.Shared.Next(0, 30)),
+                        DateSet = DateTime.Today.AddMonths(1).AddDays(Random.Shared.Next(0, 30)),
+                    }));
+
+            ((Command)ResetToZeroSearchCommand).Executable = false;
+            _readersView.Source = Readers;
+            //_readersView.Filter += ReadersView_Filter;
+        }
+
+        private void ReadersView_Filter(object sender, FilterEventArgs e)
+        {
+            //if (e.Item is not Reader reader)
+            //{
+            //    e.Accepted = false;
+            //    return;
+            //}
+            //var filter_text = _readersFilterText;
+
+            //e.Accepted = string.IsNullOrWhiteSpace(filter_text)
+            //    || reader.LastName.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
+            //    || reader.FirstName.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
+            //    || reader.Patronymic.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
+            //    || reader.Telephone.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
+            //    || reader.Address.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
+            //    || reader.DateGet.ToString("dd.MM.yyyy").Contains(filter_text, StringComparison.OrdinalIgnoreCase)
+            //    || reader.DateSet.ToString("dd.MM.yyyy").Contains(filter_text, StringComparison.OrdinalIgnoreCase)
+            //    ;
+        }
 
         private void ExecutableOnSearchCommandChangedOnTrue()
         {

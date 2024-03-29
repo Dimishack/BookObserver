@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:BookObserver"
         xmlns:vm="clr-namespace:BookObserver.ViewModels"
         xmlns:us="clr-namespace:BookObserver.Views.UserControl"
-        Title="{Binding Title}" Height="510" MinHeight="510" Width="800" MinWidth="800">
+        Title="{Binding Title}" Height="550" MinHeight="550" Width="600" MinWidth="600">
     <Window.DataContext>
         <vm:MainWindowViewModel/>
     </Window.DataContext>

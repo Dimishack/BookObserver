@@ -42,9 +42,12 @@
                 </GroupBox.Header>
                 <DockPanel>
                     <UniformGrid DockPanel.Dock="Bottom" Columns="1">
-                        <Button Content="Поиск" Style="{StaticResource ButtonUG}"
+                        <UniformGrid.Resources>
+                            <Style TargetType="Button" BasedOn="{StaticResource ButtonUG}"/>
+                        </UniformGrid.Resources>
+                        <Button Content="Поиск"
                                 Command="{Binding SearchCommand}" CommandParameter="{Binding Readers}"/>
-                        <Button Content="Обнулить поиск" Style="{StaticResource ButtonUG}"
+                        <Button Content="Обнулить поиск"
                                 Command="{Binding ResetToZeroSearchCommand}" CommandParameter="{Binding Readers}"/>
                     </UniformGrid>
                     <StackPanel Orientation="Vertical">
@@ -85,46 +88,67 @@
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </ComboBox>
-                        <GroupBox Header="Получение книги">
+                        <GroupBox Header="Даты">
                             <StackPanel Orientation="Vertical">
                                 <StackPanel.Resources>
-                                    <Style TargetType="DatePicker">
-                                        <Setter Property="Margin" Value="3,0,0,0"/>
+                                    <Style TargetType="DatePicker" x:Key="BaseDatePicker">
+                                        <Setter Property="Margin" Value="3"/>
                                         <Setter Property="Language" Value="ru-RU"/>
                                         <Setter Property="IsTodayHighlighted" Value="True"/>
                                     </Style>
                                 </StackPanel.Resources>
-                                <DockPanel>
-                                    <TextBlock DockPanel.Dock="Left" Text="От:" 
+                                <GroupBox Header="Получение книги">
+                                    <StackPanel Orientation="Vertical">
+                                        <StackPanel.Resources>
+                                            <Style TargetType="DatePicker" BasedOn="{StaticResource BaseDatePicker}">
+                                                <Setter Property="DisplayDateStart" Value="{Binding MinDateGet, Mode=OneWay}"/>
+                                                <Setter Property="DisplayDateEnd" Value="{Binding MaxDateGet, Mode=OneWay}"/>
+                                            </Style>
+                                        </StackPanel.Resources>
+                                        <DockPanel>
+                                            <TextBlock DockPanel.Dock="Left" Text="От:" 
                                                VerticalAlignment="Center"/>
-                                    <DatePicker Language="ru-RU"/>
-                                </DockPanel>
-                                <DockPanel>
-                                    <TextBlock DockPanel.Dock="Left" Text="До:" 
+                                            <DatePicker SelectedDate="{Binding SelectedGetDateFrom}">
+                                                <i:Interaction.Triggers>
+                                                    <i:EventTrigger EventName="GotFocus">
+                                                        <i:InvokeCommandAction Command="{Binding GotFocusDatePickersGetDateCommand}"
+                                                                               CommandParameter="{Binding Readers}"/>
+                                                    </i:EventTrigger>
+                                                </i:Interaction.Triggers>
+                                            </DatePicker>
+                                        </DockPanel>
+                                        <DockPanel>
+                                            <TextBlock DockPanel.Dock="Left" Text="До:" 
                                                VerticalAlignment="Center"/>
-                                    <DatePicker/>
-                                </DockPanel>
-                            </StackPanel>
-                        </GroupBox>
-                        <GroupBox Header="Возврат книги">
-                            <StackPanel Orientation="Vertical">
-                                <StackPanel.Resources>
-                                    <Style TargetType="DatePicker">
-                                        <Setter Property="Margin" Value="3,0,0,0"/>
-                                        <Setter Property="Language" Value="ru-RU"/>
-                                        <Setter Property="IsTodayHighlighted" Value="True"/>
-                                    </Style>
-                                </StackPanel.Resources>
-                                <DockPanel>
-                                    <TextBlock DockPanel.Dock="Left" Text="От:" 
+                                            <DatePicker SelectedDate="{Binding SelectedGetDateTo}">
+                                                <i:Interaction.Triggers>
+                                                    <i:EventTrigger EventName="GotFocus">
+                                                        <i:InvokeCommandAction Command="{Binding GotFocusDatePickersGetDateCommand}"
+                                                                               CommandParameter="{Binding Readers}"/>
+                                                    </i:EventTrigger>
+                                                </i:Interaction.Triggers>
+                                            </DatePicker>
+                                        </DockPanel>
+                                    </StackPanel>
+                                </GroupBox>
+                                <GroupBox Header="Возврат книги">
+                                    <StackPanel Orientation="Vertical">
+                                        <StackPanel.Resources>
+                                            <Style TargetType="DatePicker" BasedOn="{StaticResource BaseDatePicker}">
+                                            </Style>
+                                        </StackPanel.Resources>
+                                        <DockPanel>
+                                            <TextBlock DockPanel.Dock="Left" Text="От:" 
                                                VerticalAlignment="Center"/>
-                                    <DatePicker/>
-                                </DockPanel>
-                                <DockPanel>
-                                    <TextBlock DockPanel.Dock="Left" Text="До:" 
+                                            <DatePicker/>
+                                        </DockPanel>
+                                        <DockPanel>
+                                            <TextBlock DockPanel.Dock="Left" Text="До:" 
                                                VerticalAlignment="Center"/>
-                                    <DatePicker/>
-                                </DockPanel>
+                                            <DatePicker/>
+                                        </DockPanel>
+                                    </StackPanel>
+                                </GroupBox>
                             </StackPanel>
                         </GroupBox>
                         <Button Content="Очистить поля" Margin="10"
@@ -135,17 +159,20 @@
         </DockPanel>
         <DockPanel Grid.Column="2">
             <UniformGrid DockPanel.Dock="Bottom" Rows="1">
-                <Button Style="{StaticResource ButtonUG}">
+                <UniformGrid.Resources>
+                    <Style TargetType="Button" BasedOn="{StaticResource ButtonUG}"/>
+                </UniformGrid.Resources>
+                <Button>
                     <TextBlock TextAlignment="Center">
                         Добавить<LineBreak/>читателя
                     </TextBlock>
                 </Button>
-                <Button Style="{StaticResource ButtonUG}">
+                <Button>
                     <TextBlock TextAlignment="Center">
                         Редактировать<LineBreak/>читателя
                     </TextBlock>
                 </Button>
-                <Button Style="{StaticResource ButtonUG}">
+                <Button>
                     <TextBlock TextAlignment="Center">
                         Сохранить<LineBreak/>список
                     </TextBlock>
