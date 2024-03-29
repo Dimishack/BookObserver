@@ -11,7 +11,18 @@ namespace BookObserver.ViewModels
 {
     internal class ReadersViewModel : ViewModel
     {
+        /// <summary>Список книг</summary>
         public ObservableCollection<Reader> Readers { get; }
+
+        #region FiltredReaders : ObservableCollection<Reader>? - Отфильтрованный список читателей
+
+        ///<summary>Отфильтрованный список читателей</summary>
+        private ObservableCollection<Reader>? _filtredReaders;
+
+        ///<summary>Отфильтрованный список читателей</summary>
+        private ObservableCollection<Reader>? FiltredReaders { get => _filtredReaders; set => Set(ref _filtredReaders, value); }
+
+        #endregion
 
         public Dictionary<string, SortDescription> Sorting { get; } = new()
         {
@@ -103,7 +114,6 @@ namespace BookObserver.ViewModels
         public Reader? SelectedReader { get => _selectedReader; set => Set(ref _selectedReader, value); }
 
         #endregion
-
 
         #region SelectedLastName : string? - Выбранная фамилия
 
@@ -245,7 +255,11 @@ namespace BookObserver.ViewModels
         private bool CanDeleteReaderCommandExecute(object? p) => p is Reader;
 
         ///<summary>Логика выполнения - Команда удаления читателя</summary>
-        private void OnDeleteReaderCommandExecuted(object? p) => Readers.Remove((p as Reader)!);
+        private void OnDeleteReaderCommandExecuted(object? p)
+        {
+            FiltredReaders.Remove((p as Reader)!);
+            Readers.Remove((p as Reader)!);
+        }
 
         #endregion
 
@@ -312,9 +326,10 @@ namespace BookObserver.ViewModels
             result = result.Where(r => r.DateGet >= (_selectedGetDateFrom ?? _minDateGet)
                         && r.DateGet <= (_selectedGetDateTo ?? _maxDateGet)).ToList();
 
-            _readersView.Source = result;
+            FiltredReaders = null;
             _readersView.View.SortDescriptions.Clear();
             ClearGarbage();
+            _readersView.Source = FiltredReaders = new(result);
             _readersView.View.SortDescriptions.Add(Sorting[_selectedSorting]);
             OnPropertyChanged(nameof(ReadersView));
             ((Command)SearchCommand).Executable = false;
@@ -340,7 +355,7 @@ namespace BookObserver.ViewModels
         ///<summary>Логика выполнения - Команда обнуления поиска</summary>
         private void OnResetToZeroSearchCommandExecuted(object? p)
         {
-            _readersView.Source = Readers;
+            _readersView.Source = FiltredReaders = Readers;
             OnPropertyChanged(nameof(ReadersView));
             ((Command)ResetToZeroSearchCommand).Executable = false;
             ExecutableOnSearchCommandChangedOnTrue();
@@ -534,8 +549,8 @@ namespace BookObserver.ViewModels
 
         public ReadersViewModel()
         {
-            Readers = new ObservableCollection<Reader>(
-                Enumerable.Range(1, 1000000).Select(
+            FiltredReaders = Readers = new ObservableCollection<Reader>(
+                Enumerable.Range(1, 100000).Select(
                     p => new Reader
                     {
                         Id = p,
@@ -549,7 +564,7 @@ namespace BookObserver.ViewModels
                     }));
 
             ((Command)ResetToZeroSearchCommand).Executable = false;
-            _readersView.Source = Readers;
+            _readersView.Source = _filtredReaders;
         }
 
         private void ExecutableOnSearchCommandChangedOnTrue()
