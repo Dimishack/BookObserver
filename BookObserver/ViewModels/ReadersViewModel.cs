@@ -92,10 +92,10 @@ namespace BookObserver.ViewModels
         private ObservableCollection<string>? _lastNames { get; set; }
 
         ///<summary>Отфильтрованный список фамилий</summary>
-        private ObservableCollection<string>? _filterdLastNames;
+        private ObservableCollection<string>? _filtredLastNames;
 
         ///<summary>Отфильтрованный список фамилий</summary>
-        public ObservableCollection<string>? FiltredLastNames { get => _filterdLastNames; set => Set(ref _filterdLastNames, value); }
+        public ObservableCollection<string>? FiltredLastNames { get => _filtredLastNames; set => Set(ref _filtredLastNames, value); }
 
         #endregion
 
@@ -150,7 +150,7 @@ namespace BookObserver.ViewModels
 
                 if (_lastNames is not null)
                 {
-                    _filterdLastNames = null;
+                    _filtredLastNames = null;
                     ClearGarbage();
                     FiltredLastNames = new(_lastNames.Where(ln => ln.Contains(value, StringComparison.OrdinalIgnoreCase)));
                 }
@@ -556,7 +556,7 @@ namespace BookObserver.ViewModels
         ///<summary>Логика выполнения - Команда при потере фокуса (ComboBox фамилии)</summary>
         private void OnLostFocusComboBoxLastNamesCommandExecuted(object? p)
         {
-            _filterdLastNames = _lastNames = null;
+            _filtredLastNames = _lastNames = null;
             ClearGarbage();
         }
 
