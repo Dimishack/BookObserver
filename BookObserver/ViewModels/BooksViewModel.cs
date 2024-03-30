@@ -21,8 +21,8 @@ namespace BookObserver.ViewModels
         {
             {"Сначала старые записи", new SortDescription("Id", ListSortDirection.Ascending)},
             {"Сначала новые записи", new SortDescription("Id", ListSortDirection.Descending)},
-            {"Сначала в наличии", new SortDescription("Stock", ListSortDirection.Ascending)},
-            {"Сначала не в наличии", new SortDescription("Stock", ListSortDirection.Descending)},
+            {"Сначала в наличии", new SortDescription("Existence", ListSortDirection.Ascending)},
+            {"Сначала не в наличии", new SortDescription("Existence", ListSortDirection.Descending)},
             {"ББК (по возрастанию)", new SortDescription("BBK", ListSortDirection.Ascending)},
             {"ББК (по убыванию)", new SortDescription("BBK", ListSortDirection.Descending)},
             {"Авторы (по возрастанию)", new SortDescription("Author", ListSortDirection.Ascending)},
@@ -30,9 +30,6 @@ namespace BookObserver.ViewModels
             {"Названия (по возрастанию)", new SortDescription("Name", ListSortDirection.Ascending)},
             {"Названия (по убыванию)", new SortDescription("Name", ListSortDirection.Descending)}
         };
-
-        ///<summary>Список книг</summary>
-        public ObservableCollection<Book> Books { get; }
 
         #region SelectedSorting : string - Выбранная сортировка списка книг
 
@@ -55,6 +52,18 @@ namespace BookObserver.ViewModels
 
         #endregion
 
+        ///<summary>Список книг</summary>
+        public ObservableCollection<Book> Books { get; }
+
+        #region FiltredBooks : ObservableCollection<Book> - Список книг для фильтрации
+
+        ///<summary>Список книг для фильтрации</summary>
+        private ObservableCollection<Book>? _filtredBooks;
+
+        ///<summary>Список книг для фильтрации</summary>
+        public ObservableCollection<Book>? FiltredBooks { get => _filtredBooks; set => Set(ref _filtredBooks, value); }
+
+        #endregion
 
         #region BooksView : ICollectionView - Вывод списка книг
 
@@ -63,79 +72,91 @@ namespace BookObserver.ViewModels
 
         #endregion
 
-        #region StockView : ICollectionView - Вывод списка "в наличии"
-        private readonly CollectionViewSource _stockView = new();
-        public ICollectionView StockView => _stockView.View;
-        #endregion
+        #region Existences : IList<string> - Список "в наличии"
 
-        #region AuthorsView : ICollectionView - Вывод списка авторов
+        ///<summary>Список "в наличии"</summary>
+        private IList<string> _existences = [];
 
-        private readonly CollectionViewSource _authorsView = new();
-        public ICollectionView AuthorsView => _authorsView.View;
-
-        #endregion
-
-        #region NamesView : ICollectionView - Вывод списка названий книг
-        private readonly CollectionViewSource _namesView = new();
-        public ICollectionView NamesView => _namesView.View;
-        #endregion
-
-        #region BBKView : ICollectionView - Вывод списка BBK
-        private readonly CollectionViewSource _bbkView = new();
-        public ICollectionView BBKView => _bbkView.View;
-        #endregion
-
-        #region PublishView : ICollectionView - Вывод списка издательства
-        private readonly CollectionViewSource _publishView = new();
-        public ICollectionView PublishView => _publishView.View;
-        #endregion
-
-        #region YearPublishView : ICollectionView - Вывод списка года издательств
-        private readonly CollectionViewSource _yearPublishView = new();
-        public ICollectionView YearPublishView => _yearPublishView.View;
-        #endregion
-
-        #region BooksFilterText : string? - Фильтр книг
-
-        ///<summary>Фильтр книг</summary>
-        private string? _booksFilterText;
-
-        ///<summary>Фильтр книг</summary>
-        public string? BooksFilterText
+        ///<summary>Список "в наличии"</summary>
+        public IList<string> Existences
         {
-            get => _booksFilterText;
+            get => _existences;
+            private set => Set(ref _existences, value);
+        }
+
+        #endregion
+
+        #region FiltredExistences : ObservableCollection<string>? - Список "в наличии" для фильтрации
+
+        ///<summary>Список "в наличии" для фильтрации</summary>
+        private ObservableCollection<string>? _filtredExistences;
+
+        ///<summary>Список "в наличии" для фильтрации</summary>
+        public ObservableCollection<string>? FiltredExistences
+        {
+            get => _filtredExistences;
+            private set => Set(ref _filtredExistences, value);
+        }
+
+        #endregion
+
+        /// <summary>Вывод списка "в наличии"</summary>
+        public ObservableCollection<string>? ExistencesView => _filtredExistences;
+
+        #region SelectedExistence : string? - Выбранное наличие книги
+
+        ///<summary>Выбранное наличие книги</summary>
+        private string? _selectedExistence;
+
+        ///<summary>Выбранное наличие книги</summary>
+        public string? SelectedExistence
+        {
+            get => _selectedExistence;
             set
             {
-                if (!Set(ref _booksFilterText, value)) return;
+                if (!Set(ref _selectedExistence, value)) return;
 
                 if (!((Command)FindBooksCommand).Executable)
                     ((Command)FindBooksCommand).Executable = true;
-                _booksView.View.Refresh();
+                if (value is not null)
+                {
+                    FiltredExistences = null;
+                    ClearGarbage();
+                    FiltredExistences = new(_existences.Where(s => s.Contains(value, StringComparison.OrdinalIgnoreCase)));
+                    OnPropertyChanged(nameof(ExistencesView));
+                    ExecutableCommandFindBooksCommandChange();
+                }
             }
         }
 
         #endregion
 
-        #region SelectedStock : string? - Выбранное наличие книги
+        #region BBKs : IList<string> - Список ББК
 
-        ///<summary>Выбранное наличие книги</summary>
-        private string? _selectedStock;
+        ///<summary>Список ББК</summary>
+        private IList<string> _bbks = [];
 
-        ///<summary>Выбранное наличие книги</summary>
-        public string? SelectedStock
+        ///<summary>Список ББК</summary>
+        public IList<string> BBKs
         {
-            get => _selectedStock;
-            set
-            {
-                if (!Set(ref _selectedStock, value)) return;
-
-                if (!((Command)FindBooksCommand).Executable)
-                    ((Command)FindBooksCommand).Executable = true;
-                _stockView.View.Refresh();
-            }
+            get => _bbks;
+            private set => Set(ref _bbks, value);
         }
 
         #endregion
+
+        #region FiltredBBK : ObservableCollection<string>? - Список ББК для фильтрации
+
+        ///<summary>Список ББК для фильтрации</summary>
+        private ObservableCollection<string>? _filtredBBKs;
+
+        ///<summary>Список ББК для фильтрации</summary>
+        public ObservableCollection<string>? FiltredBBKs { get => _filtredBBKs; set => Set(ref _filtredBBKs, value); }
+
+        #endregion
+
+        /// <summary>Вывод списка ББК</summary>
+        public ObservableCollection<string>? BBKsView => _filtredBBKs;
 
         #region SelectedBBK : string? - Выбранный ББК
 
@@ -149,35 +170,51 @@ namespace BookObserver.ViewModels
             set
             {
                 if (!Set(ref _selectedBBK, value)) return;
-
                 if (!((Command)FindBooksCommand).Executable)
                     ((Command)FindBooksCommand).Executable = true;
-                _bbkView.View.Refresh();
+                if (value is not null)
+                {
+                    FiltredBBKs = null;
+                    ClearGarbage();
+                    FiltredBBKs = new(_bbks.Where(bbk => bbk.Contains(value, StringComparison.OrdinalIgnoreCase)));
+                    OnPropertyChanged(nameof(BBKsView));
+                    ExecutableCommandFindBooksCommandChange();
+                }
             }
         }
 
         #endregion
 
-        #region SelectedName : string? - Выбранное название
+        #region Authors : IList<string> - Список авторов
 
-        ///<summary>Выбранное название</summary>
-        private string? _selectedName;
+        ///<summary>Список авторов</summary>
+        private IList<string> _authors = [];
 
-        ///<summary>Выбранное название</summary>
-        public string? SelectedName
+        ///<summary>Список авторов</summary>
+        public IList<string> Authors
         {
-            get => _selectedName;
-            set
-            {
-                if (!Set(ref _selectedName, value)) return;
-
-                if (!((Command)FindBooksCommand).Executable)
-                    ((Command)FindBooksCommand).Executable = true;
-                _namesView.View.Refresh();
-            }
+            get => _authors;
+            private set => Set(ref _authors, value);
         }
 
         #endregion
+
+        #region FiltredAuthors : ObservableCollection<string>? - Список авторов для фильтрации
+
+        ///<summary>Список авторов для фильтрации</summary>
+        private ObservableCollection<string>? _filtredAuthors;
+
+        ///<summary>Список авторов для фильтрации</summary>
+        public ObservableCollection<string>? FiltredAuthors
+        {
+            get => _filtredAuthors;
+            private set => Set(ref _filtredAuthors, value);
+        }
+
+        #endregion
+
+        /// <summary>Вывод списка авторов</summary>
+        public ObservableCollection<string>? AuthorsView => _filtredAuthors;
 
         #region SelectedAuthor : string? - Выбранный автор
 
@@ -194,11 +231,107 @@ namespace BookObserver.ViewModels
 
                 if (!((Command)FindBooksCommand).Executable)
                     ((Command)FindBooksCommand).Executable = true;
-                _authorsView.View.Refresh();
+                if (value is not null)
+                {
+                    FiltredAuthors = null;
+                    ClearGarbage();
+                    FiltredAuthors = new(_authors.Where(a => a.Contains(value, StringComparison.OrdinalIgnoreCase)));
+                    OnPropertyChanged(nameof(AuthorsView));
+                    ExecutableCommandFindBooksCommandChange();
+                }
             }
         }
 
         #endregion
+
+        #region Names : List<string> - Список названий книг
+
+        ///<summary>Список названий книг</summary>
+        private List<string> _names = [];
+
+        ///<summary>Список названий книг</summary>
+        public List<string> Names
+        {
+            get => _names;
+            private set => Set(ref _names, value);
+        }
+
+        #endregion
+
+        #region FiltredNames : ObservableCollection<string>? - Список названий книг для фильтрации
+
+        ///<summary>Список названий книг для фильтрации</summary>
+        private ObservableCollection<string>? _filtredNames;
+
+        ///<summary>Список названий книг для фильтрации</summary>
+        public ObservableCollection<string>? FiltredNames
+        {
+            get => _filtredNames;
+            private set => Set(ref _filtredNames, value);
+        }
+
+        #endregion
+
+        public ObservableCollection<string>? NamesView => _filtredNames;
+
+        #region SelectedName : string? - Выбранное название
+
+        ///<summary>Выбранное название</summary>
+        private string? _selectedName;
+
+        ///<summary>Выбранное название</summary>
+        public string? SelectedName
+        {
+            get => _selectedName;
+            set
+            {
+                if (!Set(ref _selectedName, value)) return;
+
+                if (!((Command)FindBooksCommand).Executable)
+                    ((Command)FindBooksCommand).Executable = true;
+                if (value is not null)
+                {
+                    FiltredNames = null;
+                    ClearGarbage();
+                    FiltredNames = new(_names.Where(n => n.Contains(value, StringComparison.OrdinalIgnoreCase)));
+                    OnPropertyChanged(nameof(NamesView));
+                    ExecutableCommandFindBooksCommandChange();
+                }
+            }
+        }
+
+        #endregion
+
+        #region Publishes : IList<string> - Список издательств
+
+        ///<summary>Список издательств</summary>
+        private IList<string> _publishes = [];
+
+        ///<summary>Список издательств</summary>
+        public IList<string> Publishes
+        {
+            get => _publishes;
+            private set => Set(ref _publishes, value);
+        }
+
+        #endregion
+
+        #region FiltredPublishes : ObservableCollection<string>? - Список издательств для фильтрации
+
+        ///<summary>Список издательств для фильтрации</summary>
+        private ObservableCollection<string>? _filtredPublishes;
+
+        ///<summary>Список издательств для фильтрации</summary>
+        public ObservableCollection<string>? FiltredPublishes
+        {
+            get => _filtredPublishes;
+            private set => Set(ref _filtredPublishes, value);
+        }
+
+        #endregion
+
+        /// <summary>Вывод списка книг</summary>
+        public ObservableCollection<string>? PublishesView => _filtredPublishes;
 
         #region SelectedPublish : string? - Выбранное издательство
 
@@ -213,30 +346,14 @@ namespace BookObserver.ViewModels
             {
                 if (!Set(ref _selectedPublish, value)) return;
 
-                if (!((Command)FindBooksCommand).Executable)
-                    ((Command)FindBooksCommand).Executable = true;
-                _publishView.View.Refresh();
-            }
-        }
-
-        #endregion
-
-        #region SelectedYearPublish : string? - Выбранный год издания
-
-        ///<summary>Выбранный год издания</summary>
-        private string? _selectedYearPublish;
-
-        ///<summary>Выбранный год издания</summary>
-        public string? SelectedYearPublish
-        {
-            get => _selectedYearPublish;
-            set
-            {
-                if (!Set(ref _selectedYearPublish, value)) return;
-
-                if (!((Command)FindBooksCommand).Executable)
-                    ((Command)FindBooksCommand).Executable = true;
-                _yearPublishView.View.Refresh();
+                if (value is not null)
+                {
+                    FiltredPublishes = null;
+                    ClearGarbage();
+                    FiltredPublishes = new(_publishes.Where(p => p.Contains(value, StringComparison.OrdinalIgnoreCase)));
+                    OnPropertyChanged(nameof(PublishesView));
+                    ExecutableCommandFindBooksCommandChange();
+                }
             }
         }
 
@@ -256,46 +373,45 @@ namespace BookObserver.ViewModels
 
         #region Commands
 
-        #region FindBooksCommand - Поиск книг
+        #region FindBooksCommand - Команда поиска книг
 
-        ///<summary>Поиск книг</summary>
+        ///<summary>Команда поиска книг</summary>
         private ICommand? _findBooksCommand;
 
-        ///<summary>Поиск книг</summary>
+        ///<summary>Команда поиска книг</summary>
         public ICommand FindBooksCommand => _findBooksCommand
             ??= new LambdaCommand(OnFindBooksCommandExecuted, CanFindBooksCommandExecute);
 
-        ///<summary>Проверка возможности выполнения - Поиск книг</summary>
+        ///<summary>Проверка возможности выполнения - Команда поиска книг</summary>
         private bool CanFindBooksCommandExecute(object? p) =>
             p is not null
             && p is IList<Book>
-            && (!string.IsNullOrWhiteSpace(_selectedStock)
+            && (!string.IsNullOrWhiteSpace(_selectedExistence)
             || !string.IsNullOrWhiteSpace(_selectedBBK)
             || !string.IsNullOrWhiteSpace(_authorsFilterText)
             || !string.IsNullOrWhiteSpace(_selectedName)
             || !string.IsNullOrWhiteSpace(_selectedPublish)
-            || !string.IsNullOrWhiteSpace(_selectedYearPublish)
             );
 
-        ///<summary>Логика выполнения - Поиск книг</summary>
+        ///<summary>Логика выполнения - Команда поиска книг</summary>
         private void OnFindBooksCommandExecuted(object? p)
         {
             IList<Book> result = (p as IList<Book>)!;
-            if (!string.IsNullOrWhiteSpace(_selectedStock)) result = result.Where(
-                p => p.Stock.Contains(_selectedStock, StringComparison.OrdinalIgnoreCase)).ToList();
+            if (!string.IsNullOrWhiteSpace(_selectedExistence)) result = result.Where(
+                p => p.Existence!.Contains(_selectedExistence, StringComparison.OrdinalIgnoreCase)).ToList();
             if (!string.IsNullOrWhiteSpace(_selectedBBK)) result = result.Where(
-                p => p.BBK.Contains(_selectedBBK, StringComparison.OrdinalIgnoreCase)).ToList();
+                p => p.BBK!.Contains(_selectedBBK, StringComparison.OrdinalIgnoreCase)).ToList();
             if (!string.IsNullOrWhiteSpace(_authorsFilterText)) result = result.Where(
-                p => p.Author.Contains(_authorsFilterText, StringComparison.OrdinalIgnoreCase)).ToList();
+                p => p.Author!.Contains(_authorsFilterText, StringComparison.OrdinalIgnoreCase)).ToList();
             if (!string.IsNullOrWhiteSpace(_selectedName)) result = result.Where(
-                p => p.Name.Contains(_selectedName, StringComparison.OrdinalIgnoreCase)).ToList();
+                p => p.Name!.Contains(_selectedName, StringComparison.OrdinalIgnoreCase)).ToList();
             if (!string.IsNullOrWhiteSpace(_selectedPublish)) result = result.Where(
-                p => p.Publish.Contains(_selectedPublish, StringComparison.OrdinalIgnoreCase)).ToList();
-            if (!string.IsNullOrWhiteSpace(_selectedYearPublish)) result = result.Where(
-                p => Convert.ToString(p.YearPublish)
-                .Contains(_selectedYearPublish, StringComparison.OrdinalIgnoreCase)).ToList();
-
-            _booksView.Source = result;
+                p => p.Publish!.Contains(_selectedPublish, StringComparison.OrdinalIgnoreCase)).ToList();
+            FiltredBooks = null;
+            _booksView.View.SortDescriptions.Clear();
+            ClearGarbage();
+            _booksView.Source = FiltredBooks = new(result);
+            _booksView.View.SortDescriptions.Add(Sorting[_selectedSorting]);
             OnPropertyChanged(nameof(BooksView));
             ((Command)ResetToZeroFindCommand).Executable = true;
             ((Command)FindBooksCommand).Executable = false;
@@ -314,22 +430,21 @@ namespace BookObserver.ViewModels
 
         ///<summary>Проверка возможности выполнения - Команда для очистки фильтров</summary>
         private bool CanClearFiltersCommandExecute(object? p) =>
-            !string.IsNullOrWhiteSpace(_selectedStock)
+            !string.IsNullOrWhiteSpace(_selectedExistence)
             || !string.IsNullOrWhiteSpace(_selectedBBK)
             || !string.IsNullOrWhiteSpace(_authorsFilterText)
             || !string.IsNullOrWhiteSpace(_selectedName)
             || !string.IsNullOrWhiteSpace(_selectedPublish)
-            || !string.IsNullOrWhiteSpace(_selectedYearPublish);
+            ;
 
         ///<summary>Логика выполнения - Команда для очистки фильтров</summary>
         private void OnClearFiltersCommandExecuted(object? p)
         {
-            SelectedStock = null;
+            SelectedExistence = null;
             SelectedBBK = null;
             SelectedAuthor = null;
             SelectedName = null;
             SelectedPublish = null;
-            SelectedYearPublish = null;
         }
 
         #endregion
@@ -377,16 +492,8 @@ namespace BookObserver.ViewModels
         ///<summary>Логика выполнения - Команда удаления книги</summary>
         private void OnDeleteBookCommandExecuted(object? p)
         {
-            Books?.Remove((p as Book)!);
-            _booksView.Source = Books;
-            OnPropertyChanged(nameof(BooksView));
-            SelectedBook = null;
-            SelectedStock = null;
-            SelectedBBK = null;
-            SelectedAuthor = null;
-            SelectedName = null;
-            SelectedPublish = null;
-            SelectedYearPublish = null;
+            Books.Remove((p as Book)!);
+            FiltredBooks?.Remove((p as Book)!);
             ((Command)SaveBooksCommand).Executable = true;
         }
 
@@ -441,368 +548,239 @@ namespace BookObserver.ViewModels
 
         #endregion
 
-        #region MouseEnter (Commands)...
+        #region GotFocus (Commands)...
 
-        #region MouseEnterComboBoxStockCommand - Команда когда курсор наводится на ComboBox (В наличии)
+        #region GotFocusComboBoxExistencesCommand - Команда при получении фокуса (ComboBox "в наличии")
 
-        ///<summary>Команда когда курсор наводится на ComboBox (В наличии)</summary>
-        private ICommand? _mouseEnterComboBoxStockCommand;
+        ///<summary>Команда при получении фокуса (В наличии)</summary>
+        private ICommand? _gotFocusComboBoxExistencesCommand;
 
-        ///<summary>Команда когда курсор наводится на ComboBox (В наличии)</summary>
-        public ICommand MouseEnterComboBoxStockCommand => _mouseEnterComboBoxStockCommand
-            ??= new LambdaCommand(OnMouseEnterComboBoxStockCommandExecuted);
+        ///<summary>Команда при получении фокуса (В наличии)</summary>
+        public ICommand GotFocusComboBoxExistencesCommand => _gotFocusComboBoxExistencesCommand
+            ??= new LambdaCommand(OnGotFocusComboBoxExistencesCommandExecuted, CanGotFocusComboBoxExistencesCommandExecute);
 
-        ///<summary>Логика выполнения - Команда когда курсор наводится на ComboBox (В наличии)</summary>
-        private void OnMouseEnterComboBoxStockCommandExecuted(object? p)
+        private bool CanGotFocusComboBoxExistencesCommandExecute(object? p) =>
+            p is not null && p is IList<Book>;
+
+        ///<summary>Логика выполнения - Команда при получении фокуса (В наличии)</summary>
+        private void OnGotFocusComboBoxExistencesCommandExecuted(object? p)
         {
-            var value = _selectedStock;
-            _stockView.Source = Books?.Select(book => book.Stock).Distinct().Order().ToList();
-            OnPropertyChanged(nameof(StockView));
-            _stockView.Filter += StockView_Filter;
-            SelectedStock = value;
+            Existences = (p as IList<Book>)!
+                .Select(b => b.Existence)
+                .Distinct()
+                .Order()
+                .ToList()!;
+            FiltredExistences = new(_existences);
+            OnPropertyChanged(nameof(ExistencesView));
         }
 
         #endregion
 
-        #region MouseEnterComboBoxBBKCommand - Команда когда курсор наводится на ComboBox (ББК)
+        #region GotFocusComboBoxBBKssCommand - Команда при получении фокуса (ComboBox ББК)
 
-        ///<summary>Команда когда курсор наводится на ComboBox (ББК)</summary>
-        private ICommand? _mouseEnterComboBoxBBKCommand;
+        ///<summary>Команда при получении фокуса (ComboBox ББК)</summary>
+        private ICommand? _gotFocusComboBoxBBKsCommand;
 
-        ///<summary>Команда когда курсор наводится на ComboBox (ББК)</summary>
-        public ICommand MouseEnterComboBoxBBKCommand => _mouseEnterComboBoxBBKCommand
-            ??= new LambdaCommand(OnMouseEnterComboBoxBBKCommandExecuted);
+        ///<summary>Команда при получении фокуса (ComboBox ББК)</summary>
+        public ICommand GotFocusComboBoxBBKsCommand => _gotFocusComboBoxBBKsCommand
+            ??= new LambdaCommand(OnGotFocusComboBoxBBKsCommandExecuted, CanGotFocusComboBoxBBKsCommandExecute);
 
-        ///<summary>Логика выполнения - Команда когда курсор наводится на ComboBox (ББК)</summary>
-        private void OnMouseEnterComboBoxBBKCommandExecuted(object? p)
+        private bool CanGotFocusComboBoxBBKsCommandExecute(object? p) =>
+            p is not null && p is IList<Book>;
+
+        ///<summary>Логика выполнения - Команда при получении фокуса (ComboBox ББК)</summary>
+        private void OnGotFocusComboBoxBBKsCommandExecuted(object? p)
         {
-            var value = _selectedBBK;
-            _bbkView.Source = Books?.Select(book => book.BBK).Distinct().Order().ToList();
-            OnPropertyChanged(nameof(BBKView));
-            _bbkView.Filter += BBKView_Filter;
-            SelectedBBK = value;
+            BBKs = (p as IList<Book>)!
+                .Select(b => b.BBK)
+                .Distinct()
+                .Order()
+                .ToList()!;
+            FiltredBBKs = new(_bbks);
+            OnPropertyChanged(nameof(BBKsView));
         }
 
         #endregion
 
-        #region MouseEnterComboBoxAuthorCommand - Команда когда курсор наводится на ComboBox (Автор)
+        #region GotFocusComboBoxAuthorsCommand - Команда при получении фокуса (ComboBox авторов)
 
-        ///<summary>Команда когда курсор наводится на ComboBox (Автор)</summary>
-        private ICommand? _mouseEnterComboBoxAuthorCommand;
+        ///<summary>Команда при получении фокуса (ComboBox авторов)</summary>
+        private ICommand? _gotFocusComboBoxAuthorsCommand;
 
-        ///<summary>Команда когда курсор наводится на ComboBox (Автор)</summary>
-        public ICommand MouseEnterComboBoxAuthorCommand => _mouseEnterComboBoxAuthorCommand
-            ??= new LambdaCommand(OnMouseEnterComboBoxAuthorCommandExecuted);
+        ///<summary>Команда при получении фокуса (ComboBox авторов)</summary>
+        public ICommand GotFocusComboBoxAuthorsCommand => _gotFocusComboBoxAuthorsCommand
+            ??= new LambdaCommand(OnGotFocusComboBoxAuthorsCommandExecuted, CanGotFocusComboBoxAuthorsCommandExecute);
 
-        ///<summary>Логика выполнения - Команда когда курсор наводится на ComboBox (Автор)</summary>
-        private void OnMouseEnterComboBoxAuthorCommandExecuted(object? p)
+        private bool CanGotFocusComboBoxAuthorsCommandExecute(object? p) =>
+            p is not null && p is IList<Book>;
+
+        ///<summary>Логика выполнения - Команда при получении фокуса (ComboBox авторов)</summary>
+        private void OnGotFocusComboBoxAuthorsCommandExecuted(object? p)
         {
-            var value = _authorsFilterText;
-            _authorsView.Source = Books?.Select(book => book.Author).Distinct().Order().ToList();
+            Authors = (p as IList<Book>)!
+                .Select(r => r.Author)
+                .Distinct()
+                .Order()
+                .ToList()!;
+            FiltredAuthors = new(_authors);
             OnPropertyChanged(nameof(AuthorsView));
-            _authorsView.Filter += AuthorsView_Filter;
-            SelectedAuthor = value;
         }
 
         #endregion
 
-        #region MouseEnterComboBoxNameCommand - Команда когда курсор наводится на ComboBox (Название)
+        #region GotFocusComboBoxNamesCommand - Команда при получении фокуса (ComboBox названий)
 
-        ///<summary>Команда когда курсор наводится на ComboBox (Название)</summary>
-        private ICommand? _mouseEnterComboBoxNameCommand;
+        ///<summary>Команда при получении фокуса (ComboBox названий)</summary>
+        private ICommand? _gotFocusComboBoxNamesCommand;
 
-        ///<summary>Команда когда курсор наводится на ComboBox (Название)</summary>
-        public ICommand MouseEnterComboBoxNameCommand => _mouseEnterComboBoxNameCommand
-            ??= new LambdaCommand(OnMouseEnterComboBoxNameCommandExecuted);
+        ///<summary>Команда при получении фокуса (ComboBox названий)</summary>
+        public ICommand GotFocusComboBoxNamesCommand => _gotFocusComboBoxNamesCommand
+            ??= new LambdaCommand(OnGotFocusComboBoxNamesCommandExecuted, CanGotFocusComboBoxNamesCommandExecute);
 
-        ///<summary>Логика выполнения - Команда когда курсор наводится на ComboBox (Название)</summary>
-        private void OnMouseEnterComboBoxNameCommandExecuted(object? p)
+        private bool CanGotFocusComboBoxNamesCommandExecute(object? p) =>
+            p is not null && p is IList<Book>;
+
+        ///<summary>Логика выполнения - Команда при получении фокуса (ComboBox названий)</summary>
+        private void OnGotFocusComboBoxNamesCommandExecuted(object? p)
         {
-            var value = _selectedName;
-            _namesView.Source = Books?.Select(book => book.Name).Distinct().Order().ToList();
+            Names = (p as IList<Book>)!
+                .Select(r => r.Name)
+                .Distinct()
+                .Order()
+                .ToList()!;
+            FiltredNames = new(_names);
             OnPropertyChanged(nameof(NamesView));
-            _namesView.Filter += NamesView_Filter;
-            SelectedName = value;
         }
 
         #endregion
 
-        #region MouseEnterComboBoxPublishCommand - Команда когда курсор наводится на ComboBox (Издательство)
+        #region GotFocusComboBoxPublishesCommand - Команда при получении фокуса (ComboBox издательств)
 
-        ///<summary>Команда когда курсор наводится на ComboBox (Издательство)</summary>
-        private ICommand? _mouseEnterComboBoxPublishCommand;
+        ///<summary>Команда при получении фокуса (ComboBox издательств)</summary>
+        private ICommand? _GotFocusComboBoxPublishesCommand;
 
-        ///<summary>Команда когда курсор наводится на ComboBox (Издательство)</summary>
-        public ICommand MouseEnterComboBoxPublishCommand => _mouseEnterComboBoxPublishCommand
-            ??= new LambdaCommand(OnMouseEnterComboBoxPublishCommandExecuted);
+        ///<summary>Команда при получении фокуса (ComboBox издательств)</summary>
+        public ICommand GotFocusComboBoxPublishesCommand => _GotFocusComboBoxPublishesCommand
+            ??= new LambdaCommand(OnGotFocusComboBoxPublishesCommandExecuted, CanGotFocusComboBoxPublishesCommandExecute);
 
-        ///<summary>Логика выполнения - Команда когда курсор наводится на ComboBox (Издательство)</summary>
-        private void OnMouseEnterComboBoxPublishCommandExecuted(object? p)
+        private bool CanGotFocusComboBoxPublishesCommandExecute(object? p) =>
+            p is not null && p is IList<Book>;
+
+        ///<summary>Логика выполнения - Команда при получении фокуса (ComboBox издательств)</summary>
+        private void OnGotFocusComboBoxPublishesCommandExecuted(object? p)
         {
-            var value = _selectedPublish;
-            _publishView.Source = Books?.Select(book => book.Publish).Distinct().Order().ToList();
-            OnPropertyChanged(nameof(PublishView));
-            _publishView.Filter += PublishView_Filter;
-            SelectedPublish = value;
+            Publishes = (p as IList<Book>)!
+                .Select(r => r.Publish)
+                .Distinct()
+                .Order()
+                .ToList()!;
+            FiltredPublishes = new(_publishes);
+            OnPropertyChanged(nameof(PublishesView));
         }
 
         #endregion
 
-        #region MouseEnterComboBoxYearPublishCommand - Команда когда курсор наводится на ComboBox (Год издательства)
+        #endregion
 
-        ///<summary>Команда когда курсор наводится на ComboBox (Год издательства)</summary>
-        private ICommand? _mouseEnterComboBoxYearPublishCommand;
+        #region LostFocus (Commands)...
 
-        ///<summary>Команда когда курсор наводится на ComboBox (Год издательства)</summary>
-        public ICommand MouseEnterComboBoxYearPublishCommand => _mouseEnterComboBoxYearPublishCommand
-            ??= new LambdaCommand(OnMouseEnterComboBoxYearPublishCommandExecuted);
+        #region LostFocusComboBoxExtensiencesCommand - Команда при потере фокуса (В наличии)
 
-        ///<summary>Логика выполнения - Команда когда курсор наводится на ComboBox (Год издательства)</summary>
-        private void OnMouseEnterComboBoxYearPublishCommandExecuted(object? p)
+        ///<summary>Команда при потере фокуса (В наличии)</summary>
+        private ICommand? _LostFocusComboBoxExtensiencesCommand;
+
+        ///<summary>Команда при потере фокуса (В наличии)</summary>
+        public ICommand LostFocusComboBoxExistencesCommand => _LostFocusComboBoxExtensiencesCommand
+            ??= new LambdaCommand(OnLostFocusComboBoxExtensiencesCommandExecuted);
+
+        ///<summary>Логика выполнения - Команда при потере фокуса (В наличии)</summary>
+        private void OnLostFocusComboBoxExtensiencesCommandExecuted(object? p)
         {
-            var value = _selectedYearPublish;
-            _yearPublishView.Source = Books?.Select(book => book.YearPublish).Distinct().Order().ToList();
-            OnPropertyChanged(nameof(YearPublishView));
-            _yearPublishView.Filter += YearPublishView_Filter;
-            SelectedYearPublish = value;
+            FiltredExistences = null;
+            ClearGarbage();
         }
 
         #endregion
 
-        #endregion
+        #region LostFocusComboBoxBBKsCommand - Команда при потере фокуса (ComboBox ББК)
 
-        #region MouseLeave (Commands)...
+        ///<summary>Команда при потере фокуса (ComboBox ББК)</summary>
+        private ICommand? _LostFocusComboBoxBBKsCommand;
 
-        #region MouseLeaveComboBoxStockCommand - Команда когда курсор выходит с ComboBox (В наличии)
+        ///<summary>Команда при потере фокуса (ComboBox ББК)</summary>
+        public ICommand LostFocusComboBoxBBKsCommand => _LostFocusComboBoxBBKsCommand
+            ??= new LambdaCommand(OnLostFocusComboBoxBBKsCommandExecuted);
 
-        ///<summary>Команда когда курсор выходит с ComboBox (В наличии)</summary>
-        private ICommand? _mouseLeaveComboBoxStockCommand;
-
-        ///<summary>Команда когда курсор выходит с ComboBox (В наличии)</summary>
-        public ICommand MouseLeaveComboBoxStockCommand => _mouseLeaveComboBoxStockCommand
-            ??= new LambdaCommand(OnMouseLeaveComboBoxStockCommandExecuted);
-
-        ///<summary>Логика выполнения - Команда когда курсор выходит с ComboBox (В наличии)</summary>
-        private void OnMouseLeaveComboBoxStockCommandExecuted(object? p)
+        ///<summary>Логика выполнения - Команда при потере фокуса (ComboBox ББК)</summary>
+        private void OnLostFocusComboBoxBBKsCommandExecuted(object? p)
         {
-            _stockView.Filter -= StockView_Filter;
-            CallFinalizer();
+            FiltredBBKs = null;
+            ClearGarbage();
         }
 
         #endregion
 
-        #region MouseLeaveComboBoxBBKCommand - Команда когда курсор выходит с ComboBox (ББК)
+        #region LostFocusComboBoxAuthorsCommand - Команда при потере фокуса (ComboBox авторов)
 
-        ///<summary>Команда когда курсор выходит с ComboBox (ББК)</summary>
-        private ICommand? _mouseLeaveComboBoxBBKCommand;
+        ///<summary>Команда при потере фокуса (ComboBox авторов)</summary>
+        private ICommand? _LostFocusComboBoxAuthorsCommand;
 
-        ///<summary>Команда когда курсор выходит с ComboBox (ББК)</summary>
-        public ICommand MouseLeaveComboBoxBBKCommand => _mouseLeaveComboBoxBBKCommand
-            ??= new LambdaCommand(OnMouseLeaveComboBoxBBKCommandExecuted);
+        ///<summary>Команда при потере фокуса (ComboBox авторов)</summary>
+        public ICommand LostFocusComboBoxAuthorsCommand => _LostFocusComboBoxAuthorsCommand
+            ??= new LambdaCommand(OnLostFocusComboBoxAuthorsCommandExecuted);
 
-        ///<summary>Логика выполнения - Команда когда курсор выходит с ComboBox (ББК)</summary>
-        private void OnMouseLeaveComboBoxBBKCommandExecuted(object? p)
+        ///<summary>Логика выполнения - Команда при потере фокуса (ComboBox авторов)</summary>
+        private void OnLostFocusComboBoxAuthorsCommandExecuted(object? p)
         {
-            _bbkView.Filter -= BBKView_Filter;
-            CallFinalizer();
+            FiltredAuthors = null;
+            ClearGarbage();
         }
 
         #endregion
 
-        #region MouseLeaveComboBoxAuthorCommand - Команда когда курсор выходит с ComboBox (Автор)
+        #region LostFocusComboBoxNamesCommand - Команда при потере фокуса (ComboBox названий)
 
-        ///<summary>Команда когда курсор выходит с ComboBox (Автор)</summary>
-        private ICommand? _mouseLeaveComboBoxAuthorCommand;
+        ///<summary>Команда при потере фокуса (ComboBox названий)</summary>
+        private ICommand? _LostFocusComboBoxNamesCommand;
 
-        ///<summary>Команда когда курсор выходит с ComboBox (Автор)</summary>
-        public ICommand MouseLeaveComboBoxAuthorCommand => _mouseLeaveComboBoxAuthorCommand
-            ??= new LambdaCommand(OnMouseLeaveComboBoxAuthorCommandExecuted);
+        ///<summary>Команда при потере фокуса (ComboBox названий)</summary>
+        public ICommand LostFocusComboBoxNamesCommand => _LostFocusComboBoxNamesCommand
+            ??= new LambdaCommand(OnLostFocusComboBoxNamesCommandExecuted);
 
-        ///<summary>Логика выполнения - Команда когда курсор выходит с ComboBox (Автор)</summary>
-        private void OnMouseLeaveComboBoxAuthorCommandExecuted(object? p)
+        ///<summary>Логика выполнения - Команда при потере фокуса (ComboBox названий)</summary>
+        private void OnLostFocusComboBoxNamesCommandExecuted(object? p)
         {
-            _authorsView.Filter -= AuthorsView_Filter;
-            CallFinalizer();
+            FiltredNames = null;
+            ClearGarbage();
         }
 
         #endregion
 
-        #region MouseLeaveComboBoxNameCommand - Команда когда курсор выходит с ComboBox (Название)
+        #region LostFocusComboBoxPublishesCommand - Команда при потере фокуса (ComboBox издательств)
 
-        ///<summary>Команда когда курсор выходит с ComboBox (Название)</summary>
-        private ICommand? _mouseLeaveComboBoxNameCommand;
+        ///<summary>Команда при потере фокуса (ComboBox издательств)</summary>
+        private ICommand? _lostFocusComboBoxPublishesCommand;
 
-        ///<summary>Команда когда курсор выходит с ComboBox (Название)</summary>
-        public ICommand MouseLeaveComboBoxNameCommand => _mouseLeaveComboBoxNameCommand
-            ??= new LambdaCommand(OnMouseLeaveComboBoxNameCommandExecuted);
+        ///<summary>Команда при потере фокуса (ComboBox издательств)</summary>
+        public ICommand LostFocusComboBoxPublishesCommand => _lostFocusComboBoxPublishesCommand
+            ??= new LambdaCommand(OnLostFocusComboBoxPublishesCommandExecuted);
 
-        ///<summary>Логика выполнения - Команда когда курсор выходит с ComboBox (Название)</summary>
-        private void OnMouseLeaveComboBoxNameCommandExecuted(object? p)
+        ///<summary>Логика выполнения - Команда при потере фокуса (ComboBox издательств)</summary>
+        private void OnLostFocusComboBoxPublishesCommandExecuted(object? p)
         {
-            _namesView.Filter -= NamesView_Filter;
-            CallFinalizer();
+            FiltredPublishes = null;
+            ClearGarbage();
         }
 
         #endregion
 
-        #region MouseLeaveComboBoxPublishCommand - Команда когда курсор выходит с ComboBox (Издательство)
-
-        ///<summary>Команда когда курсор выходит с ComboBox (Издательство)</summary>
-        private ICommand? _mouseLeaveComboBoxPublishCommand;
-
-        ///<summary>Команда когда курсор выходит с ComboBox (Издательство)</summary>
-        public ICommand MouseLeaveComboBoxPublishCommand => _mouseLeaveComboBoxPublishCommand
-            ??= new LambdaCommand(OnMouseLeaveComboBoxPublishCommandExecuted);
-
-        ///<summary>Логика выполнения - Команда когда курсор выходит с ComboBox (Издательство)</summary>
-        private void OnMouseLeaveComboBoxPublishCommandExecuted(object? p)
-        {
-            _publishView.Filter -= PublishView_Filter;
-            CallFinalizer();
-        }
-
-        #endregion
-
-        #region MouseLeaveComboBoxYearPublishCommand - Команда когда курсор выходит с ComboBox (Год издания)
-
-        ///<summary>Команда когда курсор выходит с ComboBox (Год издания)</summary>
-        private ICommand? _mouseLeaveComboBoxYearPublishCommand;
-
-        ///<summary>Команда когда курсор выходит с ComboBox (Год издания)</summary>
-        public ICommand MouseLeaveComboBoxYearPublishCommand => _mouseLeaveComboBoxYearPublishCommand
-            ??= new LambdaCommand(OnMouseLeaveComboBoxYearPublishCommandExecuted);
-
-        ///<summary>Логика выполнения - Команда когда курсор выходит с ComboBox (Год издания)</summary>
-        private void OnMouseLeaveComboBoxYearPublishCommandExecuted(object? p)
-        {
-            _yearPublishView.Filter -= YearPublishView_Filter;
-            CallFinalizer();
-        }
-
-        #endregion
-
-        #endregion
-
-        #endregion
-
-        #region Events
-
-        #region YearPublishView_Filter
-        private void YearPublishView_Filter(object sender, FilterEventArgs e)
-        {
-            if (e.Item is not string yearPublish)
-            {
-                e.Accepted = false;
-                return;
-            }
-            //var yearPublish_string = Convert.ToString(yearPublish);
-            var filter_text = _selectedYearPublish;
-            e.Accepted = string.IsNullOrWhiteSpace(filter_text)
-                || yearPublish.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
-                ;
-        }
-        #endregion
-
-        #region PublishView_Filter
-        private void PublishView_Filter(object sender, FilterEventArgs e)
-        {
-            if (e.Item is not string publish)
-            {
-                e.Accepted = false;
-                return;
-            }
-            var filter_text = _selectedPublish;
-            e.Accepted = string.IsNullOrWhiteSpace(filter_text)
-                || publish.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
-                ;
-        }
-        #endregion
-
-        #region BBKView_Filter
-        private void BBKView_Filter(object sender, FilterEventArgs e)
-        {
-            if (e.Item is not string bbk)
-            {
-                e.Accepted = false;
-                return;
-            }
-            var filter_text = _selectedBBK;
-            e.Accepted = string.IsNullOrWhiteSpace(filter_text)
-                || bbk.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
-                ;
-        }
-        #endregion
-
-        #region StockView_Filter
-        private void StockView_Filter(object sender, FilterEventArgs e)
-        {
-            if (e.Item is not string stock)
-            {
-                e.Accepted = false;
-                return;
-            }
-            var filter_text = _selectedStock;
-            e.Accepted = string.IsNullOrWhiteSpace(filter_text)
-                || stock.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
-                ;
-        }
-        #endregion
-
-        #region NamesView_Filter
-        private void NamesView_Filter(object sender, FilterEventArgs e)
-        {
-            if (e.Item is not string name)
-            {
-                e.Accepted = false;
-                return;
-            }
-            var filter_text = _selectedName;
-            e.Accepted = string.IsNullOrWhiteSpace(filter_text)
-                || name.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
-                ;
-        }
-        #endregion
-
-        #region AuthorView_Filter
-        private void AuthorsView_Filter(object sender, FilterEventArgs e)
-        {
-            if (e.Item is not string author)
-            {
-                e.Accepted = false;
-                return;
-            }
-            var filter_text = _authorsFilterText;
-            e.Accepted = string.IsNullOrWhiteSpace(filter_text)
-                || author.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
-                ;
-        }
-        #endregion
-
-        #region BooksView_Filter
-        private void BooksView_Filter(object sender, FilterEventArgs e)
-        {
-            if (e.Item is not Book book)
-            {
-                e.Accepted = false;
-                return;
-            }
-            var filter_text = _booksFilterText;
-            e.Accepted = string.IsNullOrWhiteSpace(filter_text)
-                    || book.BBK.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
-                    || book.Author.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
-                    || book.Name.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
-                    || book.Publish.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
-                    || book.YearPublish.ToString().Contains(filter_text, StringComparison.OrdinalIgnoreCase)
-                    || book.CodeAuthor.Contains(filter_text, StringComparison.OrdinalIgnoreCase)
-                    ;
-        }
         #endregion
 
         #endregion
 
         public BooksViewModel()
         {
-            Books = new(Enumerable.Range(0, 100000).Select(p => new Book
+            Books = new(Enumerable.Range(1, 100000).Select(p => new Book
             {
                 Id = p,
                 BBK = Random.Shared.Next(0, 100).ToString(),
@@ -815,19 +793,16 @@ namespace BookObserver.ViewModels
                 },
                 Publish = $"Publish {p}",
                 YearPublish = $"{p}",
-                Stock = Random.Shared.Next(0, 2) == 0 ? "Да" : "Нет"
-            }));
-            _booksView.Source = Books;
-            OnPropertyChanged(nameof(BooksView));
+                Existence = Random.Shared.Next(0, 2) == 0 ? "Да" : "Нет"
+            }).ToList());
+            _booksView.Source = FiltredBooks = Books;
             ((Command)ResetToZeroFindCommand).Executable = false;
         }
 
-        private void CallFinalizer()
+        private void ExecutableCommandFindBooksCommandChange()
         {
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
-            GC.Collect();
+            if (!((Command)FindBooksCommand).Executable)
+                ((Command)FindBooksCommand).Executable = true;
         }
-
     }
 }

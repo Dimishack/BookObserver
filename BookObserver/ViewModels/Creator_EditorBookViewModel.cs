@@ -214,7 +214,7 @@ namespace BookObserver.ViewModels
             var book = new Book
             {
                 Id = Books.Count,
-                Stock = this.Stock ? "Да" : "Нет",
+                Existence = this.Stock ? "Да" : "Нет",
                 CodeAuthor = _selectedCodeAuthor,
                 BBK = Convert.ToString(_selectedBBK),
                 Author = _selectedAuthor,

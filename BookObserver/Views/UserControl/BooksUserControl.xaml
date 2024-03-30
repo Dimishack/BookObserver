@@ -46,38 +46,41 @@
                     </UniformGrid>
                     <StackPanel Orientation="Vertical">
                         <TextBlock Text="В наличии"/>
-                        <ComboBox ItemsSource="{Binding StockView}"
-                                  Text="{Binding SelectedStock}">
+                        <ComboBox ItemsSource="{Binding ExistencesView}"
+                                  Text="{Binding SelectedExistence, UpdateSourceTrigger=PropertyChanged}">
                             <i:Interaction.Triggers>
-                                <i:EventTrigger EventName="MouseEnter">
-                                    <i:InvokeCommandAction Command="{Binding MouseEnterComboBoxStockCommand}"/>
+                                <i:EventTrigger EventName="GotFocus">
+                                    <i:InvokeCommandAction Command="{Binding GotFocusComboBoxExistencesCommand}"
+                                                           CommandParameter="{Binding Books}"/>
                                 </i:EventTrigger>
-                                <i:EventTrigger EventName="MouseLeave">
-                                    <i:InvokeCommandAction Command="{Binding MouseLeaveComboBoxStockCommand}"/>
+                                <i:EventTrigger EventName="LostFocus">
+                                    <i:InvokeCommandAction Command="{Binding LostFocusComboBoxStockCommand}"/>
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </ComboBox>
                         <TextBlock Text="ББК"/>
-                        <ComboBox ItemsSource="{Binding BBKView}"
+                        <ComboBox ItemsSource="{Binding BBKsView}"
                                   Text="{Binding SelectedBBK}">
                             <i:Interaction.Triggers>
-                                <i:EventTrigger EventName="MouseEnter">
-                                    <i:InvokeCommandAction Command="{Binding MouseEnterComboBoxBBKCommand}"/>
+                                <i:EventTrigger EventName="GotFocus">
+                                    <i:InvokeCommandAction Command="{Binding GotFocusComboBoxBBKsCommand}"
+                                                           CommandParameter="{Binding Books}"/>
                                 </i:EventTrigger>
-                                <i:EventTrigger EventName="MouseLeave">
-                                    <i:InvokeCommandAction Command="{Binding MouseLeaveComboBoxBBKCommand}"/>
+                                <i:EventTrigger EventName="LostFocus">
+                                    <i:InvokeCommandAction Command="{Binding LostFocusComboBoxBBKsCommand}"/>
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </ComboBox>
                         <TextBlock Text="Автор"/>
-                        <ComboBox ItemsSource="{Binding AuthorsView}" 
+                        <ComboBox ItemsSource="{Binding AuthorsView}"
                                   Text="{Binding SelectedAuthor}">
                             <i:Interaction.Triggers>
-                                <i:EventTrigger EventName="MouseEnter">
-                                    <i:InvokeCommandAction Command="{Binding MouseEnterComboBoxAuthorCommand}"/>
+                                <i:EventTrigger EventName="GotFocus">
+                                    <i:InvokeCommandAction Command="{Binding GotFocusComboBoxAuthorsCommand}"
+                                                           CommandParameter="{Binding Books}"/>
                                 </i:EventTrigger>
-                                <i:EventTrigger EventName="MouseLeave">
-                                    <i:InvokeCommandAction Command="{Binding MouseLeaveComboBoxAuthorCommand}"/>
+                                <i:EventTrigger EventName="LostFocus">
+                                    <i:InvokeCommandAction Command="{Binding LostFocusComboBoxAuthorsCommand}"/>
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </ComboBox>
@@ -85,27 +88,29 @@
                         <ComboBox ItemsSource="{Binding NamesView}"
                                   Text="{Binding SelectedName}">
                             <i:Interaction.Triggers>
-                                <i:EventTrigger EventName="MouseEnter">
-                                    <i:InvokeCommandAction Command="{Binding MouseEnterComboBoxNameCommand}"/>
+                                <i:EventTrigger EventName="GotFocus">
+                                    <i:InvokeCommandAction Command="{Binding GotFocusComboBoxNamesCommand}"
+                                                           CommandParameter="{Binding Books}"/>
                                 </i:EventTrigger>
-                                <i:EventTrigger EventName="MouseLeave">
-                                    <i:InvokeCommandAction Command="{Binding MouseLeaveComboBoxNameCommand}"/>
+                                <i:EventTrigger EventName="LostFocus">
+                                    <i:InvokeCommandAction Command="{Binding LostFocusComboBoxNamesCommand}"/>
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </ComboBox>
                         <TextBlock Text="Издательство"/>
-                        <ComboBox ItemsSource="{Binding PublishView}"
+                        <ComboBox ItemsSource="{Binding PublishesView}"
                                   Text="{Binding SelectedPublish}">
                             <i:Interaction.Triggers>
-                                <i:EventTrigger EventName="MouseEnter">
-                                    <i:InvokeCommandAction Command="{Binding MouseEnterComboBoxPublishCommand}"/>
+                                <i:EventTrigger EventName="GotFocus">
+                                    <i:InvokeCommandAction Command="{Binding GotFocusComboBoxPublishesCommand}"
+                                                           CommandParameter="{Binding Books}"/>
                                 </i:EventTrigger>
-                                <i:EventTrigger EventName="MouseLeave">
-                                    <i:InvokeCommandAction Command="{Binding MouseLeaveComboBoxPublishCommand}"/>
+                                <i:EventTrigger EventName="LostFocus">
+                                    <i:InvokeCommandAction Command="{Binding LostFocusComboBoxPublishesCommand}"/>
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </ComboBox>
-                        <Button Content="Очистить фильтры" Margin="10"
+                        <Button Content="Очистить поля" Margin="10"
                                 Command="{Binding ClearFiltersCommand}">
                         </Button>
                     </StackPanel>
@@ -153,7 +158,7 @@
                                     <TextBlock Text="{Binding Pages, StringFormat='Количество страниц: {0}'}"/>
                                     <TextBlock Text="{Binding Author, StringFormat=Автор: {0}}"/>
                                     <TextBlock Text="{Binding Name, StringFormat=Название: {0}}"/>
-                                    <TextBlock Text="{Binding Stock, StringFormat=В наличии: {0}}"
+                                    <TextBlock Text="{Binding Existence, StringFormat=В наличии: {0}}"
                                                FontWeight="Bold"/>
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Text="{Binding Reader.FullName, StringFormat='ФИО читателя: {0}'}"/>
@@ -165,7 +170,7 @@
                                         BorderThickness="0"
                                         HorizontalAlignment="Right" VerticalAlignment="Top"
                                         Margin="7,3" Padding="3"
-                                        Command="{Binding Source={StaticResource Locator}, Path=BooksUC.DeleteBookCommand}"
+                                        Command="{Binding Source={StaticResource Locator}, Path=BooksVM.DeleteBookCommand}"
                                         CommandParameter="{Binding}"
                                         ToolTip="Удалить книгу">
                                     <Button.Resources>
