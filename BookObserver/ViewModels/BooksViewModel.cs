@@ -783,18 +783,20 @@ namespace BookObserver.ViewModels
             Books = new(Enumerable.Range(1, 100000).Select(p => new Book
             {
                 Id = p,
+                CodeAuthor = $"Код автора {p}",
                 BBK = Random.Shared.Next(0, 100).ToString(),
-                Pages = p + Random.Shared.Next(0, 100),
                 Author = $"Author {p}",
-                Name = new string('ü', Random.Shared.Next(15, 30)),
+                Name = new string('ü', Random.Shared.Next(15, 60)),
+                Publish = $"Publish {p}",
+                YearPublish = $"{p}",
+                Pages = p + Random.Shared.Next(0, 100),
+                ISBN = $"ISBN {p}",
+                Existence = Random.Shared.Next(0, 2) == 0 ? "Да" : "Нет",
                 Reader = new Models.Readers.Reader
                 {
                     FirstName = "Амплитуда"
-                },
-                Publish = $"Publish {p}",
-                YearPublish = $"{p}",
-                Existence = Random.Shared.Next(0, 2) == 0 ? "Да" : "Нет"
-            }).ToList());
+                }
+            }));
             _booksView.Source = FiltredBooks = Books;
             ((Command)ResetToZeroFindCommand).Executable = false;
         }

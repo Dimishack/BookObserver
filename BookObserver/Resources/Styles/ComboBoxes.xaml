@@ -6,7 +6,7 @@
         <Setter Property="IsTextSearchCaseSensitive" Value="False"/>
         <Setter Property="StaysOpenOnEdit" Value="True"/>
         <Setter Property="MaxDropDownHeight" Value="140"/>
-
+        
         <Setter Property="VirtualizingPanel.IsVirtualizing" Value="True"/>
         <Setter Property="VirtualizingPanel.IsContainerVirtualizable" Value="True"/>
         <Setter Property="VirtualizingPanel.VirtualizationMode" Value="Recycling"/>
@@ -15,6 +15,13 @@
                 <ItemsPanelTemplate>
                     <VirtualizingStackPanel/>
                 </ItemsPanelTemplate>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="ItemTemplate">
+            <Setter.Value>
+                <DataTemplate>
+                    <TextBlock Text="{Binding}" Width="250" TextWrapping="Wrap"/>
+                </DataTemplate>
             </Setter.Value>
         </Setter>
     </Style>

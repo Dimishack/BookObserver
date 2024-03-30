@@ -54,9 +54,10 @@
                                                            CommandParameter="{Binding Books}"/>
                                 </i:EventTrigger>
                                 <i:EventTrigger EventName="LostFocus">
-                                    <i:InvokeCommandAction Command="{Binding LostFocusComboBoxStockCommand}"/>
+                                    <i:InvokeCommandAction Command="{Binding LostFocusComboBoxExistencesCommand}"/>
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
+                            
                         </ComboBox>
                         <TextBlock Text="ББК"/>
                         <ComboBox ItemsSource="{Binding BBKsView}"
@@ -150,14 +151,16 @@
                                             <Setter Property="FontSize" Value="12"/>
                                         </Style>
                                     </StackPanel.Resources>
+                                    <TextBlock Text="{Binding CodeAuthor, StringFormat=Код автора: {0}}"/>
                                     <TextBlock Text="{Binding BBK, StringFormat=ББК: {0}}"/>
+                                    <TextBlock Text="{Binding Author, StringFormat=Автор: {0}}"/>
+                                    <TextBlock Text="{Binding Name, StringFormat=Название: {0}}"/>
                                     <StackPanel Orientation="Horizontal">
                                         <TextBlock Text="{Binding Publish, StringFormat=Издательство: {0}}"/>
                                         <TextBlock Text="{Binding YearPublish, StringFormat=', год издания: {0}'}"/>
                                     </StackPanel>
                                     <TextBlock Text="{Binding Pages, StringFormat='Количество страниц: {0}'}"/>
-                                    <TextBlock Text="{Binding Author, StringFormat=Автор: {0}}"/>
-                                    <TextBlock Text="{Binding Name, StringFormat=Название: {0}}"/>
+                                    <TextBlock Text="{Binding ISBN, StringFormat=ISBN: {0}}"/>
                                     <TextBlock Text="{Binding Existence, StringFormat=В наличии: {0}}"
                                                FontWeight="Bold"/>
                                     <StackPanel Orientation="Horizontal">
