@@ -6,7 +6,7 @@ namespace BookObserver.Models.Books
     {
         public int Id { get; set; }
         public string? Existence { get; set; }
-        public int Pages { get; set; }
+        public string? Pages { get; set; }
         public string? YearPublish { get; set; }
         public string? Author { get; set; }
         public string? BBK { get; set; }
@@ -14,6 +14,5 @@ namespace BookObserver.Models.Books
         public string? ISBN { get; set; }
         public string? Publish { get; set; }
         public string? Name { get; set; }
-        public Reader? Reader { get; set; }
     }
 }

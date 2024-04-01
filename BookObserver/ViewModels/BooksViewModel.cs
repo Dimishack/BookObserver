@@ -3,6 +3,7 @@ using BookObserver.Infrastructure.Commands.Base;
 using BookObserver.Models.Books;
 using BookObserver.ViewModels.Base;
 using BookObserver.Views.Windows;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -16,6 +17,8 @@ namespace BookObserver.ViewModels
     class BooksViewModel : ViewModel
     {
         #region Properties
+
+        private CreatorBookWindow? _creatorwindow;
 
         public Dictionary<string, SortDescription> Sorting { get; } = new()
         {
@@ -540,10 +543,20 @@ namespace BookObserver.ViewModels
         ///<summary>Логика выполнения - Команда добавить книгу</summary>
         private void OnAddBookCommandExecuted(object? p)
         {
-            var model = new Creator_EditorBookViewModel(this);
-            var window = new Creator_EditorBookWindow { DataContext = model };
-            window.Closed += (_, _) => window.DataContext = null;
-            window.ShowDialog();
+            if (_creatorwindow is { } window)
+            {
+                window.Show();
+                return;
+            }
+            window = App.Services.GetRequiredService<CreatorBookWindow>();
+            window.Closed += (_, _) =>
+            {
+                _creatorwindow = null;
+                ClearGarbage();
+            };
+            _creatorwindow = window;
+            window.Show();
+
         }
 
         #endregion
@@ -780,22 +793,19 @@ namespace BookObserver.ViewModels
 
         public BooksViewModel()
         {
+            Random r = new();
             Books = new(Enumerable.Range(1, 100000).Select(p => new Book
             {
                 Id = p,
                 CodeAuthor = $"Код автора {p}",
-                BBK = Random.Shared.Next(0, 100).ToString(),
+                BBK = double.Round(r.NextDouble() * 100, 2).ToString(),
                 Author = $"Author {p}",
-                Name = new string('ü', Random.Shared.Next(15, 60)),
+                Name = new string('ü', r.Next(15, 60)),
                 Publish = $"Publish {p}",
-                YearPublish = $"{p}",
-                Pages = p + Random.Shared.Next(0, 100),
+                YearPublish = r.Next(2000,2024).ToString(),
+                Pages = r.Next(100,501).ToString(),
                 ISBN = $"ISBN {p}",
-                Existence = Random.Shared.Next(0, 2) == 0 ? "Да" : "Нет",
-                Reader = new Models.Readers.Reader
-                {
-                    FirstName = "Амплитуда"
-                }
+                Existence = r.Next(0, 2) == 0 ? "Да" : "Нет"
             }));
             _booksView.Source = FiltredBooks = Books;
             ((Command)ResetToZeroFindCommand).Executable = false;

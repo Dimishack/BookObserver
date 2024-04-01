@@ -12,6 +12,9 @@
              d:DataContext="{d:DesignInstance vm:ReadersViewModel}"
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
+        <Grid.Resources>
+            <Style TargetType="ComboBox" BasedOn="{StaticResource ComboBoxBase}"/>
+        </Grid.Resources>
         <Grid.ColumnDefinitions>
             <ColumnDefinition MinWidth="150" MaxWidth="250"/>
             <ColumnDefinition Width="3"/>
