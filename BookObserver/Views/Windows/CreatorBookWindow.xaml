@@ -23,9 +23,17 @@
                     <Setter Property="Padding" Value="10"/>
                 </Style>
             </UniformGrid.Resources>
-            <Button Content="Добавить"/>
-            <Button Content="Закрыть окно"/>
+            <Button Content="Добавить" Command="{Binding AddBookCommand}"/>
+            <Button Content="Закрыть окно"
+                    Command="{Binding CloseWindowCommand}"
+                    CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"/>
         </UniformGrid>
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" 
+                    HorizontalAlignment="Right"
+                    Margin="3,3,10,3">
+            <CheckBox IsChecked="{Binding IsNotifyAddBook}"/>
+            <TextBlock Text="Уведомлять о добавлении книги в список"/>
+        </StackPanel>
         <Grid>
             <Grid.Resources>
                 <Style TargetType="TextBlock">
@@ -79,7 +87,7 @@
             <TextBlock Grid.Column="0" Grid.Row="7" 
                        Text="ISBN:"/>
             <TextBox Grid.Column="1" Grid.Row="0" 
-                      Text="{Binding SelectedCodeAuthor}"/>
+                      Text="{Binding SelectedCodeAuthor, UpdateSourceTrigger=PropertyChanged}"/>
             <ComboBox Grid.Column="1" Grid.Row="1" 
                       ItemsSource="{Binding BBKsView}"
                       Text="{Binding SelectedBBK}"/>
@@ -96,12 +104,13 @@
                       ItemsSource="{Binding YearPublishesView}"
                       Text="{Binding SelectedYearPublish}"/>
             <TextBox Grid.Column="1" Grid.Row="6" 
-                      Text="{Binding SelectedPage}"/>
+                      Text="{Binding SelectedPage, UpdateSourceTrigger=PropertyChanged}"/>
             <TextBox Grid.Column="1" Grid.Row="7"
-                      Text="{Binding SelectedISBN}"/>
+                      Text="{Binding SelectedISBN, UpdateSourceTrigger=PropertyChanged}"/>
             <Button Grid.Column="1" Grid.Row="8" 
                     Content="Очистить поля" 
-                    Style="{StaticResource ButtonUG}"/>
+                    Style="{StaticResource ButtonUG}"
+                    Command="{Binding ClearFieldsCommand}"/>
         </Grid>
     </DockPanel>
 </Window>
