@@ -90,7 +90,8 @@
                       Text="{Binding SelectedCodeAuthor, UpdateSourceTrigger=PropertyChanged}"/>
             <ComboBox Grid.Column="1" Grid.Row="1" 
                       ItemsSource="{Binding BBKsView}"
-                      Text="{Binding SelectedBBK}"/>
+                      Text="{Binding SelectedBBK}"
+                      KeyDown="ComboBox_KeyDown"/>
             <ComboBox Grid.Column="1" Grid.Row="2" 
                       ItemsSource="{Binding AuthorsView}"
                       Text="{Binding SelectedAuthor}"/>
@@ -102,11 +103,14 @@
                       Text="{Binding SelectedPublish}"/>
             <ComboBox Grid.Column="1" Grid.Row="5" 
                       ItemsSource="{Binding YearPublishesView}"
-                      Text="{Binding SelectedYearPublish}"/>
+                      Text="{Binding SelectedYearPublish}"
+                      KeyDown="ComboBox_KeyDownDigits"/>
             <TextBox Grid.Column="1" Grid.Row="6" 
-                      Text="{Binding SelectedPage, UpdateSourceTrigger=PropertyChanged}"/>
+                     Text="{Binding SelectedPage, UpdateSourceTrigger=PropertyChanged}"
+                     KeyDown="ComboBox_KeyDownDigits"/>
             <TextBox Grid.Column="1" Grid.Row="7"
-                      Text="{Binding SelectedISBN, UpdateSourceTrigger=PropertyChanged}"/>
+                     Text="{Binding SelectedISBN, UpdateSourceTrigger=PropertyChanged}"
+                     KeyDown="TextBox_KeyDown"/>
             <Button Grid.Column="1" Grid.Row="8" 
                     Content="Очистить поля" 
                     Style="{StaticResource ButtonUG}"
