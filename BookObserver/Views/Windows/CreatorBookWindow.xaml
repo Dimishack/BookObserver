@@ -9,7 +9,7 @@
         
         d:DataContext="{d:DesignInstance vm:CreatorBookViewModel}"
         mc:Ignorable="d"
-        Title="{Binding Title}" Height="400"  Width="480">
+        Title="{Binding Title}" Height="400" MinWidth="300"  Width="400">
     <DockPanel>
         <TextBlock DockPanel.Dock="Top" 
                    Text="{Binding Title}"

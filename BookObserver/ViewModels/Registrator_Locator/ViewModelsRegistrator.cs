@@ -1,5 +1,6 @@
 ﻿using BookObserver.Views.Windows;
 using Microsoft.Extensions.DependencyInjection;
+using System.Windows;
 
 namespace BookObserver.ViewModels.Registrator_Locator
 {
@@ -16,6 +17,8 @@ namespace BookObserver.ViewModels.Registrator_Locator
                 var viewModel = s.GetRequiredService<CreatorBookViewModel>();
                 var window = new CreatorBookWindow { DataContext = viewModel };
                 window.Closed += (_, _) => viewModel = null;
+                window.Owner = App.ActiveWindow;
+                window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
                 return window;
             })
             ;
