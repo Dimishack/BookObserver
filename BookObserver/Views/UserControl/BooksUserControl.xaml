@@ -56,9 +56,6 @@
                                     <i:InvokeCommandAction Command="{Binding GotFocusComboBoxExistencesCommand}"
                                                            CommandParameter="{Binding Books}"/>
                                 </i:EventTrigger>
-                                <i:EventTrigger EventName="LostFocus">
-                                    <i:InvokeCommandAction Command="{Binding LostFocusComboBoxExistencesCommand}"/>
-                                </i:EventTrigger>
                             </i:Interaction.Triggers>
                             
                         </ComboBox>
@@ -70,9 +67,6 @@
                                     <i:InvokeCommandAction Command="{Binding GotFocusComboBoxBBKsCommand}"
                                                            CommandParameter="{Binding Books}"/>
                                 </i:EventTrigger>
-                                <i:EventTrigger EventName="LostFocus">
-                                    <i:InvokeCommandAction Command="{Binding LostFocusComboBoxBBKsCommand}"/>
-                                </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </ComboBox>
                         <TextBlock Text="Автор"/>
@@ -82,9 +76,6 @@
                                 <i:EventTrigger EventName="GotFocus">
                                     <i:InvokeCommandAction Command="{Binding GotFocusComboBoxAuthorsCommand}"
                                                            CommandParameter="{Binding Books}"/>
-                                </i:EventTrigger>
-                                <i:EventTrigger EventName="LostFocus">
-                                    <i:InvokeCommandAction Command="{Binding LostFocusComboBoxAuthorsCommand}"/>
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </ComboBox>
@@ -96,9 +87,6 @@
                                     <i:InvokeCommandAction Command="{Binding GotFocusComboBoxNamesCommand}"
                                                            CommandParameter="{Binding Books}"/>
                                 </i:EventTrigger>
-                                <i:EventTrigger EventName="LostFocus">
-                                    <i:InvokeCommandAction Command="{Binding LostFocusComboBoxNamesCommand}"/>
-                                </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </ComboBox>
                         <TextBlock Text="Издательство"/>
@@ -108,9 +96,6 @@
                                 <i:EventTrigger EventName="GotFocus">
                                     <i:InvokeCommandAction Command="{Binding GotFocusComboBoxPublishesCommand}"
                                                            CommandParameter="{Binding Books}"/>
-                                </i:EventTrigger>
-                                <i:EventTrigger EventName="LostFocus">
-                                    <i:InvokeCommandAction Command="{Binding LostFocusComboBoxPublishesCommand}"/>
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </ComboBox>
