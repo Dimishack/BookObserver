@@ -56,41 +56,32 @@
                     <StackPanel Orientation="Vertical">
                         <TextBlock Text="Фамилия"/>
                         <ComboBox Text="{Binding SelectedLastName, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-                                  ItemsSource="{Binding FiltredLastNames}" IsTextSearchEnabled="False"
+                                  ItemsSource="{Binding LastNamesView}" IsTextSearchEnabled="False"
                                   StaysOpenOnEdit="True">
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="GotFocus">
                                     <i:InvokeCommandAction Command="{Binding GotFocusComboBoxLastNamesCommand}"
                                                            CommandParameter="{Binding Readers}"/>
                                 </i:EventTrigger>
-                                <i:EventTrigger EventName="LostFocus">
-                                    <i:InvokeCommandAction Command="{Binding LostFocusComboBoxLastNamesCommand}"/>
-                                </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </ComboBox>
                         <TextBlock Text="Имя"/>
                         <ComboBox Text="{Binding SelectedFirstName, UpdateSourceTrigger=PropertyChanged}"
-                                  ItemsSource="{Binding FiltredFirstNames}">
+                                  ItemsSource="{Binding FirstNamesView}">
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="GotFocus">
                                     <i:InvokeCommandAction Command="{Binding GotFocusComboBoxFirstNamesCommand}"
                                                            CommandParameter="{Binding Readers}"/>
                                 </i:EventTrigger>
-                                <i:EventTrigger EventName="LostFocus">
-                                    <i:InvokeCommandAction Command="{Binding LostFocusComboBoxFirstNamesCommand}"/>
-                                </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </ComboBox>
                         <TextBlock Text="Отчество"/>
                         <ComboBox Text="{Binding SelectedPatronymic, UpdateSourceTrigger=PropertyChanged}" 
-                                  ItemsSource="{Binding FiltredPatronymics}">
+                                  ItemsSource="{Binding PatronymicsView}">
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="GotFocus">
                                     <i:InvokeCommandAction Command="{Binding GotFocusComboBoxPatronymicsCommand}"
                                                            CommandParameter="{Binding Readers}"/>
-                                </i:EventTrigger>
-                                <i:EventTrigger EventName="LostFocus">
-                                    <i:InvokeCommandAction Command="{Binding LostFocusComboBoxPatronymicsCommand}"/>
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </ComboBox>

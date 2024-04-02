@@ -1,5 +1,6 @@
 ﻿using BookObserver.Infrastructure.Commands;
 using BookObserver.Infrastructure.Commands.Base;
+using BookObserver.Models;
 using BookObserver.Models.Readers;
 using BookObserver.ViewModels.Base;
 using System.Collections.ObjectModel;
@@ -11,18 +12,6 @@ namespace BookObserver.ViewModels
 {
     internal class ReadersViewModel : ViewModel
     {
-        /// <summary>Список книг</summary>
-        public ObservableCollection<Reader> Readers { get; }
-
-        #region FiltredReaders : ObservableCollection<Reader>? - Отфильтрованный список читателей
-
-        ///<summary>Отфильтрованный список читателей</summary>
-        private ObservableCollection<Reader>? _filtredReaders;
-
-        ///<summary>Отфильтрованный список читателей</summary>
-        private ObservableCollection<Reader>? FiltredReaders { get => _filtredReaders; set => Set(ref _filtredReaders, value); }
-
-        #endregion
 
         public Dictionary<string, SortDescription> Sorting { get; } = new()
         {
@@ -39,6 +28,128 @@ namespace BookObserver.ViewModels
             {"Дата возврата (по возрастанию)", new SortDescription("DateSet", ListSortDirection.Ascending)},
             {"Дата возврата (по убыванию)", new SortDescription("DateSet", ListSortDirection.Descending)},
         };
+
+        #region SelectedSorting : string - Выбранная сортировка списка читателей
+
+        ///<summary>Выбранная сортировка списка читателей</summary>
+        private string _selectedSorting = "Сначала старые записи";
+
+        ///<summary>Выбранная сортировка списка читателей</summary>
+        public string SelectedSorting
+        {
+            get => _selectedSorting;
+            set
+            {
+                if (!Set(ref _selectedSorting, value)) return;
+
+                _readersView.View.SortDescriptions.Clear();
+                ClearGarbage();
+                _readersView.View.SortDescriptions.Add(Sorting[value]);
+            }
+        }
+
+        #endregion
+
+        /// <summary>Список книг</summary>
+        public ObservableCollection<Reader> Readers { get; }
+
+        #region FiltredReaders : ObservableCollection<Reader>? - Отфильтрованный список читателей
+
+        ///<summary>Отфильтрованный список читателей</summary>
+        private ObservableCollection<Reader>? _filtredReaders;
+
+        ///<summary>Отфильтрованный список читателей</summary>
+        private ObservableCollection<Reader>? FiltredReaders { get => _filtredReaders; set => Set(ref _filtredReaders, value); }
+
+        #endregion
+
+        #region ReadersView : ICollectionView - Вывод списка читателей
+
+        private readonly CollectionViewSource _readersView = new();
+        public ICollectionView ReadersView => _readersView.View;
+        #endregion
+
+        #region SelectedReader : Reader? - Выбранный читатель
+
+        ///<summary>Выбранный читатель</summary>
+        private Reader? _selectedReader;
+
+        ///<summary>Выбранный читатель</summary>
+        public Reader? SelectedReader { get => _selectedReader; set => Set(ref _selectedReader, value); }
+
+        #endregion
+
+        private readonly CollectionWithFilter _lastNamesView = new();
+        public ObservableCollection<string>? LastNamesView => _lastNamesView.CollectionView;
+
+        #region SelectedLastName : string? - Выбранная фамилия
+
+        ///<summary>Выбранная фамилия</summary>
+        private string _selectedLastName = string.Empty;
+
+        ///<summary>Выбранная фамилия</summary>
+        public string SelectedLastName
+        {
+            get => _selectedLastName;
+            set
+            {
+                if (!Set(ref _selectedLastName, value)) return;
+
+                _lastNamesView.RefreshFilter(value);
+                OnPropertyChanged(nameof(LastNamesView));
+                ((Command)SearchCommand).Executable = true;
+            }
+        }
+
+        #endregion
+
+        private readonly CollectionWithFilter _firstNamesView = new();
+        public ObservableCollection<string>? FirstNamesView => _firstNamesView.CollectionView;
+
+        #region SelectedFirstName : string? - Выбранное имя
+
+        ///<summary>Выбранное имя</summary>
+        private string _selectedFirstName = string.Empty;
+
+        ///<summary>Выбранное имя</summary>
+        public string SelectedFirstName
+        {
+            get => _selectedFirstName;
+            set
+            {
+                if (!Set(ref _selectedFirstName, value)) return;
+
+                _firstNamesView.RefreshFilter(value);
+                OnPropertyChanged(nameof(FirstNamesView));
+                ((Command)SearchCommand).Executable = true;
+            }
+        }
+
+        #endregion
+
+        private readonly CollectionWithFilter _patronymicsView = new();
+        public ObservableCollection<string>? PatronymicsView => _patronymicsView.CollectionView;
+
+        #region SelectedPatronymic : string - Выбранное отчество
+
+        ///<summary>Выбранное отчество</summary>
+        private string _selectedPatronymic = string.Empty;
+
+        ///<summary>Выбранное отчество</summary>
+        public string SelectedPatronymic
+        {
+            get => _selectedPatronymic;
+            set
+            {
+                if (!Set(ref _selectedPatronymic, value)) return;
+
+                _patronymicsView.RefreshFilter(value);
+                OnPropertyChanged(nameof(PatronymicsView));
+                ((Command)SearchCommand).Executable = true;
+            }
+        }
+
+        #endregion
 
         #region MinDateGet : DateTime - Минимальный промежуток дат получения
 
@@ -57,6 +168,44 @@ namespace BookObserver.ViewModels
 
         ///<summary>Максимальный промежуток дат получения</summary>
         public DateTime MaxDateGet { get => _maxDateGet; set => Set(ref _maxDateGet, value); }
+
+        #endregion
+
+        #region SelectedGetDateFrom : DateTime? - Выбранный промежуток дат получения (от)
+
+        ///<summary>Выбранный промежуток дат получения (от)</summary>
+        private DateTime? _selectedGetDateFrom;
+
+        ///<summary>Выбранный промежуток дат получения (от)</summary>
+        public DateTime? SelectedGetDateFrom
+        {
+            get => _selectedGetDateFrom;
+            set
+            {
+                if (!Set(ref _selectedGetDateFrom, value)) return;
+
+                ((Command)SearchCommand).Executable = true;
+            }
+        }
+
+        #endregion
+
+        #region SelectedGetDateTo : DateTime? - Выбранный промежуток дат получения (до)
+
+        ///<summary>Выбранный промежуток дат получения (до)</summary>
+        private DateTime? _selectedGetDateTo;
+
+        ///<summary>Выбранный промежуток дат получения (до)</summary>
+        public DateTime? SelectedGetDateTo
+        {
+            get => _selectedGetDateTo;
+            set
+            {
+                if (!Set(ref _selectedGetDateTo, value)) return;
+
+                ((Command)SearchCommand).Executable = true;
+            }
+        }
 
         #endregion
 
@@ -80,174 +229,6 @@ namespace BookObserver.ViewModels
 
         #endregion
 
-        #region ReadersView : ICollectionView - Вывод списка читателей
-
-        private readonly CollectionViewSource _readersView = new();
-        public ICollectionView ReadersView => _readersView.View;
-        #endregion
-
-        #region FiltredLastNames : ObservableCollection<string>? - Отфильтрованный список фамилий
-
-        ///<summary>Список фамилий</summary>
-        private ObservableCollection<string>? _lastNames { get; set; }
-
-        ///<summary>Отфильтрованный список фамилий</summary>
-        private ObservableCollection<string>? _filtredLastNames;
-
-        ///<summary>Отфильтрованный список фамилий</summary>
-        public ObservableCollection<string>? FiltredLastNames { get => _filtredLastNames; set => Set(ref _filtredLastNames, value); }
-
-        #endregion
-
-        #region FiltredFirstNames : ObservableCollection<string>? - Отфильтрованный список имен
-
-        /// <summary>Список имен</summary>
-        private ObservableCollection<string>? _firstNames;
-
-        ///<summary>Отфильтрованный список имен</summary>
-        private ObservableCollection<string>? _filtredFirstNames;
-
-        ///<summary>Отфильтрованный список имен</summary>
-        public ObservableCollection<string>? FiltredFirstNames { get => _filtredFirstNames; set => Set(ref _filtredFirstNames, value); }
-
-        #endregion
-
-        #region FitlredPatronymics : ObservableCollection<string>? - Отфильтрованный список отчеств
-
-        /// <summary>Список отчеств</summary>
-        private ObservableCollection<string>? _patronymics { get; set; }
-
-        ///<summary>Отфильтрованный список отчеств</summary>
-        private ObservableCollection<string>? _filtredPatronymics;
-
-        ///<summary>Отфильтрованный список отчеств</summary>
-        public ObservableCollection<string>? FiltredPatronymics { get => _filtredPatronymics; set => Set(ref _filtredPatronymics, value); }
-
-        #endregion
-
-        #region SelectedReader : Reader? - Выбранный читатель
-
-        ///<summary>Выбранный читатель</summary>
-        private Reader? _selectedReader;
-
-        ///<summary>Выбранный читатель</summary>
-        public Reader? SelectedReader { get => _selectedReader; set => Set(ref _selectedReader, value); }
-
-        #endregion
-
-        #region SelectedLastName : string? - Выбранная фамилия
-
-        ///<summary>Выбранная фамилия</summary>
-        private string? _selectedLastName;
-
-        ///<summary>Выбранная фамилия</summary>
-        public string? SelectedLastName
-        {
-            get => _selectedLastName;
-            set
-            {
-                if (!Set(ref _selectedLastName, value)) return;
-
-                if (_lastNames is not null)
-                {
-                    _filtredLastNames = null;
-                    ClearGarbage();
-                    FiltredLastNames = new(_lastNames.Where(ln => ln.Contains(value, StringComparison.OrdinalIgnoreCase)));
-                }
-
-                ExecutableOnSearchCommandChangeOnTrue();
-            }
-        }
-
-        #endregion
-
-        #region SelectedFirstName : string? - Выбранное имя
-
-        ///<summary>Выбранное имя</summary>
-        private string? _selectedFirstName;
-
-        ///<summary>Выбранное имя</summary>
-        public string? SelectedFirstName
-        {
-            get => _selectedFirstName;
-            set
-            {
-                if (!Set(ref _selectedFirstName, value)) return;
-
-                if (_firstNames is not null)
-                {
-                    _filtredFirstNames = null;
-                    ClearGarbage();
-                    FiltredFirstNames = new(_firstNames.Where(fn => fn.Contains(value, StringComparison.OrdinalIgnoreCase)));
-                }
-                ExecutableOnSearchCommandChangeOnTrue();
-            }
-        }
-
-        #endregion
-
-        #region SelectedPatronymic : string? - Выбранное отчество
-
-        ///<summary>Выбранное отчество</summary>
-        private string? _selectedPatronymic;
-
-        ///<summary>Выбранное отчество</summary>
-        public string? SelectedPatronymic
-        {
-            get => _selectedPatronymic;
-            set
-            {
-                if (!Set(ref _selectedPatronymic, value)) return;
-
-                if (_patronymics is not null)
-                {
-                    _filtredPatronymics = null;
-                    ClearGarbage();
-                    FiltredPatronymics = new(_patronymics.Where(p => p.Contains(value, StringComparison.OrdinalIgnoreCase)));
-                }
-            }
-        }
-
-        #endregion
-
-        #region SelectedGetDateFrom : DateTime? - Выбранный промежуток дат получения (от)
-
-        ///<summary>Выбранный промежуток дат получения (от)</summary>
-        private DateTime? _selectedGetDateFrom;
-
-        ///<summary>Выбранный промежуток дат получения (от)</summary>
-        public DateTime? SelectedGetDateFrom
-        {
-            get => _selectedGetDateFrom;
-            set
-            {
-                if (!Set(ref _selectedGetDateFrom, value)) return;
-
-                ExecutableOnSearchCommandChangeOnTrue();
-            }
-        }
-
-        #endregion
-
-        #region SelectedGetDateTo : DateTime? - Выбранный промежуток дат получения (до)
-
-        ///<summary>Выбранный промежуток дат получения (до)</summary>
-        private DateTime? _selectedGetDateTo;
-
-        ///<summary>Выбранный промежуток дат получения (до)</summary>
-        public DateTime? SelectedGetDateTo
-        {
-            get => _selectedGetDateTo;
-            set
-            {
-                if (!Set(ref _selectedGetDateTo, value)) return;
-
-                ExecutableOnSearchCommandChangeOnTrue();
-            }
-        }
-
-        #endregion
-
         #region SelectedSetDateFrom : DateTime? - Выбранный промежуток дат возврата (от)
 
         ///<summary>Выбранный промежуток дат возврата (от)</summary>
@@ -261,7 +242,7 @@ namespace BookObserver.ViewModels
             {
                 if (!Set(ref _selectedSetDateFrom, value)) return;
 
-                ExecutableOnSearchCommandChangeOnTrue();
+                ((Command)SearchCommand).Executable = true;
             }
         }
 
@@ -280,28 +261,7 @@ namespace BookObserver.ViewModels
             {
                 if (!Set(ref _selectedSetDateTo, value)) return;
 
-                ExecutableOnSearchCommandChangeOnTrue();
-            }
-        }
-
-        #endregion
-
-        #region SelectedSorting : string - Выбранная сортировка списка читателей
-
-        ///<summary>Выбранная сортировка списка читателей</summary>
-        private string _selectedSorting = "Сначала старые записи";
-
-        ///<summary>Выбранная сортировка списка читателей</summary>
-        public string SelectedSorting
-        {
-            get => _selectedSorting;
-            set
-            {
-                if (!Set(ref _selectedSorting, value)) return;
-
-                _readersView.View.SortDescriptions.Clear();
-                ClearGarbage();
-                _readersView.View.SortDescriptions.Add(Sorting[value]);
+                ((Command)SearchCommand).Executable = true;
             }
         }
 
@@ -324,8 +284,12 @@ namespace BookObserver.ViewModels
         ///<summary>Логика выполнения - Команда удаления читателя</summary>
         private void OnDeleteReaderCommandExecuted(object? p)
         {
-            FiltredReaders.Remove((p as Reader)!);
-            Readers.Remove((p as Reader)!);
+            Reader reader = (p as Reader)!;
+            var index = Readers.IndexOf(reader);
+            if (Readers.Remove(reader))
+                for (int i = index; i < Readers.Count; i++)
+                    Readers[i].Id--;
+            FiltredReaders?.Remove(reader);
         }
 
         #endregion
@@ -353,9 +317,9 @@ namespace BookObserver.ViewModels
         ///<summary>Логика выполнения - Команда очистка полей для поиска</summary>
         private void OnClearFieldsForSearchCommandExecuted(object? p)
         {
-            SelectedLastName = null;
-            SelectedFirstName = null;
-            SelectedPatronymic = null;
+            SelectedLastName = string.Empty;
+            SelectedFirstName = string.Empty;
+            SelectedPatronymic = string.Empty;
             SelectedGetDateFrom = null;
             SelectedGetDateTo = null;
             SelectedSetDateFrom = null;
@@ -408,8 +372,7 @@ namespace BookObserver.ViewModels
             _readersView.View.SortDescriptions.Add(Sorting[_selectedSorting]);
             OnPropertyChanged(nameof(ReadersView));
             ((Command)SearchCommand).Executable = false;
-            if (!((Command)ResetToZeroSearchCommand).Executable)
-                ((Command)ResetToZeroSearchCommand).Executable = true;
+            ((Command)ResetToZeroSearchCommand).Executable = true;
         }
 
         #endregion
@@ -433,10 +396,12 @@ namespace BookObserver.ViewModels
             _readersView.Source = FiltredReaders = Readers;
             OnPropertyChanged(nameof(ReadersView));
             ((Command)ResetToZeroSearchCommand).Executable = false;
-            ExecutableOnSearchCommandChangeOnTrue();
+            ((Command)SearchCommand).Executable = true;
         }
 
         #endregion
+
+        #region GotFocus Commands...
 
         #region GotFocusComboBoxLastNamesCommand - Команда при получении фокуса (ComboBox фамилии)
 
@@ -451,10 +416,15 @@ namespace BookObserver.ViewModels
             p is not null && p is IList<Reader>;
 
         ///<summary>Логика выполнения - Команда при получении фокуса (ComboBox фамилии)</summary>
-        private void OnGotFocusComboBoxLastNamesCommandExecuted(object? p) =>
-            FiltredLastNames
-            = _lastNames
-            = new ObservableCollection<string>((p as IList<Reader>)!.Select(r => r.LastName).Distinct().Order()!);
+        private void OnGotFocusComboBoxLastNamesCommandExecuted(object? p)
+        {
+            _lastNamesView.List = (p as IList<Reader>)!
+                .Select(r => r.LastName)
+                .Distinct()
+                .Order()
+                .ToList()!;
+            OnPropertyChanged(nameof(LastNamesView));
+        }
 
         #endregion
 
@@ -471,10 +441,15 @@ namespace BookObserver.ViewModels
             p is not null && p is IList<Reader>;
 
         ///<summary>Логика выполнения - Команда при получении фокуса (ComboBox имена)</summary>
-        private void OnGotFocusComboBoxFirstNamesCommandExecuted(object? p) =>
-            FiltredFirstNames
-            = _firstNames
-            = new((p as IList<Reader>)!.Select(r => r.FirstName).Distinct().Order()!);
+        private void OnGotFocusComboBoxFirstNamesCommandExecuted(object? p)
+        {
+            _firstNamesView.List = (p as IList<Reader>)!
+                .Select(r => r.FirstName)
+                .Distinct()
+                .Order()
+                .ToList()!;
+            OnPropertyChanged(nameof(FirstNamesView));
+        }
 
         #endregion
 
@@ -491,10 +466,15 @@ namespace BookObserver.ViewModels
             p is not null && p is IList<Reader>;
 
         ///<summary>Логика выполнения - Команда при получении фокуса (ComboBox отчества)</summary>
-        private void OnGotFocusComboBoxPatronymicsCommandExecuted(object? p) =>
-            FiltredPatronymics
-            = _patronymics
-            = new((p as IList<Reader>)!.Select(r => r.Patronymic).Distinct().Order()!);
+        private void OnGotFocusComboBoxPatronymicsCommandExecuted(object? p)
+        {
+            _patronymicsView.List = (p as IList<Reader>)!
+                .Select(r => r.Patronymic)
+                .Distinct()
+                .Order()
+                .ToList()!;
+            OnPropertyChanged(nameof(PatronymicsView));
+        }
 
         #endregion
 
@@ -514,7 +494,7 @@ namespace BookObserver.ViewModels
         ///<summary>Логика выполнения - Команда при получении фокуса (DatePickers дат получения)</summary>
         private void OnGotFocusDatePickersGetDateCommandExecuted(object? p)
         {
-            var listReader = (p as IList<Reader>).Select(r => r.DateGet);
+            var listReader = (p as IList<Reader>)!.Select(r => r.DateGet);
             MinDateGet = listReader.Min();
             MaxDateGet = listReader.Max();
         }
@@ -537,64 +517,12 @@ namespace BookObserver.ViewModels
         ///<summary>Логика выполнения - Команда при получении фокуса (DatePickers дат возврата)</summary>
         private void OnGotFocusDatePickersSetDateCommandCommandExecuted(object? p)
         {
-            var listReader = (p as IList<Reader>).Select(r => r.DateSet);
+            var listReader = (p as IList<Reader>)!.Select(r => r.DateSet);
             MinDateSet = listReader.Min();
             MaxDateSet = listReader.Max();
         }
 
         #endregion
-
-        #region LostFocusComboBoxLastNamesCommand - Команда при потере фокуса (ComboBox фамилии)
-
-        ///<summary>Команда при потере фокуса (ComboBox фамилии)</summary>
-        private ICommand? _lostFocusComboBoxLastNamesCommand;
-
-        ///<summary>Команда при потере фокуса (ComboBox фамилии)</summary>
-        public ICommand LostFocusComboBoxLastNamesCommand => _lostFocusComboBoxLastNamesCommand
-            ??= new LambdaCommand(OnLostFocusComboBoxLastNamesCommandExecuted);
-
-        ///<summary>Логика выполнения - Команда при потере фокуса (ComboBox фамилии)</summary>
-        private void OnLostFocusComboBoxLastNamesCommandExecuted(object? p)
-        {
-            _filtredLastNames = _lastNames = null;
-            ClearGarbage();
-        }
-
-        #endregion
-
-        #region LostFocusComboBoxFirstNamesCommand - Команда при потере фокуса (ComboBox имена)
-
-        ///<summary>Команда при потере фокуса (ComboBox имена)</summary>
-        private ICommand? _lostFocusComboBoxFirstNamesCommand;
-
-        ///<summary>Команда при потере фокуса (ComboBox имена)</summary>
-        public ICommand LostFocusComboBoxFirstNamesCommand => _lostFocusComboBoxFirstNamesCommand
-            ??= new LambdaCommand(OnLostFocusComboBoxFirstNamesCommandExecuted);
-
-        ///<summary>Логика выполнения - Команда при потере фокуса (ComboBox имена)</summary>
-        private void OnLostFocusComboBoxFirstNamesCommandExecuted(object? p)
-        {
-            _filtredFirstNames = _firstNames = null;
-            ClearGarbage();
-        }
-
-        #endregion
-
-        #region LostFocusComboBoxPatronymicsCommand - Команда при потере фокуса (ComboBox отчества)
-
-        ///<summary>Команда при потере фокуса (ComboBox отчества)</summary>
-        private ICommand? _lostFocusComboBoxPatronymicCommand;
-
-        ///<summary>Команда при потере фокуса (ComboBox отчества)</summary>
-        public ICommand LostFocusComboBoxPatronymicsCommand => _lostFocusComboBoxPatronymicCommand
-            ??= new LambdaCommand(OnLostFocusComboBoxPatronymicsCommandExecuted);
-
-        ///<summary>Логика выполнения - Команда при потере фокуса (ComboBox отчества)</summary>
-        private void OnLostFocusComboBoxPatronymicsCommandExecuted(object? p)
-        {
-            _filtredPatronymics = _patronymics = null;
-            ClearGarbage();
-        }
 
         #endregion
 
@@ -618,12 +546,6 @@ namespace BookObserver.ViewModels
 
             ((Command)ResetToZeroSearchCommand).Executable = false;
             _readersView.Source = _filtredReaders;
-        }
-
-        private void ExecutableOnSearchCommandChangeOnTrue()
-        {
-            if (!((Command)SearchCommand).Executable)
-                ((Command)SearchCommand).Executable = true;
         }
     }
 }

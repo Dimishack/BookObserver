@@ -231,15 +231,15 @@ namespace BookObserver.ViewModels
         {
             IList<Book> result = (p as IList<Book>)!;
             if (!string.IsNullOrWhiteSpace(_selectedExistence)) result = result.Where(
-                p => p.Existence!.Contains(_selectedExistence, StringComparison.OrdinalIgnoreCase)).ToList();
+                p => p.Existence.Contains(_selectedExistence, StringComparison.OrdinalIgnoreCase)).ToList();
             if (!string.IsNullOrWhiteSpace(_selectedBBK)) result = result.Where(
-                p => p.BBK!.Contains(_selectedBBK, StringComparison.OrdinalIgnoreCase)).ToList();
+                p => p.BBK.Contains(_selectedBBK, StringComparison.OrdinalIgnoreCase)).ToList();
             if (!string.IsNullOrWhiteSpace(_authorsFilterText)) result = result.Where(
-                p => p.Author!.Contains(_authorsFilterText, StringComparison.OrdinalIgnoreCase)).ToList();
+                p => p.Author.Contains(_authorsFilterText, StringComparison.OrdinalIgnoreCase)).ToList();
             if (!string.IsNullOrWhiteSpace(_selectedName)) result = result.Where(
-                p => p.Name!.Contains(_selectedName, StringComparison.OrdinalIgnoreCase)).ToList();
+                p => p.Name.Contains(_selectedName, StringComparison.OrdinalIgnoreCase)).ToList();
             if (!string.IsNullOrWhiteSpace(_selectedPublish)) result = result.Where(
-                p => p.Publish!.Contains(_selectedPublish, StringComparison.OrdinalIgnoreCase)).ToList();
+                p => p.Publish.Contains(_selectedPublish, StringComparison.OrdinalIgnoreCase)).ToList();
             FiltredBooks = null;
             _booksView.View.SortDescriptions.Clear();
             ClearGarbage();
@@ -301,8 +301,7 @@ namespace BookObserver.ViewModels
             _booksView.Source = p as ObservableCollection<Book>;
             OnPropertyChanged(nameof(BooksView));
             ((Command)ResetToZeroFindCommand).Executable = false;
-            if (!((Command)FindBooksCommand).Executable)
-                ((Command)FindBooksCommand).Executable = true;
+            ((Command)FindBooksCommand).Executable = true;
         }
 
         #endregion
