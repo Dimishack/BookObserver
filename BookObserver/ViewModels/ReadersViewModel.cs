@@ -3,6 +3,8 @@ using BookObserver.Infrastructure.Commands.Base;
 using BookObserver.Models;
 using BookObserver.Models.Readers;
 using BookObserver.ViewModels.Base;
+using BookObserver.Views.Windows;
+using Microsoft.Extensions.DependencyInjection;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Data;
@@ -12,7 +14,7 @@ namespace BookObserver.ViewModels
 {
     internal class ReadersViewModel : ViewModel
     {
-
+        private CreatorReaderWindow? _creatorReaderWindow;
         public Dictionary<string, SortDescription> Sorting { get; } = new()
         {
             {"Сначала старые записи", new SortDescription("Id", ListSortDirection.Ascending)},
@@ -268,6 +270,31 @@ namespace BookObserver.ViewModels
         #endregion
 
         #region Commands
+
+        #region AddReaderCommand - Команда добавления читателя
+
+        ///<summary>Команда добавления читателя</summary>
+        private ICommand? _addReaderCommand;
+
+        ///<summary>Команда добавления читателя</summary>
+        public ICommand AddReaderCommand => _addReaderCommand
+            ??= new LambdaCommand(OnAddReaderCommandExecuted);
+
+        ///<summary>Логика выполнения - Команда добавления читателя</summary>
+        private void OnAddReaderCommandExecuted(object? p)
+        {
+            if (_creatorReaderWindow is { } window)
+            {
+                window.Show();
+                return;
+            }
+            window = App.Services.GetRequiredService<CreatorReaderWindow>();
+            window.Closed += (_, _) => window = null;
+
+            window.ShowDialog();
+        }
+
+        #endregion
 
         #region DeleteReaderCommand - Команда удаления читателя
 
@@ -538,7 +565,8 @@ namespace BookObserver.ViewModels
                         LastName = $"Фамилия {p}",
                         FirstName = $"Имя {p}",
                         Patronymic = $"Отчество {p}",
-                        Telephone = $"Телефон {p}",
+                        NumberPhone = $"Телефон {p}",
+                        //HomeNumberPhone = $"Домашний {p}",
                         Address = $"Адрес {p}",
                         DateGet = DateTime.Today.AddDays(Random.Shared.Next(0, 30)),
                         DateSet = DateTime.Today.AddMonths(1).AddDays(Random.Shared.Next(0, 30)),

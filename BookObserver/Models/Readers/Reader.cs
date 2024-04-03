@@ -9,7 +9,8 @@ namespace BookObserver.Models.Readers
         public string LastName { get; set; } = string.Empty;
         public string FirstName { get; set; } = string.Empty;
         public string Patronymic { get; set; } = string.Empty;
-        public string Telephone { get; set; } = string.Empty;
+        public string NumberPhone { get; set; } = string.Empty;
+        public string HomeNumberPhone { get; set; } = string.Empty;
         public string Address { get; set; } = string.Empty;
         public DateTime DateGet { get; set; }
         public DateTime DateSet { get; set; }
