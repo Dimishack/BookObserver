@@ -1,4 +1,5 @@
-﻿using BookObserver.ViewModels.Registrator_Locator;
+﻿using BookObserver.Services.Registrator;
+using BookObserver.ViewModels.Registrator_Locator;
 using Microsoft.Extensions.Hosting;
 using System.Windows;
 
@@ -12,7 +13,9 @@ namespace BookObserver
 
         public static IHost Host => __host ??= Microsoft.Extensions.Hosting.Host
             .CreateDefaultBuilder(Environment.GetCommandLineArgs())
-            .ConfigureServices((host, services) => services.AddViewModels()).Build();
+            .ConfigureServices((host, services) => 
+            services.AddViewModels().AddServices())
+            .Build();
 
         public static IServiceProvider Services => Host.Services;
 

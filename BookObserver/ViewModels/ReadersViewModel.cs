@@ -67,7 +67,7 @@ namespace BookObserver.ViewModels
 
         #region ReadersView : ICollectionView - Вывод списка читателей
 
-        private readonly CollectionViewSource _readersView = new();
+        public readonly CollectionViewSource _readersView = new();
         public ICollectionView ReadersView => _readersView.View;
         #endregion
 
@@ -289,9 +289,13 @@ namespace BookObserver.ViewModels
                 return;
             }
             window = App.Services.GetRequiredService<CreatorReaderWindow>();
-            window.Closed += (_, _) => window = null;
+            window.Closed += (_, _) =>
+            {
+                window = null;
+                ClearGarbage();
+            };
 
-            window.ShowDialog();
+            window.Show();
         }
 
         #endregion

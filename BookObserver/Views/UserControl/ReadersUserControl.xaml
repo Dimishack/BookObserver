@@ -203,17 +203,7 @@
                                         <TextBlock Text="{Binding FirstName, StringFormat=' Имя: {0}'}"/>
                                         <TextBlock Text="{Binding Patronymic, StringFormat=' Отчество: {0}'}"/>
                                         <TextBlock Text="{Binding NumberPhone, StringFormat=' Номер телефона: {0}'}"/>
-                                        <TextBlock Text="{Binding HomeNumberPhone, StringFormat=' Домашний: {0}'}">
-                                            <TextBlock.Style>
-                                                <Style TargetType="TextBlock">
-                                                    <Style.Triggers>
-                                                        <Trigger Property="Text" Value=" Домашний: ">
-                                                            <Setter Property="Visibility" Value="Collapsed"/>
-                                                        </Trigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </TextBlock.Style>
-                                        </TextBlock>
+                                        <TextBlock Text="{Binding HomeNumberPhone, StringFormat=' Домашний: {0}'}"/>
                                         <TextBlock Text="{Binding Address, StringFormat=' Адрес: {0}'}"/>
                                         <TextBlock Text="{Binding DateGet, StringFormat=' Дата получения: {0:dd.MM.yyyy}'}"/>
                                         <TextBlock Text="{Binding DateSet, StringFormat=' Дата возврата: {0:dd.MM.yyyy}'}"/>

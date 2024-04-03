@@ -1,6 +1,7 @@
 ﻿using BookObserver.Infrastructure.Commands;
 using BookObserver.Models;
 using BookObserver.Models.Books;
+using BookObserver.Services.Interfaces;
 using BookObserver.ViewModels.Base;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -10,6 +11,9 @@ namespace BookObserver.ViewModels
 {
     internal class CreatorBookViewModel : ViewModel
     {
+        private readonly IUserDialog _userDialog;
+        private readonly BooksViewModel _booksVM;
+
         #region Title : string - Заголовок окна
 
         ///<summary>Заголовок окна</summary>
@@ -19,8 +23,6 @@ namespace BookObserver.ViewModels
         public string Title { get => _title; set => Set(ref _title, value); }
 
         #endregion
-
-        private readonly BooksViewModel _booksVM;
 
         public ObservableCollection<Book> Books { get; }
 
@@ -260,7 +262,7 @@ namespace BookObserver.ViewModels
         ///<summary>Логика выполнения - Команда добавления книги в основной список</summary>
         private void OnAddBookCommandExecuted(object? p)
         {
-            var book = new Book
+            Books.Add(new Book
             {
                 Id = Books.Count,
                 Existence = "Да",
@@ -272,19 +274,19 @@ namespace BookObserver.ViewModels
                 YearPublish = _selectedYearPublish,
                 Pages = _selectedPages,
                 ISBN = _selectedISBN
-            };
-            Books.Add(book);
+            });
             _booksVM._booksView.View.Refresh();
             if (_isNotifyAddBook)
-                MessageBox.Show("Книга успешно добавлена в список", _title, MessageBoxButton.OK, MessageBoxImage.Information);
+                _userDialog.ShowInformation("Книга успешно добавлена в список", _title);
         }
 
         #endregion
 
         #endregion
 
-        public CreatorBookViewModel(BooksViewModel booksVM)
+        public CreatorBookViewModel(BooksViewModel booksVM, IUserDialog userDialog)
         {
+            _userDialog = userDialog;
             _booksVM = booksVM;
             Books = _booksVM.Books;
             _bbksView.List = Books.Select(b => b.BBK).Distinct().Order().ToList()!;
