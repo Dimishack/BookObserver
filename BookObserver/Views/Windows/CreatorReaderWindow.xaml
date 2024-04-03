@@ -93,9 +93,11 @@
                   ItemsSource="{Binding AdressesView}"
                   Text="{Binding SelectedAddress}"/>
             <TextBox Grid.Column="1" Grid.Row="4"
-                  Text="{Binding SelectedPhoneNumber, UpdateSourceTrigger=PropertyChanged}"/>
+                  Text="{Binding SelectedPhoneNumber, UpdateSourceTrigger=PropertyChanged}"
+                     KeyDown="TextBox_KeyDown"/>
             <TextBox Grid.Column="1" Grid.Row="5"
-                  Text="{Binding SelectedHomePhoneNumber, UpdateSourceTrigger=PropertyChanged}"/>
+                  Text="{Binding SelectedHomePhoneNumber, UpdateSourceTrigger=PropertyChanged}"
+                     KeyDown="TextBox_KeyDown"/>
             <Button Grid.Column="1" Grid.Row="6" 
                 Content="Очистить поля" 
                 Style="{StaticResource ButtonUG}"
