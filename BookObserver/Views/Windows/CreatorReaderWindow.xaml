@@ -9,7 +9,7 @@
         xmlns:vm ="clr-namespace:BookObserver.ViewModels"
         d:DataContext="{d:DesignInstance vm:CreatorReaderViewModel}"
         
-        Title="{Binding Title}" Height="400" MinWidth="300"  Width="400">
+        Title="{Binding Title}" MinHeight="400" MaxHeight="400" MinWidth="300" Width="400">
     <DockPanel>
         <TextBlock DockPanel.Dock="Top" 
                Text="{Binding Title}"
