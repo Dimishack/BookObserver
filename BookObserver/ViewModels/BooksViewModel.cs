@@ -19,7 +19,8 @@ namespace BookObserver.ViewModels
     {
         #region Properties...
 
-        private CreatorBookWindow? _creatorwindow;
+        private CreatorBookWindow? _creatorWindow = null;
+        private EditorBookWindow? _editorWindow = null;
 
         public Dictionary<string, SortDescription> Sorting { get; } = new()
         {
@@ -376,7 +377,7 @@ namespace BookObserver.ViewModels
         ///<summary>Логика выполнения - Команда добавить книгу</summary>
         private void OnAddBookCommandExecuted(object? p)
         {
-            if (_creatorwindow is { } window)
+            if (_creatorWindow is { } window)
             {
                 window.Show();
                 return;
@@ -384,12 +385,45 @@ namespace BookObserver.ViewModels
             window = App.Services.GetRequiredService<CreatorBookWindow>();
             window.Closed += (_, _) =>
             {
-                _creatorwindow = null;
+                _creatorWindow = null;
                 ClearGarbage();
             };
-            _creatorwindow = window;
+            _creatorWindow = window;
             window.Show();
 
+        }
+
+        #endregion
+
+        #region EditBookCommand - Команда редактирования книги
+
+        ///<summary>Команда редактирования книги</summary>
+        private ICommand? _editBookCommand;
+
+        ///<summary>Команда редактирования книги</summary>
+        public ICommand EditBookCommand => _editBookCommand
+            ??= new LambdaCommand(OnEditBookCommandExecuted, CanEditBookCommandExecute);
+
+        ///<summary>Проверка возможности выполнения - Команда редактирования книги</summary>
+        private bool CanEditBookCommandExecute(object? p) => _selectedBook is not null;
+
+        ///<summary>Логика выполнения - Команда редактирования книги</summary>
+        private void OnEditBookCommandExecuted(object? p)
+        {
+            var index = Books.IndexOf(_selectedBook!);
+            if(_editorWindow is { } window)
+            {
+                _editorWindow.ShowDialog();
+                return;
+            }
+            window = App.Services.GetRequiredService<EditorBookWindow>();
+            window.Closed += (_, _) =>
+            {
+                _editorWindow = null;
+                ClearGarbage();
+            };
+            _editorWindow = window;
+            window.ShowDialog();
         }
 
         #endregion

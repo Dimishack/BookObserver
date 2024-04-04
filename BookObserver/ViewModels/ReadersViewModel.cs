@@ -291,11 +291,12 @@ namespace BookObserver.ViewModels
             window = App.Services.GetRequiredService<CreatorReaderWindow>();
             window.Closed += (_, _) =>
             {
-                window = null;
+                _creatorReaderWindow = null;
                 ClearGarbage();
             };
 
-            window.Show();
+            _creatorReaderWindow = window;
+            _creatorReaderWindow.Show();
         }
 
         #endregion

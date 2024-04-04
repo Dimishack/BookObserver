@@ -109,18 +109,20 @@
         <GridSplitter Grid.Column="1"/>
         <DockPanel Grid.Column="2">
             <UniformGrid DockPanel.Dock="Bottom" Rows="1" Margin="5">
-                <Button Command="{Binding AddBookCommand}" Style="{StaticResource ButtonUG}">
+                <UniformGrid.Resources>
+                    <Style TargetType="Button" BasedOn="{StaticResource ButtonUG}"/>
+                </UniformGrid.Resources>
+                <Button Command="{Binding AddBookCommand}">
                     <TextBlock TextAlignment="Center">
                         Добавить <LineBreak/> книгу
                     </TextBlock>
                 </Button>
-                <Button Style="{StaticResource ButtonUG}">
+                <Button Command="{Binding EditBookCommand}">
                     <TextBlock TextAlignment="Center">
                         Редактировать <LineBreak/> книгу
                     </TextBlock>
                 </Button>
-                <Button Command="{Binding SaveBooksCommand}" CommandParameter="{Binding Books}"
-                        Style="{StaticResource ButtonUG}">
+                <Button Command="{Binding SaveBooksCommand}" CommandParameter="{Binding Books}">
                     <TextBlock TextAlignment="Center">
                     Сохранить<LineBreak/>список
                     </TextBlock>
