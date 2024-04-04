@@ -11,8 +11,6 @@ namespace BookObserver.ViewModels.Registrator_Locator
             .AddSingleton<BooksViewModel>()
             .AddSingleton<ReadersViewModel>()
             .AddTransient<CreatorBookViewModel>()
-            .AddTransient<CreatorReaderViewModel>()
-            .AddTransient<EditorBookViewModel>()
             .AddTransient(
             s =>
             {
@@ -23,6 +21,7 @@ namespace BookObserver.ViewModels.Registrator_Locator
                 window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
                 return window;
             })
+            .AddTransient<CreatorReaderViewModel>()
             .AddTransient(
             s =>
             {
@@ -33,6 +32,7 @@ namespace BookObserver.ViewModels.Registrator_Locator
                 window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
                 return window;
             })
+            .AddTransient<EditorBookViewModel>()
             .AddTransient(
             s =>
             {
