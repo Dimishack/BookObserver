@@ -9,7 +9,7 @@
         xmlns:vm ="clr-namespace:BookObserver.ViewModels"
         d:DataContext="{d:DesignInstance vm:EditorBookViewModel}"
         
-        Name ="ThisWindow" Title="Редактировать книгу" Height="450" Width="400">
+        Name ="ThisWindow" Title="Редактировать книгу" MinHeight="510" Height="510" Width="400">
     <DockPanel>
         <TextBlock DockPanel.Dock="Top" 
                Text="{Binding ElementName=ThisWindow, Path=Title}"
@@ -29,6 +29,59 @@
                 Command="{Binding CancelEditCommand}"
                 CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"/>
         </UniformGrid>
+        <GroupBox DockPanel.Dock="Bottom" Header="Читатель">
+            <GroupBox.Resources>
+                <Style TargetType="GroupBox">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsExistence}" Value="False">
+                            <Setter Property="IsEnabled" Value="False"/>
+                            <Setter Property="Background" Value="LightGray"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </GroupBox.Resources>
+            <Grid>
+                <Grid.Resources>
+                    <Style TargetType="TextBlock">
+                        <Style.Triggers>
+                            <Trigger Property="Grid.Column" Value="0">
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                <Setter Property="HorizontalAlignment" Value="Right"/>
+                                <Setter Property="FontWeight" Value="Bold"/>
+                                <Setter Property="Margin" Value="3"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                    <Style TargetType="DatePicker" BasedOn="{StaticResource BaseDatePicker}">
+                        <Style.Triggers>
+                            <Trigger Property="Grid.Column" Value="1">
+                                <Setter Property="VerticalAlignment" Value="Center"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Grid.Resources>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Button Grid.ColumnSpan="2" Grid.Row="0" Content="Выбрать читателя"/>
+                <TextBlock Grid.Column="0" Grid.Row="1" Text="ФИО:"/>
+                <TextBlock Grid.Column="0" Grid.Row="2" Text="Дата получения:"/>
+                <TextBlock Grid.Column="0" Grid.Row="3" Text="Дата возврата:"/>
+                <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding FullNameReader}"
+                           VerticalAlignment="Center" Margin="3"/>
+                <DatePicker Grid.Column="1" Grid.Row="2"
+                            SelectedDate="{Binding SelectedDateGet}"/>
+                <DatePicker Grid.Column="1" Grid.Row="3"
+                            SelectedDate="{Binding SelectedDateSet}"/>
+            </Grid>
+        </GroupBox>
         <Grid>
             <Grid.Resources>
                 <Style TargetType="TextBlock">
@@ -48,7 +101,6 @@
                         </Trigger>
                     </Style.Triggers>
                 </Style>
-                <Style TargetType="ComboBox" BasedOn="{StaticResource ComboBoxForCreators_Editors}"/>
             </Grid.Resources>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>

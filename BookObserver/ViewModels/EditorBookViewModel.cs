@@ -9,8 +9,19 @@ namespace BookObserver.ViewModels
     class EditorBookViewModel : ViewModel
     {
         private readonly BooksViewModel _booksVM;
+        private readonly ReadersViewModel _readersVM;
         private readonly Book _bookOnEdit;
         private readonly int _indexBook;
+
+        #region IsExistence : bool - В наличии
+
+        ///<summary>В наличии</summary>
+        private bool _isExistence;
+
+        ///<summary>В наличии</summary>
+        public bool IsExistence { get => _isExistence; set => Set(ref _isExistence, value); }
+
+        #endregion
 
         #region SelectedCodeAuthor : string - Выбранный код автора
 
@@ -92,15 +103,57 @@ namespace BookObserver.ViewModels
 
         #endregion
 
-        #region IsExistence : bool - В наличии
+        #region IdReder : int - Id выбранного читателя
 
-        ///<summary>В наличии</summary>
-        private bool _isExistence;
+        ///<summary>Id выбранного читателя</summary>
+        private int _idReader;
 
-        ///<summary>В наличии</summary>
-        public bool IsExistence { get => _isExistence; set => Set(ref _isExistence, value); }
+        ///<summary>Id выбранного читателя</summary>
+        public int IdReder { get => _idReader; set => Set(ref _idReader, value); }
 
         #endregion
+
+        #region FullNameReader : string? - ФИО читателя
+
+        ///<summary>ФИО читателя</summary>
+        private string? _fullNameReadr;
+
+        ///<summary>ФИО читателя</summary>
+        public string? FullNameReader { get => _fullNameReadr; set => Set(ref _fullNameReadr, value); }
+
+        #endregion
+
+
+        #region SelectedDateGet : DateTime? - Выбранная дата получения
+
+        ///<summary>Выбранная дата получения</summary>
+        private DateTime? _selectedDateGet;
+
+        ///<summary>Выбранная дата получения</summary>
+        public DateTime? SelectedDateGet
+        {
+            get => _selectedDateGet;
+            set
+            {
+                if (!Set(ref _selectedDateGet, value)) return;
+
+                if(value is not null)
+                SelectedDateSet = value.Value.AddMonths(1);
+            }
+        }
+
+        #endregion
+
+        #region SelectedDateSet : DateTime? - Выбранная дата возврата
+
+        ///<summary>Выбранная дата возврата</summary>
+        private DateTime? _selectedDateSet;
+
+        ///<summary>Выбранная дата возврата</summary>
+        public DateTime? SelectedDateSet { get => _selectedDateSet; set => Set(ref _selectedDateSet, value); }
+
+        #endregion
+
 
         #region Commands...
 
@@ -166,7 +219,7 @@ namespace BookObserver.ViewModels
                 YearPublish = _selectedYearPublish,
                 Pages = _selectedPage,
                 ISBN = _selectedISBN,
-                Existence = _isExistence? "Да": "Нет"
+                Existence = _isExistence ? "Да" : "Нет"
             };
             (p as Window)!.Close();
         }
@@ -192,9 +245,10 @@ namespace BookObserver.ViewModels
 
         #endregion
 
-        public EditorBookViewModel(BooksViewModel booksVM)
+        public EditorBookViewModel(BooksViewModel booksVM, ReadersViewModel readersVM)
         {
             _booksVM = booksVM;
+            _readersVM = readersVM;
             _bookOnEdit = _booksVM.SelectedBook!;
             _indexBook = _booksVM.Books.IndexOf(_bookOnEdit);
             SelectedCodeAuthor = _bookOnEdit.CodeAuthor;

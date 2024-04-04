@@ -88,11 +88,6 @@
                         <GroupBox Header="Даты">
                             <StackPanel Orientation="Vertical">
                                 <StackPanel.Resources>
-                                    <Style TargetType="DatePicker" x:Key="BaseDatePicker">
-                                        <Setter Property="Margin" Value="3"/>
-                                        <Setter Property="Language" Value="ru-RU"/>
-                                        <Setter Property="IsTodayHighlighted" Value="True"/>
-                                    </Style>
                                     <Style TargetType="TextBlock">
                                         <Setter Property="DockPanel.Dock" Value="Left"/>
                                         <Setter Property="VerticalAlignment" Value="Center"/>

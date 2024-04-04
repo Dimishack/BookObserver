@@ -1,10 +1,9 @@
-﻿using BookObserver.Models.Readers;
-
-namespace BookObserver.Models.Books
+﻿namespace BookObserver.Models.Books
 {
     class Book
     {
         public int Id { get; set; }
+        public int IdReader { get; set; } 
         public string Existence { get; set; } = "Нет";
         public string Pages { get; set; } = string.Empty;
         public string YearPublish { get; set; } = string.Empty;
@@ -14,5 +13,7 @@ namespace BookObserver.Models.Books
         public string ISBN { get; set; } = string.Empty;
         public string Publish { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
+        public DateTime DateGet { get; set; }
+        public DateTime DateSet { get; set; }
     }
 }

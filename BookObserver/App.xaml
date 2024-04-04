@@ -11,6 +11,7 @@
                 <ResourceDictionary Source="Resources/Styles/GridSplitters.xaml"/>
                 <ResourceDictionary Source="Resources/Styles/Buttons.xaml"/>
                 <ResourceDictionary Source="Resources/Styles/ListBoxes.xaml"/>
+                <ResourceDictionary Source="Resources/Styles/DatePickers.xaml"/>
             </ResourceDictionary.MergedDictionaries>
             <vm:ViewModelLocator x:Key="Locator"/>
         </ResourceDictionary>
