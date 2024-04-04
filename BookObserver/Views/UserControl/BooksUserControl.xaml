@@ -128,47 +128,48 @@
                     </TextBlock>
                 </Button>
             </UniformGrid>
-            <ListBox ItemsSource="{Binding BooksView}"
+            <GroupBox Header="Книги">
+                <ListBox ItemsSource="{Binding BooksView}"
                      SelectedItem="{Binding SelectedBook}">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <Border BorderBrush="SandyBrown" BorderThickness="2">
-                            <Grid Margin="5">
-                                <StackPanel>
-                                    <StackPanel.Resources>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="TextWrapping" Value="Wrap"/>
-                                            <Setter Property="FontSize" Value="12"/>
-                                        </Style>
-                                    </StackPanel.Resources>
-                                    <TextBlock Text="{Binding CodeAuthor, StringFormat=Код автора: {0}}"/>
-                                    <TextBlock Text="{Binding BBK, StringFormat=ББК: {0}}"/>
-                                    <TextBlock Text="{Binding Author, StringFormat=Автор: {0}}"/>
-                                    <TextBlock Text="{Binding Name, StringFormat=Название: {0}}"/>
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="{Binding Publish, StringFormat=Издательство: {0}}"/>
-                                        <TextBlock Text="{Binding YearPublish, StringFormat=', год издания: {0}'}"/>
-                                    </StackPanel>
-                                    <TextBlock Text="{Binding Pages, StringFormat='Количество страниц: {0}'}"/>
-                                    <TextBlock Text="{Binding ISBN, StringFormat=ISBN: {0}}"/>
-                                    <TextBlock Text="{Binding Existence, StringFormat=В наличии: {0}}"
-                                               FontWeight="Bold"/>
-                                    <StackPanel Orientation="Vertical">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border BorderBrush="SandyBrown" BorderThickness="2">
+                                <Grid Margin="5">
+                                    <StackPanel>
                                         <StackPanel.Resources>
-                                            <Style TargetType="StackPanel">
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding Existence}" Value="Да">
-                                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="TextWrapping" Value="Wrap"/>
+                                                <Setter Property="FontSize" Value="12"/>
                                             </Style>
                                         </StackPanel.Resources>
-                                        <TextBlock Text="{Binding FullNameReader, StringFormat=' ФИО читателя: {0}'}"/>
-                                        <TextBlock Text="{Binding DateGet, StringFormat=' Дата получения: {0:dd.MM.yyyy}'}"/>
-                                        <TextBlock Text="{Binding DateSet, StringFormat=' Дата возврата: {0:dd.MM.yyyy}'}"/>
+                                        <TextBlock Text="{Binding CodeAuthor, StringFormat=Код автора: {0}}"/>
+                                        <TextBlock Text="{Binding BBK, StringFormat=ББК: {0}}"/>
+                                        <TextBlock Text="{Binding Author, StringFormat=Автор: {0}}"/>
+                                        <TextBlock Text="{Binding Name, StringFormat=Название: {0}}"/>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding Publish, StringFormat=Издательство: {0}}"/>
+                                            <TextBlock Text="{Binding YearPublish, StringFormat=', год издания: {0}'}"/>
+                                        </StackPanel>
+                                        <TextBlock Text="{Binding Pages, StringFormat='Количество страниц: {0}'}"/>
+                                        <TextBlock Text="{Binding ISBN, StringFormat=ISBN: {0}}"/>
+                                        <TextBlock Text="{Binding Existence, StringFormat=В наличии: {0}}"
+                                               FontWeight="Bold"/>
+                                        <StackPanel Orientation="Vertical">
+                                            <StackPanel.Resources>
+                                                <Style TargetType="StackPanel">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Existence}" Value="Да">
+                                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </StackPanel.Resources>
+                                            <TextBlock Text="{Binding FullNameReader, StringFormat=' ФИО читателя: {0}'}"/>
+                                            <TextBlock Text="{Binding DateGet, StringFormat=' Дата получения: {0:dd.MM.yyyy}'}"/>
+                                            <TextBlock Text="{Binding DateSet, StringFormat=' Дата возврата: {0:dd.MM.yyyy}'}"/>
+                                        </StackPanel>
                                     </StackPanel>
-                                </StackPanel>
-                                <Button Content="X" FontWeight="Bold"
+                                    <Button Content="X" FontWeight="Bold"
                                         Background="Transparent"
                                         BorderThickness="0"
                                         HorizontalAlignment="Right" VerticalAlignment="Top"
@@ -176,22 +177,23 @@
                                         Command="{Binding Source={StaticResource Locator}, Path=BooksVM.DeleteBookCommand}"
                                         CommandParameter="{Binding}"
                                         ToolTip="Удалить книгу">
-                                    <Button.Resources>
-                                        <Style TargetType="Button">
-                                            <Setter Property="Foreground" Value="Red"/>
-                                            <Style.Triggers>
-                                                <Trigger Property="IsPressed" Value="True">
-                                                    <Setter Property="Foreground" Value="Green"/>
-                                                </Trigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Button.Resources>
-                                </Button>
-                            </Grid>
-                        </Border>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+                                        <Button.Resources>
+                                            <Style TargetType="Button">
+                                                <Setter Property="Foreground" Value="Red"/>
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsPressed" Value="True">
+                                                        <Setter Property="Foreground" Value="Green"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Resources>
+                                    </Button>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </GroupBox>
         </DockPanel>
     </Grid>
 </UserControl>
