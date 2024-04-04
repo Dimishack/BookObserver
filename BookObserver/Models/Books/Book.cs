@@ -5,7 +5,7 @@ namespace BookObserver.Models.Books
     class Book
     {
         public int Id { get; set; }
-        public string Existence { get; set; } = string.Empty;
+        public string Existence { get; set; } = "Нет";
         public string Pages { get; set; } = string.Empty;
         public string YearPublish { get; set; } = string.Empty;
         public string Author { get; set; } = string.Empty;
