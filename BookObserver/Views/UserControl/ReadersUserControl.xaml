@@ -85,80 +85,6 @@
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                         </ComboBox>
-                        <GroupBox Header="Даты">
-                            <StackPanel Orientation="Vertical">
-                                <StackPanel.Resources>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="DockPanel.Dock" Value="Left"/>
-                                        <Setter Property="VerticalAlignment" Value="Center"/>
-                                    </Style>
-                                </StackPanel.Resources>
-                                <GroupBox Header="Получение книги">
-                                    <StackPanel Orientation="Vertical">
-                                        <StackPanel.Resources>
-                                            <Style TargetType="DatePicker" BasedOn="{StaticResource BaseDatePicker}">
-                                                <Setter Property="DisplayDateStart" Value="{Binding MinDateGet, Mode=OneWay}"/>
-                                                <Setter Property="DisplayDateEnd" Value="{Binding MaxDateGet, Mode=OneWay}"/>
-                                            </Style>
-                                        </StackPanel.Resources>
-                                        <DockPanel>
-                                            <TextBlock Text="От:"/>
-                                            <DatePicker SelectedDate="{Binding SelectedGetDateFrom}">
-                                                <i:Interaction.Triggers>
-                                                    <i:EventTrigger EventName="GotFocus">
-                                                        <i:InvokeCommandAction Command="{Binding GotFocusDatePickersGetDateCommand}"
-                                                                               CommandParameter="{Binding Readers}"/>
-                                                    </i:EventTrigger>
-                                                </i:Interaction.Triggers>
-                                            </DatePicker>
-                                        </DockPanel>
-                                        <DockPanel>
-                                            <TextBlock Text="До:"/>
-                                            <DatePicker SelectedDate="{Binding SelectedGetDateTo}">
-                                                <i:Interaction.Triggers>
-                                                    <i:EventTrigger EventName="GotFocus">
-                                                        <i:InvokeCommandAction Command="{Binding GotFocusDatePickersGetDateCommand}"
-                                                                               CommandParameter="{Binding Readers}"/>
-                                                    </i:EventTrigger>
-                                                </i:Interaction.Triggers>
-                                            </DatePicker>
-                                        </DockPanel>
-                                    </StackPanel>
-                                </GroupBox>
-                                <GroupBox Header="Возврат книги">
-                                    <StackPanel Orientation="Vertical">
-                                        <StackPanel.Resources>
-                                            <Style TargetType="DatePicker" BasedOn="{StaticResource BaseDatePicker}">
-                                                <Setter Property="DisplayDateStart" Value="{Binding MinDateSet, Mode=OneWay}"/>
-                                                <Setter Property="DisplayDateEnd" Value="{Binding MaxDateSet, Mode=OneWay}"/>
-                                            </Style>
-                                        </StackPanel.Resources>
-                                        <DockPanel>
-                                            <TextBlock Text="От:"/>
-                                            <DatePicker SelectedDate="{Binding SelectedSetDateFrom}">
-                                                <i:Interaction.Triggers>
-                                                    <i:EventTrigger EventName="GotFocus">
-                                                        <i:InvokeCommandAction Command="{Binding GotFocusDatePickersSetDateCommandCommand}"
-                                                                               CommandParameter="{Binding Readers}"/>
-                                                    </i:EventTrigger>
-                                                </i:Interaction.Triggers>
-                                            </DatePicker>
-                                        </DockPanel>
-                                        <DockPanel>
-                                            <TextBlock Text="До:"/>
-                                            <DatePicker SelectedDate="{Binding SelectedSetDateTo}">
-                                                <i:Interaction.Triggers>
-                                                    <i:EventTrigger EventName="GotFocus">
-                                                        <i:InvokeCommandAction Command="{Binding GotFocusDatePickersSetDateCommandCommand}"
-                                                                               CommandParameter="{Binding Readers}"/>
-                                                    </i:EventTrigger>
-                                                </i:Interaction.Triggers>
-                                            </DatePicker>
-                                        </DockPanel>
-                                    </StackPanel>
-                                </GroupBox>
-                            </StackPanel>
-                        </GroupBox>
                         <Button Content="Очистить поля" Margin="10"
                                 Command="{Binding ClearFieldsForSearchCommand}"/>
                     </StackPanel>
@@ -200,8 +126,6 @@
                                         <TextBlock Text="{Binding NumberPhone, StringFormat=' Номер телефона: {0}'}"/>
                                         <TextBlock Text="{Binding HomeNumberPhone, StringFormat=' Домашний: {0}'}"/>
                                         <TextBlock Text="{Binding Address, StringFormat=' Адрес: {0}'}"/>
-                                        <TextBlock Text="{Binding DateGet, StringFormat=' Дата получения: {0:dd.MM.yyyy}'}"/>
-                                        <TextBlock Text="{Binding DateSet, StringFormat=' Дата возврата: {0:dd.MM.yyyy}'}"/>
                                     </StackPanel>
 
                                     <Button Content="X" FontWeight="Bold"

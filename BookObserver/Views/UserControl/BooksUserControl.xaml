@@ -153,6 +153,20 @@
                                     <TextBlock Text="{Binding ISBN, StringFormat=ISBN: {0}}"/>
                                     <TextBlock Text="{Binding Existence, StringFormat=В наличии: {0}}"
                                                FontWeight="Bold"/>
+                                    <StackPanel Orientation="Vertical">
+                                        <StackPanel.Resources>
+                                            <Style TargetType="StackPanel">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Existence}" Value="Да">
+                                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </StackPanel.Resources>
+                                        <TextBlock Text="{Binding FullNameReader, StringFormat=' ФИО читателя: {0}'}"/>
+                                        <TextBlock Text="{Binding DateGet, StringFormat=' Дата получения: {0:dd.MM.yyyy}'}"/>
+                                        <TextBlock Text="{Binding DateSet, StringFormat=' Дата возврата: {0:dd.MM.yyyy}'}"/>
+                                    </StackPanel>
                                 </StackPanel>
                                 <Button Content="X" FontWeight="Bold"
                                         Background="Transparent"

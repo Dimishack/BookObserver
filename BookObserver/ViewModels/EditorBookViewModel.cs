@@ -1,6 +1,7 @@
 ﻿using BookObserver.Infrastructure.Commands;
 using BookObserver.Models.Books;
 using BookObserver.ViewModels.Base;
+using BookObserver.Views.Windows;
 using System.Windows;
 using System.Windows.Input;
 
@@ -13,13 +14,13 @@ namespace BookObserver.ViewModels
         private readonly Book _bookOnEdit;
         private readonly int _indexBook;
 
-        #region IsExistence : bool - В наличии
+        #region Existence : bool - В наличии
 
         ///<summary>В наличии</summary>
-        private bool _isExistence;
+        private bool _existence;
 
         ///<summary>В наличии</summary>
-        public bool IsExistence { get => _isExistence; set => Set(ref _isExistence, value); }
+        public bool Existence { get => _existence; set => Set(ref _existence, value); }
 
         #endregion
 
@@ -103,26 +104,25 @@ namespace BookObserver.ViewModels
 
         #endregion
 
-        #region IdReder : int - Id выбранного читателя
+        #region IdReader : int? - Id выбранного читателя
 
         ///<summary>Id выбранного читателя</summary>
-        private int _idReader;
+        private int? _idReader;
 
         ///<summary>Id выбранного читателя</summary>
-        public int IdReder { get => _idReader; set => Set(ref _idReader, value); }
+        public int? IdReader { get => _idReader; set => Set(ref _idReader, value); }
 
         #endregion
 
         #region FullNameReader : string? - ФИО читателя
 
         ///<summary>ФИО читателя</summary>
-        private string? _fullNameReadr;
+        private string? _fullNameReader;
 
         ///<summary>ФИО читателя</summary>
-        public string? FullNameReader { get => _fullNameReadr; set => Set(ref _fullNameReadr, value); }
+        public string? FullNameReader { get => _fullNameReader; set => Set(ref _fullNameReader, value); }
 
         #endregion
-
 
         #region SelectedDateGet : DateTime? - Выбранная дата получения
 
@@ -137,8 +137,8 @@ namespace BookObserver.ViewModels
             {
                 if (!Set(ref _selectedDateGet, value)) return;
 
-                if(value is not null)
-                SelectedDateSet = value.Value.AddMonths(1);
+                if (value is not null)
+                    SelectedDateSet = value.Value.AddMonths(1);
             }
         }
 
@@ -153,7 +153,6 @@ namespace BookObserver.ViewModels
         public DateTime? SelectedDateSet { get => _selectedDateSet; set => Set(ref _selectedDateSet, value); }
 
         #endregion
-
 
         #region Commands...
 
@@ -189,7 +188,7 @@ namespace BookObserver.ViewModels
             SelectedYearPublish = _bookOnEdit.YearPublish;
             SelectedPage = _bookOnEdit.Pages;
             SelectedISBN = _bookOnEdit.ISBN;
-            IsExistence = _bookOnEdit.Existence == "Да";
+            Existence = _bookOnEdit.Existence == "Да";
         }
 
         #endregion
@@ -204,13 +203,21 @@ namespace BookObserver.ViewModels
             ??= new LambdaCommand(OnEditBookCommandExecuted, CanEditBookCommandExecute);
 
         ///<summary>Проверка возможности выполнения - Редактировать книгу (нажатие на ОК)</summary>
-        private bool CanEditBookCommandExecute(object? p) => p is Window;
+        private bool CanEditBookCommandExecute(object? p) =>
+            _existence
+            || (!string.IsNullOrWhiteSpace(_fullNameReader)
+            && _idReader is not null
+            && _selectedDateGet is not null
+            && _selectedDateSet is not null
+            )
+            ;
 
         ///<summary>Логика выполнения - Редактировать книгу (нажатие на ОК)</summary>
         private void OnEditBookCommandExecuted(object? p)
         {
             _booksVM.Books[_indexBook] = new Book
             {
+                IdReader = _idReader,
                 CodeAuthor = _selectedCodeAuthor,
                 BBK = _selectedBBK,
                 Author = _selectedAuthor,
@@ -219,8 +226,12 @@ namespace BookObserver.ViewModels
                 YearPublish = _selectedYearPublish,
                 Pages = _selectedPage,
                 ISBN = _selectedISBN,
-                Existence = _isExistence ? "Да" : "Нет"
+                Existence = _existence ? "Да" : "Нет",
+                FullNameReader = _fullNameReader,
+                DateGet = _selectedDateGet,
+                DateSet = _selectedDateSet
             };
+            _readersVM.Readers[_idReader ?? 0].ListIdBook.Add(_indexBook);
             (p as Window)!.Close();
         }
 
@@ -243,6 +254,30 @@ namespace BookObserver.ViewModels
 
         #endregion
 
+        #region SelectReaderCommand - Команда выбрать читателя
+
+        ///<summary>Команда выбрать читателя</summary>
+        private ICommand? _selectReaderCommand;
+
+        ///<summary>Команда выбрать читателя</summary>
+        public ICommand SelectReaderCommand => _selectReaderCommand
+            ??= new LambdaCommand(OnSelectReaderCommandExecuted);
+
+        ///<summary>Логика выполнения - Команда выбрать читателя</summary>
+        private void OnSelectReaderCommandExecuted(object? p)
+        {
+            var viewModel = new SelectReaderForEditorBookViewModel(this);
+            var window = new SelectReaderForEditorBookWindow { DataContext = viewModel };
+            window.Closed += (_, _) =>
+            {
+                viewModel = null;
+                window = null;
+            };
+            window.ShowDialog();
+        }
+
+        #endregion
+
         #endregion
 
         public EditorBookViewModel(BooksViewModel booksVM, ReadersViewModel readersVM)
@@ -259,7 +294,7 @@ namespace BookObserver.ViewModels
             SelectedYearPublish = _bookOnEdit.YearPublish;
             SelectedPage = _bookOnEdit.Pages;
             SelectedISBN = _bookOnEdit.ISBN;
-            IsExistence = _bookOnEdit.Existence == "Да";
+            Existence = _bookOnEdit.Existence == "Да";
         }
     }
 }

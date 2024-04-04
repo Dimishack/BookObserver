@@ -153,122 +153,6 @@ namespace BookObserver.ViewModels
 
         #endregion
 
-        #region MinDateGet : DateTime - Минимальный промежуток дат получения
-
-        ///<summary>Минимальный промежуток дат получения</summary>
-        private DateTime _minDateGet = DateTime.MinValue;
-
-        ///<summary>Минимальный промежуток дат получения</summary>
-        public DateTime MinDateGet { get => _minDateGet; set => Set(ref _minDateGet, value); }
-
-        #endregion
-
-        #region MaxDateGet : DateTime - Максимальный промежуток дат получения
-
-        ///<summary>Максимальный промежуток дат получения</summary>
-        private DateTime _maxDateGet = DateTime.MaxValue;
-
-        ///<summary>Максимальный промежуток дат получения</summary>
-        public DateTime MaxDateGet { get => _maxDateGet; set => Set(ref _maxDateGet, value); }
-
-        #endregion
-
-        #region SelectedGetDateFrom : DateTime? - Выбранный промежуток дат получения (от)
-
-        ///<summary>Выбранный промежуток дат получения (от)</summary>
-        private DateTime? _selectedGetDateFrom;
-
-        ///<summary>Выбранный промежуток дат получения (от)</summary>
-        public DateTime? SelectedGetDateFrom
-        {
-            get => _selectedGetDateFrom;
-            set
-            {
-                if (!Set(ref _selectedGetDateFrom, value)) return;
-
-                ((Command)SearchCommand).Executable = true;
-            }
-        }
-
-        #endregion
-
-        #region SelectedGetDateTo : DateTime? - Выбранный промежуток дат получения (до)
-
-        ///<summary>Выбранный промежуток дат получения (до)</summary>
-        private DateTime? _selectedGetDateTo;
-
-        ///<summary>Выбранный промежуток дат получения (до)</summary>
-        public DateTime? SelectedGetDateTo
-        {
-            get => _selectedGetDateTo;
-            set
-            {
-                if (!Set(ref _selectedGetDateTo, value)) return;
-
-                ((Command)SearchCommand).Executable = true;
-            }
-        }
-
-        #endregion
-
-        #region MinDateSet : DateTime - Минимальный промежуток дат возварата
-
-        ///<summary>Минимальный промежуток дат возварата</summary>
-        private DateTime _minDateSet = DateTime.MinValue;
-
-        ///<summary>Минимальный промежуток дат возварата</summary>
-        public DateTime MinDateSet { get => _minDateSet; set => Set(ref _minDateSet, value); }
-
-        #endregion
-
-        #region MaxDateSet : DateTime - Максимальный промежуток дат возврата
-
-        ///<summary>Максимальный промежуток дат возврата</summary>
-        private DateTime _maxDateSet = DateTime.MaxValue;
-
-        ///<summary>Максимальный промежуток дат возврата</summary>
-        public DateTime MaxDateSet { get => _maxDateSet; set => Set(ref _maxDateSet, value); }
-
-        #endregion
-
-        #region SelectedSetDateFrom : DateTime? - Выбранный промежуток дат возврата (от)
-
-        ///<summary>Выбранный промежуток дат возврата (от)</summary>
-        private DateTime? _selectedSetDateFrom;
-
-        ///<summary>Выбранный промежуток дат возврата (от)</summary>
-        public DateTime? SelectedSetDateFrom
-        {
-            get => _selectedSetDateFrom;
-            set
-            {
-                if (!Set(ref _selectedSetDateFrom, value)) return;
-
-                ((Command)SearchCommand).Executable = true;
-            }
-        }
-
-        #endregion
-
-        #region SelectedSetDateTo : DateTime? - Выбранный промежуток дат возврата (до)
-
-        ///<summary>Выбранный промежуток дат возврата (до)</summary>
-        private DateTime? _selectedSetDateTo;
-
-        ///<summary>Выбранный промежуток дат возврата (до)</summary>
-        public DateTime? SelectedSetDateTo
-        {
-            get => _selectedSetDateTo;
-            set
-            {
-                if (!Set(ref _selectedSetDateTo, value)) return;
-
-                ((Command)SearchCommand).Executable = true;
-            }
-        }
-
-        #endregion
-
         #region Commands
 
         #region AddReaderCommand - Команда добавления читателя
@@ -340,10 +224,6 @@ namespace BookObserver.ViewModels
             !string.IsNullOrWhiteSpace(_selectedLastName)
             || !string.IsNullOrWhiteSpace(_selectedFirstName)
             || !string.IsNullOrWhiteSpace(_selectedPatronymic)
-            || _selectedGetDateFrom is not null
-            || _selectedGetDateTo is not null
-            || _selectedSetDateFrom is not null
-            || _selectedSetDateTo is not null
             ;
 
         ///<summary>Логика выполнения - Команда очистка полей для поиска</summary>
@@ -352,10 +232,6 @@ namespace BookObserver.ViewModels
             SelectedLastName = string.Empty;
             SelectedFirstName = string.Empty;
             SelectedPatronymic = string.Empty;
-            SelectedGetDateFrom = null;
-            SelectedGetDateTo = null;
-            SelectedSetDateFrom = null;
-            SelectedSetDateTo = null;
         }
 
         #endregion
@@ -376,10 +252,6 @@ namespace BookObserver.ViewModels
             (!string.IsNullOrWhiteSpace(_selectedLastName)
             || !string.IsNullOrWhiteSpace(_selectedFirstName)
             || !string.IsNullOrWhiteSpace(_selectedPatronymic)
-            || _selectedGetDateFrom is not null
-            || _selectedGetDateTo is not null
-            || _selectedSetDateFrom is not null
-            || _selectedSetDateTo is not null
             );
 
         ///<summary>Логика выполнения - Команда поиска</summary>
@@ -392,10 +264,6 @@ namespace BookObserver.ViewModels
                 result = result.Where(r => r.FirstName.Contains(_selectedFirstName, StringComparison.OrdinalIgnoreCase)).ToList();
             if (!string.IsNullOrWhiteSpace(_selectedPatronymic))
                 result = result.Where(r => r.Patronymic.Contains(_selectedPatronymic, StringComparison.OrdinalIgnoreCase)).ToList();
-            result = result.Where(r => r.DateGet >= (_selectedGetDateFrom ?? _minDateGet)
-                        && r.DateGet <= (_selectedGetDateTo ?? _maxDateGet)).ToList();
-            result = result.Where(r => r.DateSet >= (_selectedSetDateFrom ?? _minDateSet)
-                        && r.DateSet <= (_selectedSetDateTo ?? _maxDateSet)).ToList();
 
             FiltredReaders = null;
             _readersView.View.SortDescriptions.Clear();
@@ -509,53 +377,7 @@ namespace BookObserver.ViewModels
         }
 
         #endregion
-
-        #region GotFocusDatePickersGetDateCommand - Команда при получении фокуса (DatePickers дат получения)
-
-        ///<summary>Команда при получении фокуса (DatePickers дат получения)</summary>
-        private ICommand? _gotFocusDatePickersGetDateCommand;
-
-        ///<summary>Команда при получении фокуса (DatePickers дат получения)</summary>
-        public ICommand GotFocusDatePickersGetDateCommand => _gotFocusDatePickersGetDateCommand
-            ??= new LambdaCommand(OnGotFocusDatePickersGetDateCommandExecuted, CanGotFocusDatePickersGetDateCommandExecute);
-
-        ///<summary>Проверка возможности выполнения - Команда при получении фокуса (DatePickers дат получения)</summary>
-        private bool CanGotFocusDatePickersGetDateCommandExecute(object? p) =>
-            p is not null && p is IList<Reader>;
-
-        ///<summary>Логика выполнения - Команда при получении фокуса (DatePickers дат получения)</summary>
-        private void OnGotFocusDatePickersGetDateCommandExecuted(object? p)
-        {
-            var listReader = (p as IList<Reader>)!.Select(r => r.DateGet);
-            MinDateGet = listReader.Min();
-            MaxDateGet = listReader.Max();
-        }
-
-        #endregion
-
-        #region GotFocusDatePickersSetDateCommandCommand - Команда при получении фокуса (DatePickers дат возврата)
-
-        ///<summary>Команда при получении фокуса (DatePickers дат возврата)</summary>
-        private ICommand? _gotFocusDatePickersSetDateCommandCommand;
-
-        ///<summary>Команда при получении фокуса (DatePickers дат возврата)</summary>
-        public ICommand GotFocusDatePickersSetDateCommandCommand => _gotFocusDatePickersSetDateCommandCommand
-            ??= new LambdaCommand(OnGotFocusDatePickersSetDateCommandCommandExecuted, CanGotFocusDatePickersSetDateCommandCommandExecute);
-
-        ///<summary>Проверка возможности выполнения - Команда при получении фокуса (DatePickers дат возврата)</summary>
-        private bool CanGotFocusDatePickersSetDateCommandCommandExecute(object? p) =>
-            p is not null && p is IList<Reader>;
-
-        ///<summary>Логика выполнения - Команда при получении фокуса (DatePickers дат возврата)</summary>
-        private void OnGotFocusDatePickersSetDateCommandCommandExecuted(object? p)
-        {
-            var listReader = (p as IList<Reader>)!.Select(r => r.DateSet);
-            MinDateSet = listReader.Min();
-            MaxDateSet = listReader.Max();
-        }
-
-        #endregion
-
+        
         #endregion
 
         #endregion
@@ -571,10 +393,8 @@ namespace BookObserver.ViewModels
                         FirstName = $"Имя {p}",
                         Patronymic = $"Отчество {p}",
                         NumberPhone = $"Телефон {p}",
-                        //HomeNumberPhone = $"Домашний {p}",
+                        HomeNumberPhone = $"Домашний {p}",
                         Address = $"Адрес {p}",
-                        DateGet = DateTime.Today.AddDays(Random.Shared.Next(0, 30)),
-                        DateSet = DateTime.Today.AddMonths(1).AddDays(Random.Shared.Next(0, 30)),
                     }));
 
             ((Command)ResetToZeroSearchCommand).Executable = false;

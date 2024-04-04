@@ -33,7 +33,7 @@
             <GroupBox.Resources>
                 <Style TargetType="GroupBox">
                     <Style.Triggers>
-                        <DataTrigger Binding="{Binding IsExistence}" Value="False">
+                        <DataTrigger Binding="{Binding Existence}" Value="True">
                             <Setter Property="IsEnabled" Value="False"/>
                             <Setter Property="Background" Value="LightGray"/>
                         </DataTrigger>
@@ -70,11 +70,13 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <Button Grid.ColumnSpan="2" Grid.Row="0" Content="Выбрать читателя"/>
+                <Button Grid.ColumnSpan="2" Grid.Row="0" Content="Выбрать читателя"
+                        Command="{Binding SelectReaderCommand}"/>
                 <TextBlock Grid.Column="0" Grid.Row="1" Text="ФИО:"/>
                 <TextBlock Grid.Column="0" Grid.Row="2" Text="Дата получения:"/>
                 <TextBlock Grid.Column="0" Grid.Row="3" Text="Дата возврата:"/>
-                <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding FullNameReader}"
+                <TextBlock Grid.Column="1" Grid.Row="1" 
+                           Text="{Binding FullNameReader, UpdateSourceTrigger=PropertyChanged}"
                            VerticalAlignment="Center" Margin="3"/>
                 <DatePicker Grid.Column="1" Grid.Row="2"
                             SelectedDate="{Binding SelectedDateGet}"/>
@@ -147,12 +149,12 @@
             <TextBox Grid.Column="1" Grid.Row="4" 
                   Text="{Binding SelectedPublish, UpdateSourceTrigger=PropertyChanged}"/>
             <TextBox Grid.Column="1" Grid.Row="5" 
-                  Text="{Binding SelectedYearPublis, UpdateSourceTrigger=PropertyChanged}"/>
+                  Text="{Binding SelectedYearPublish, UpdateSourceTrigger=PropertyChanged}"/>
             <TextBox Grid.Column="1" Grid.Row="6" 
                  Text="{Binding SelectedPage, UpdateSourceTrigger=PropertyChanged}"/>
             <TextBox Grid.Column="1" Grid.Row="7"
                  Text="{Binding SelectedISBN, UpdateSourceTrigger=PropertyChanged}"/>
-            <CheckBox Grid.Column="1" Grid.Row="8" IsChecked="{Binding IsExistence}"
+            <CheckBox Grid.Column="1" Grid.Row="8" IsChecked="{Binding Existence}"
                       VerticalAlignment="Center"
                       Margin="3"/>
             <Button Grid.Column="1" Grid.Row="9" 
