@@ -1,0 +1,112 @@
+﻿<Window x:Class="BookObserver.Views.Windows.SelectReaderForEditorBookWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:BookObserver.Views.Windows"
+        
+        xmlns:fa5="http://schemas.fontawesome.com/icons/"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        
+        xmlns:vm="clr-namespace:BookObserver.ViewModels"
+        d:DataContext="{d:DesignInstance vm:SelectReaderForEditorBookViewModel}"
+        
+        mc:Ignorable="d"
+        Title="Выбрать читателя" Height="500" MinWidth="550" MaxWidth="550">
+    <Grid>
+        <Grid.Resources>
+            <Style TargetType="ComboBox" BasedOn="{StaticResource ComboBoxBase}"/>
+        </Grid.Resources>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition MinWidth="150" MaxWidth="250"/>
+            <ColumnDefinition Width="3"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <GridSplitter Grid.Column="1"/>
+        <DockPanel Grid.Column="0">
+            <GroupBox>
+                <GroupBox.Header>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Name="TBSearch" Text="Поиск"/>
+                        <fa5:ImageAwesome Icon="Solid_Search"
+                                  Height="{Binding ElementName=TBSearch, Path=FontSize}"
+                                  Margin="3,0"/>
+                    </StackPanel>
+                </GroupBox.Header>
+                <DockPanel>
+                    <UniformGrid DockPanel.Dock="Bottom" Columns="1">
+                        <UniformGrid.Resources>
+                            <Style TargetType="Button" BasedOn="{StaticResource ButtonUG}"/>
+                        </UniformGrid.Resources>
+                        <Button Content="Поиск"
+                            Command="{Binding SearchCommand}" CommandParameter="{Binding Readers}"/>
+                        <Button Content="Обнулить поиск"
+                            Command="{Binding ResetToZeroSearchCommand}" CommandParameter="{Binding Readers}"/>
+                    </UniformGrid>
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Text="Фамилия"/>
+                        <ComboBox Text="{Binding SelectedLastName, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                              ItemsSource="{Binding LastNamesView}" IsTextSearchEnabled="False"
+                              StaysOpenOnEdit="True">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="GotFocus">
+                                    <i:InvokeCommandAction Command="{Binding GotFocusComboBoxLastNamesCommand}"
+                                                       CommandParameter="{Binding Readers}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </ComboBox>
+                        <TextBlock Text="Имя"/>
+                        <ComboBox Text="{Binding SelectedFirstName, UpdateSourceTrigger=PropertyChanged}"
+                              ItemsSource="{Binding FirstNamesView}">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="GotFocus">
+                                    <i:InvokeCommandAction Command="{Binding GotFocusComboBoxFirstNamesCommand}"
+                                                       CommandParameter="{Binding Readers}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </ComboBox>
+                        <TextBlock Text="Отчество"/>
+                        <ComboBox Text="{Binding SelectedPatronymic, UpdateSourceTrigger=PropertyChanged}" 
+                              ItemsSource="{Binding PatronymicsView}">
+                            <i:Interaction.Triggers>
+                                <i:EventTrigger EventName="GotFocus">
+                                    <i:InvokeCommandAction Command="{Binding GotFocusComboBoxPatronymicsCommand}"
+                                                       CommandParameter="{Binding Readers}"/>
+                                </i:EventTrigger>
+                            </i:Interaction.Triggers>
+                        </ComboBox>
+                        <Button Content="Очистить поля" Margin="10"
+                            Command="{Binding ClearFieldsForSearchCommand}"/>
+                    </StackPanel>
+                </DockPanel>
+            </GroupBox>
+        </DockPanel>
+        <DockPanel Grid.Column="2">
+            <Button DockPanel.Dock="Bottom" Style="{StaticResource ButtonUG}"
+                    Content="Выбрать"
+                    Command="{Binding SelectReaderCommand}"
+                    CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"/>
+            <GroupBox Header="Читатели">
+                <ListBox ItemsSource="{Binding ReadersView}"
+                     SelectedItem="{Binding SelectedReader}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border BorderBrush="SandyBrown" BorderThickness="2">
+                                <Grid>
+                                    <StackPanel Orientation="Vertical" Margin="3">
+                                        <TextBlock Text="{Binding LastName, StringFormat=' Фамилия: {0}'}"/>
+                                        <TextBlock Text="{Binding FirstName, StringFormat=' Имя: {0}'}"/>
+                                        <TextBlock Text="{Binding Patronymic, StringFormat=' Отчество: {0}'}"/>
+                                        <TextBlock Text="{Binding NumberPhone, StringFormat=' Номер телефона: {0}'}"/>
+                                        <TextBlock Text="{Binding HomeNumberPhone, StringFormat=' Домашний: {0}'}"/>
+                                        <TextBlock Text="{Binding Address, StringFormat=' Адрес: {0}'}"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </GroupBox>
+        </DockPanel>
+    </Grid>
+</Window>
