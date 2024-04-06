@@ -43,6 +43,17 @@ namespace BookObserver.ViewModels.Registrator_Locator
                 window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
                 return window;
             })
+            .AddTransient<EditorReaderViewModel>()
+            .AddTransient(
+            s =>
+            {
+                var viewModel = s.GetRequiredService<EditorReaderViewModel>();
+                var window = new EditorReaderWindow { DataContext = viewModel };
+                window.Closed += (_, _) => viewModel = null;
+                window.Owner = App.ActiveWindow;
+                window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+                return window;
+            })
             ;
     }
 }

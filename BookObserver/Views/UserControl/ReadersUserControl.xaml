@@ -101,7 +101,7 @@
                         Добавить<LineBreak/>читателя
                     </TextBlock>
                 </Button>
-                <Button>
+                <Button Command="{Binding EditorReaderCommand}">
                     <TextBlock TextAlignment="Center">
                         Редактировать<LineBreak/>читателя
                     </TextBlock>
@@ -123,9 +123,10 @@
                                         <TextBlock Text="{Binding LastName, StringFormat=' Фамилия: {0}'}"/>
                                         <TextBlock Text="{Binding FirstName, StringFormat=' Имя: {0}'}"/>
                                         <TextBlock Text="{Binding Patronymic, StringFormat=' Отчество: {0}'}"/>
-                                        <TextBlock Text="{Binding NumberPhone, StringFormat=' Номер телефона: {0}'}"/>
-                                        <TextBlock Text="{Binding HomeNumberPhone, StringFormat=' Домашний: {0}'}"/>
+                                        <TextBlock Text="{Binding PhoneNumber, StringFormat=' Номер телефона: {0}'}"/>
+                                        <TextBlock Text="{Binding HomePhoneNumber, StringFormat=' Домашний: {0}'}"/>
                                         <TextBlock Text="{Binding Address, StringFormat=' Адрес: {0}'}"/>
+                                        <TextBlock Text="{Binding BooksWithHim, StringFormat=' Книги с собой: {0}'}" FontWeight="Bold"/>
                                     </StackPanel>
 
                                     <Button Content="X" FontWeight="Bold"

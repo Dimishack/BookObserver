@@ -228,8 +228,8 @@ namespace BookObserver.ViewModels
                 FirstName = _selectedFirstName,
                 Patronymic = _selectedPatronymic,
                 Address = _selectedAddress,
-                NumberPhone = _selectedPhoneNumber,
-                HomeNumberPhone = _selectedHomePhoneNumber
+                PhoneNumber = _selectedPhoneNumber,
+                HomePhoneNumber = _selectedHomePhoneNumber
             });
             _readersVM._readersView.View.Refresh();
             if (_isNotifyAddReader)

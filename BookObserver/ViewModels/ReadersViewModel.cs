@@ -15,6 +15,7 @@ namespace BookObserver.ViewModels
     internal class ReadersViewModel : ViewModel
     {
         private CreatorReaderWindow? _creatorReaderWindow;
+        private EditorReaderWindow? _editorReaderWindow;
         public Dictionary<string, SortDescription> Sorting { get; } = new()
         {
             {"Сначала старые записи", new SortDescription("Id", ListSortDirection.Ascending)},
@@ -181,6 +182,38 @@ namespace BookObserver.ViewModels
 
             _creatorReaderWindow = window;
             _creatorReaderWindow.Show();
+        }
+
+        #endregion
+
+        #region EditorReaderCommand - Команда редактирования читателя
+
+        ///<summary>Команда редактирования читателя</summary>
+        private ICommand? _editorReaderCommand;
+
+        ///<summary>Команда редактирования читателя</summary>
+        public ICommand EditorReaderCommand => _editorReaderCommand
+            ??= new LambdaCommand(OnEditorReaderCommandExecuted, CanEditorReaderCommandExecute);
+
+        ///<summary>Проверка возможности выполнения - Команда редактирования читателя</summary>
+        private bool CanEditorReaderCommandExecute(object? p) => _selectedReader is not null;
+
+        ///<summary>Логика выполнения - Команда редактирования читателя</summary>
+        private void OnEditorReaderCommandExecuted(object? p)
+        {
+            if (_editorReaderWindow is { } window)
+            {
+                _editorReaderWindow.ShowDialog();
+                return;
+            }
+            window = App.Services.GetRequiredService<EditorReaderWindow>();
+            window.Closed += (_, _) =>
+            {
+                _editorReaderWindow = null;
+                ClearGarbage();
+            };
+            _editorReaderWindow = window;
+            _editorReaderWindow.ShowDialog();
         }
 
         #endregion
@@ -377,7 +410,7 @@ namespace BookObserver.ViewModels
         }
 
         #endregion
-        
+
         #endregion
 
         #endregion
@@ -392,9 +425,10 @@ namespace BookObserver.ViewModels
                         LastName = $"Фамилия {p}",
                         FirstName = $"Имя {p}",
                         Patronymic = $"Отчество {p}",
-                        NumberPhone = $"Телефон {p}",
-                        HomeNumberPhone = $"Домашний {p}",
+                        PhoneNumber = $"Телефон {p}",
+                        HomePhoneNumber = $"Домашний {p}",
                         Address = $"Адрес {p}",
+                        BooksWithHim = Random.Shared.Next(0,2) == 0? "Да": "Нет",
                     }));
 
             ((Command)ResetToZeroSearchCommand).Executable = false;

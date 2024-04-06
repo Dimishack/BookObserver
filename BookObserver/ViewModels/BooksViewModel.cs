@@ -410,7 +410,6 @@ namespace BookObserver.ViewModels
         ///<summary>Логика выполнения - Команда редактирования книги</summary>
         private void OnEditBookCommandExecuted(object? p)
         {
-            var index = Books.IndexOf(_selectedBook!);
             if(_editorWindow is { } window)
             {
                 _editorWindow.ShowDialog();
