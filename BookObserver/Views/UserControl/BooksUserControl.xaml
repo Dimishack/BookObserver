@@ -136,12 +136,6 @@
                             <Border BorderBrush="SandyBrown" BorderThickness="2">
                                 <Grid Margin="5">
                                     <StackPanel>
-                                        <StackPanel.Resources>
-                                            <Style TargetType="TextBlock">
-                                                <Setter Property="TextWrapping" Value="Wrap"/>
-                                                <Setter Property="FontSize" Value="12"/>
-                                            </Style>
-                                        </StackPanel.Resources>
                                         <TextBlock Text="{Binding CodeAuthor, StringFormat=Код автора: {0}}"/>
                                         <TextBlock Text="{Binding BBK, StringFormat=ББК: {0}}"/>
                                         <TextBlock Text="{Binding Author, StringFormat=Автор: {0}}"/>
