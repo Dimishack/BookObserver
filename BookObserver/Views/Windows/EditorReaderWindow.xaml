@@ -23,9 +23,10 @@
                     <Setter Property="Padding" Value="20, 10"/>
                 </Style>
             </UniformGrid.Resources>
-            <Button Content="Ок" Command="{Binding AddReaderCommand}"/>
+            <Button Content="Ок" Command="{Binding EditCommand}"
+                    CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"/>
             <Button Content="Отмена"
-            Command="{Binding CloseWindowCommand}"
+            Command="{Binding CancelEditCommand}"
             CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"/>
         </UniformGrid>
         <GroupBox Header="Книги" DockPanel.Dock="Right">
@@ -118,7 +119,7 @@
             <Button Grid.Column="1" Grid.Row="7" 
             Content="Вернуть первоначальный вид" 
             Style="{StaticResource ButtonUG}"
-            Command="{Binding ClearFieldsCommand}"/>
+            Command="{Binding ResetCommand}"/>
         </Grid>
     </DockPanel>
 </Window>
