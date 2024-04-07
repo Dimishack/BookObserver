@@ -156,16 +156,16 @@ namespace BookObserver.ViewModels
 
         #region Commands...
 
-        #region ResetCommand - Команда отмены изменений
+        #region ResetCommand - Команда возвращения в первоначальный вид
 
-        ///<summary>Команда отмены изменений</summary>
+        ///<summary>Команда возвращения в первоначальный вид</summary>
         private ICommand? _resetCommand;
 
-        ///<summary>Команда отмены изменений</summary>
+        ///<summary>Команда возвращения в первоначальный вид</summary>
         public ICommand ResetCommand => _resetCommand
             ??= new LambdaCommand(OnResetCommandExecuted, CanResetCommandExecute);
 
-        ///<summary>Проверка возможности выполнения - Команда отмены изменений</summary>
+        ///<summary>Проверка возможности выполнения - Команда возвращения в первоначальный вид</summary>
         private bool CanResetCommandExecute(object? p) =>
             _selectedCodeAuthor != _bookOnEdit.CodeAuthor
             || _selectedBBK != _bookOnEdit.BBK
@@ -177,7 +177,7 @@ namespace BookObserver.ViewModels
             || _selectedISBN != _bookOnEdit.ISBN
             ;
 
-        ///<summary>Логика выполнения - Команда отмены изменений</summary>
+        ///<summary>Логика выполнения - Команда возвращения в первоначальный вид</summary>
         private void OnResetCommandExecuted(object? p)
         {
             SelectedCodeAuthor = _bookOnEdit.CodeAuthor;
@@ -204,12 +204,14 @@ namespace BookObserver.ViewModels
 
         ///<summary>Проверка возможности выполнения - Редактировать книгу (нажатие на ОК)</summary>
         private bool CanEditBookCommandExecute(object? p) =>
+            p is Window
+            && (
             _existence
             || (!string.IsNullOrWhiteSpace(_fullNameReader)
             && _idReader is not null
             && _selectedDateGet is not null
             && _selectedDateSet is not null
-            )
+            ))
             ;
 
         ///<summary>Логика выполнения - Редактировать книгу (нажатие на ОК)</summary>
@@ -217,6 +219,7 @@ namespace BookObserver.ViewModels
         {
             _booksVM.Books[_indexBook] = new Book
             {
+                Id = _bookOnEdit.Id,
                 IdReader = _idReader,
                 CodeAuthor = _selectedCodeAuthor,
                 BBK = _selectedBBK,
@@ -231,7 +234,8 @@ namespace BookObserver.ViewModels
                 DateGet = _selectedDateGet,
                 DateSet = _selectedDateSet
             };
-            _readersVM.Readers[_idReader ?? 0].ListIdBook.Add(_indexBook);
+            if (_idReader is not null)
+                _readersVM.Readers[(int)_idReader].ListIdBook.Add(_indexBook);
             (p as Window)!.Close();
         }
 
