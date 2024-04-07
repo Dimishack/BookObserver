@@ -169,25 +169,10 @@
                                             <TextBlock Text="{Binding DateSet, StringFormat=' Дата возврата: {0:dd.MM.yyyy}'}"/>
                                         </StackPanel>
                                     </StackPanel>
-                                    <Button Content="X" FontWeight="Bold"
-                                        Background="Transparent"
-                                        BorderThickness="0"
-                                        HorizontalAlignment="Right" VerticalAlignment="Top"
-                                        Margin="7,3" Padding="3"
+                                    <Button Style="{StaticResource ButtonForDelete}"
                                         Command="{Binding Source={StaticResource Locator}, Path=BooksVM.DeleteBookCommand}"
                                         CommandParameter="{Binding}"
-                                        ToolTip="Удалить книгу">
-                                        <Button.Resources>
-                                            <Style TargetType="Button">
-                                                <Setter Property="Foreground" Value="Red"/>
-                                                <Style.Triggers>
-                                                    <Trigger Property="IsPressed" Value="True">
-                                                        <Setter Property="Foreground" Value="Green"/>
-                                                    </Trigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Button.Resources>
-                                    </Button>
+                                        ToolTip="Удалить книгу"/>
                                 </Grid>
                             </Border>
                         </DataTemplate>

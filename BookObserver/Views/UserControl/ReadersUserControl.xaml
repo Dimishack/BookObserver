@@ -129,26 +129,10 @@
                                         <TextBlock Text="{Binding BooksWithHim, StringFormat=' Книги с собой: {0}'}" FontWeight="Bold"/>
                                     </StackPanel>
 
-                                    <Button Content="X" FontWeight="Bold"
-                                            Background="Transparent"
-                                            BorderThickness="0"
-                                            HorizontalAlignment="Right" VerticalAlignment="Top"
-                                            Margin="7,3" Padding="3"
+                                    <Button Style="{StaticResource ButtonForDelete}"
                                             ToolTip="Удалить читателя" 
                                             Command="{Binding Source={StaticResource Locator}, Path=ReadersVM.DeleteReaderCommand}" 
-                                            CommandParameter="{Binding}"
-                                            >
-                                        <Button.Resources>
-                                            <Style TargetType="Button">
-                                                <Setter Property="Foreground" Value="Red"/>
-                                                <Style.Triggers>
-                                                    <Trigger Property="IsPressed" Value="True">
-                                                        <Setter Property="Foreground" Value="Green"/>
-                                                    </Trigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Button.Resources>
-                                    </Button>
+                                            CommandParameter="{Binding}"/>
                                 </Grid>
                             </Border>
                         </DataTemplate>

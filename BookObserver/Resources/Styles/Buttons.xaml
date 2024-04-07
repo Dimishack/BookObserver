@@ -4,4 +4,21 @@
         <Setter Property="Margin" Value="3"/>
         <Setter Property="Padding" Value="3"/>
     </Style>
+
+    <Style TargetType="Button" x:Key="ButtonForDelete">
+        <Style.Triggers>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Foreground" Value="Green"/>
+            </Trigger>
+        </Style.Triggers>
+        <Setter Property="Content" Value="X"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="Padding" Value="7,3"/>
+        <Setter Property="Margin" Value="3"/>
+        <Setter Property="HorizontalAlignment" Value="Right"/>
+        <Setter Property="VerticalAlignment" Value="Top"/>
+        <Setter Property="Foreground" Value="Red"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+    </Style>
 </ResourceDictionary>
