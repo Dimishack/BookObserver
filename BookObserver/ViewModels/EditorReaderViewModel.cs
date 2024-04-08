@@ -1,8 +1,11 @@
 ﻿using BookObserver.Infrastructure.Commands;
+using BookObserver.Models.Books;
 using BookObserver.Models.Readers;
 using BookObserver.ViewModels.Base;
+using BookObserver.Views.Windows;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -89,6 +92,27 @@ namespace BookObserver.ViewModels
 
         #endregion
 
+        #region IdBooks : ObservableCollection<int> - Коллекция id книг
+
+        ///<summary>Коллекция id книг</summary>
+        private ObservableCollection<int> _idBooks = [];
+
+        ///<summary>Коллекция id книг</summary>
+        public ObservableCollection<int> IdBooks { get => _idBooks; set => Set(ref _idBooks, value); }
+
+        #endregion
+
+        #region AuthorsAndNamesBooks : ObservableCollection<Tuple<string, string>> - Авторы и названия книг
+
+        ///<summary>Авторы и названия книг</summary>
+        private ObservableCollection<Tuple<string, string>> _authorsAndNamesBooks = [];
+
+        ///<summary>Авторы и названия книг</summary>
+        public ObservableCollection<Tuple<string, string>> AuthorsAndNamesBooks 
+        { get => _authorsAndNamesBooks; set => Set(ref _authorsAndNamesBooks, value); }
+
+        #endregion
+
         #region Commands
 
         #region ResetCommand - Команда возвращения в первоначальный вид
@@ -155,7 +179,11 @@ namespace BookObserver.ViewModels
         private bool CanEditCommandExecute(object? p) =>
             p is Window
             && (
-            !_booksWithHim)
+            !_booksWithHim
+            || (
+            _idBooks.Count > 0
+            && _authorsAndNamesBooks.Count > 0
+            ))
             ;
 
         ///<summary>Логика выполнения - Команда редактировать читателя</summary>
@@ -171,8 +199,62 @@ namespace BookObserver.ViewModels
                 BooksWithHim = _booksWithHim ? "Да" : "Нет",
                 PhoneNumber = _selectedPhoneNumber,
                 HomePhoneNumber = _selectedHomePhoneNumber,
+                IdBooks = IdBooks,
+                AuthorsAndNamesBooks = _authorsAndNamesBooks
             };
             (p as Window)!.Close();
+        }
+
+        #endregion
+
+        #region SelectBooksCommand - Команда выбрать книги
+
+        ///<summary>Команда выбрать книги</summary>
+        private ICommand? _selectBooksCommand;
+
+        ///<summary>Команда выбрать книги</summary>
+        public ICommand SelectBooksCommand => _selectBooksCommand
+            ??= new LambdaCommand(OnSelectBooksCommandExecuted);
+
+        ///<summary>Логика выполнения - Команда выбрать книги</summary>
+        private void OnSelectBooksCommandExecuted(object? p)
+        {
+            var viewModel = new SelectBooksForEditorReaderViewModel(this, _booksVM);
+            var window = new SelectBooksForEditorReaderWindow
+            {
+                DataContext = viewModel,
+                Owner = App.ActiveWindow,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            };
+            window.Closed += (_, _) =>
+            {
+                viewModel = null;
+                window = null;
+                ClearGarbage();
+            };
+            window.ShowDialog();
+        }
+
+        #endregion
+
+        #region DeleteBookCommand - Команда - удаление книги
+
+        ///<summary>Команда - удаление книги</summary>
+        private ICommand? _deleteBookCommand;
+
+        ///<summary>Команда - удаление книги</summary>
+        public ICommand DeleteBookCommand => _deleteBookCommand
+            ??= new LambdaCommand(OnDeleteBookCommandExecuted, CanDeleteBookCommandExecute);
+
+        ///<summary>Проверка возможности выполнения - Команда - удаление книги</summary>
+        private bool CanDeleteBookCommandExecute(object? p) => p is Tuple<string, string>;
+
+        ///<summary>Логика выполнения - Команда - удаление книги</summary>
+        private void OnDeleteBookCommandExecuted(object? p)
+        {
+            var authorAndName = (p as Tuple<string, string>)!;
+            AuthorsAndNamesBooks.Remove(authorAndName);
+            IdBooks.Remove(AuthorsAndNamesBooks.IndexOf(authorAndName));
         }
 
         #endregion
@@ -192,6 +274,8 @@ namespace BookObserver.ViewModels
             SelectedHomePhoneNumber = _readerOnEdit.HomePhoneNumber;
             SelectedAddress = _readerOnEdit.Address;
             BooksWithHim = _readerOnEdit.BooksWithHim == "Да";
+            AuthorsAndNamesBooks = _readerOnEdit.AuthorsAndNamesBooks;
+            IdBooks = _readerOnEdit.IdBooks;
         }
     }
 }

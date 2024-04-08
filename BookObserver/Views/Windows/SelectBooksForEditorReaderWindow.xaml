@@ -1,0 +1,101 @@
+﻿<Window x:Class="BookObserver.Views.Windows.SelectBooksForEditorReaderWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:BookObserver.Views.Windows"
+        mc:Ignorable="d"
+        
+        xmlns:fa5="http://schemas.fontawesome.com/icons/"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        
+        xmlns:vm="clr-namespace:BookObserver.ViewModels"
+        d:DataContext="{d:DesignInstance vm:SelectBooksForEditorReaderViewModel}"
+        Title="Выбрать книгу" Height="450" Width="600">
+    <Grid>
+        <Grid.Resources>
+            <Style TargetType="ComboBox" BasedOn="{StaticResource ComboBoxBase}"/>
+        </Grid.Resources>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition MaxWidth="250" MinWidth="85"/>
+            <ColumnDefinition Width="3"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <GroupBox Grid.Column="0">
+            <GroupBox.Header>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Name="TBSearch" Text="Поиск"/>
+                    <fa5:ImageAwesome Icon="Solid_Search" Height="{Binding ElementName=TBSearch, Path=FontSize}"
+                                      Margin="3,0,0,0"/>
+                </StackPanel>
+            </GroupBox.Header>
+            <DockPanel>
+                <UniformGrid DockPanel.Dock="Bottom" Columns="1" Background="WhiteSmoke">
+                    <Button Content="Поиск" Style="{StaticResource ButtonUG}"
+                            Command="{Binding SearchBooksCommand}" CommandParameter="{Binding BooksInExistence}"/>
+                    <Button Content="Обнулить поиск" Style="{StaticResource ButtonUG}"
+                            Command="{Binding ResetToZeroSearchCommand}" CommandParameter="{Binding BooksInExistence}"/>
+                </UniformGrid>
+                <StackPanel Orientation="Vertical">
+                    <TextBlock Text="ББК"/>
+                    <ComboBox ItemsSource="{Binding BBKsView}"
+                              Text="{Binding BBKTextForSearch}"/>
+                    <TextBlock Text="Автор"/>
+                    <ComboBox ItemsSource="{Binding AuthorsView}"
+                              Text="{Binding AuthorTextForSearch}"/>
+                    <TextBlock Text="Название"/>
+                    <ComboBox ItemsSource="{Binding NamesView}"
+                              Text="{Binding NameTextForSearch}"/>
+                    <TextBlock Text="Издательство"/>
+                    <ComboBox ItemsSource="{Binding PublishesView}"
+                              Text="{Binding PublishTextForSearch}"/>
+                    <Button Content="Очистить поля" Margin="10"
+                            Command="{Binding ClearFieldsCommand}">
+                    </Button>
+                </StackPanel>
+            </DockPanel>
+        </GroupBox>
+        <GridSplitter Grid.Column="1"/>
+        <DockPanel Grid.Column="2">
+            <UniformGrid DockPanel.Dock="Bottom" Rows="1" Margin="5">
+                <UniformGrid.Resources>
+                    <Style TargetType="Button" BasedOn="{StaticResource ButtonUG}"/>
+                </UniformGrid.Resources>
+                <Button Content="Выбрать"
+                        Command="{Binding SelectBookCommand}"
+                        CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"/>
+                <Button Content="Отмена"
+                        Command="{Binding CancelCommand}"
+                        CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"/>
+            </UniformGrid>
+            <GroupBox Header="Книги">
+                <ListBox ItemsSource="{Binding BooksInExistenceView}"
+                 SelectedItem="{Binding SelectedBook}"
+                         SelectionMode="Extended">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border BorderBrush="SandyBrown" BorderThickness="2">
+                                <Grid>
+                                    <StackPanel Margin="5">
+                                        <TextBlock Text="{Binding CodeAuthor, StringFormat=Код автора: {0}}"/>
+                                        <TextBlock Text="{Binding BBK, StringFormat=ББК: {0}}"/>
+                                        <TextBlock Text="{Binding Author, StringFormat=Автор: {0}}"/>
+                                        <TextBlock Text="{Binding Name, StringFormat=Название: {0}}"/>
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Text="{Binding Publish, StringFormat=Издательство: {0}}"/>
+                                            <TextBlock Text="{Binding YearPublish, StringFormat=', год издания: {0}'}"/>
+                                        </StackPanel>
+                                        <TextBlock Text="{Binding Pages, StringFormat='Количество страниц: {0}'}"/>
+                                        <TextBlock Text="{Binding ISBN, StringFormat=ISBN: {0}}"/>
+                                        <TextBlock Text="{Binding Existence, StringFormat=В наличии: {0}}"
+                                           FontWeight="Bold"/>
+                                    </StackPanel>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </GroupBox>
+        </DockPanel>
+    </Grid>
+</Window>
