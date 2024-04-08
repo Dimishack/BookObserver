@@ -235,7 +235,7 @@ namespace BookObserver.ViewModels
                 DateSet = _selectedDateSet
             };
             if (_idReader is not null)
-                _readersVM.Readers[(int)_idReader].ListIdBook.Add(_indexBook);
+                _readersVM.Readers[(int)_idReader].IdBooks.Add(_indexBook);
             (p as Window)!.Close();
         }
 
