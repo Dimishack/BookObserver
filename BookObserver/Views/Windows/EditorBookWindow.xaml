@@ -79,9 +79,9 @@
                            Text="{Binding FullNameReader, UpdateSourceTrigger=PropertyChanged}"
                            VerticalAlignment="Center" Margin="3"/>
                 <DatePicker Grid.Column="1" Grid.Row="2"
-                            SelectedDate="{Binding SelectedDateGet}"/>
+                            SelectedDate="{Binding DateGet}"/>
                 <DatePicker Grid.Column="1" Grid.Row="3"
-                            SelectedDate="{Binding SelectedDateSet}"/>
+                            SelectedDate="{Binding DateSet}"/>
             </Grid>
         </GroupBox>
         <Grid>
@@ -139,21 +139,21 @@
             <TextBlock Grid.Column="0" Grid.Row="8" 
                    Text="В наличии:"/>
             <TextBox Grid.Column="1" Grid.Row="0" 
-                  Text="{Binding SelectedCodeAuthor, UpdateSourceTrigger=PropertyChanged}"/>
+                  Text="{Binding CodeAuthor, UpdateSourceTrigger=PropertyChanged}"/>
             <TextBox Grid.Column="1" Grid.Row="1" 
-                  Text="{Binding SelectedBBK, UpdateSourceTrigger=PropertyChanged}"/>
+                  Text="{Binding BBK, UpdateSourceTrigger=PropertyChanged}"/>
             <TextBox Grid.Column="1" Grid.Row="2" 
-                  Text="{Binding SelectedAuthor, UpdateSourceTrigger=PropertyChanged}"/>
+                  Text="{Binding Author, UpdateSourceTrigger=PropertyChanged}"/>
             <TextBox Grid.Column="1" Grid.Row="3" 
-                  Text="{Binding SelectedName, UpdateSourceTrigger=PropertyChanged}"/>
+                  Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"/>
             <TextBox Grid.Column="1" Grid.Row="4" 
-                  Text="{Binding SelectedPublish, UpdateSourceTrigger=PropertyChanged}"/>
+                  Text="{Binding Publish, UpdateSourceTrigger=PropertyChanged}"/>
             <TextBox Grid.Column="1" Grid.Row="5" 
-                  Text="{Binding SelectedYearPublish, UpdateSourceTrigger=PropertyChanged}"/>
+                  Text="{Binding YearPublish, UpdateSourceTrigger=PropertyChanged}"/>
             <TextBox Grid.Column="1" Grid.Row="6" 
-                 Text="{Binding SelectedPage, UpdateSourceTrigger=PropertyChanged}"/>
+                 Text="{Binding Pages, UpdateSourceTrigger=PropertyChanged}"/>
             <TextBox Grid.Column="1" Grid.Row="7"
-                 Text="{Binding SelectedISBN, UpdateSourceTrigger=PropertyChanged}"/>
+                 Text="{Binding ISBN, UpdateSourceTrigger=PropertyChanged}"/>
             <CheckBox Grid.Column="1" Grid.Row="8" IsChecked="{Binding Existence}"
                       VerticalAlignment="Center"
                       Margin="3"/>
