@@ -13,7 +13,6 @@ namespace BookObserver.Models.Readers
         public string PhoneNumber { get; set; } = string.Empty;
         public string HomePhoneNumber { get; set; } = string.Empty;
         public string Address { get; set; } = string.Empty;
-        public ObservableCollection<int> IdBooks { get; set; } = [];
-        public ObservableCollection<Tuple<string, string>> AuthorsAndNamesBooks { get; set; } = [];
+        public ObservableCollection<int> IndexesBooks { get; set; } = [];
     }
 }
