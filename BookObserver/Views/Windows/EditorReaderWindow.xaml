@@ -9,7 +9,7 @@
         xmlns:vm="clr-namespace:BookObserver.ViewModels"
         d:DataContext="{d:DesignInstance vm:EditorReaderViewModel}"
         
-        Title="Редактировать читателя" Height="450" MinWidth="550" Width="550">
+        Title="Редактировать читателя" MinHeight="450" Height="550" MinWidth="550" Width="650">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
@@ -50,16 +50,37 @@
                 </Style>
             </GroupBox.Resources>
             <DockPanel>
+                <GroupBox DockPanel.Dock="Bottom" Header="Даты выбранной книги">
+                    <GroupBox.Resources>
+                        <Style TargetType="GroupBox">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding ElementName=test, Path=SelectedIndex}" Value="-1">
+                                    <Setter Property="IsEnabled" Value="False"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </GroupBox.Resources>
+                    <StackPanel Orientation="Vertical">
+                        <StackPanel.Resources>
+                            <Style TargetType="DatePicker" BasedOn="{StaticResource BaseDatePicker}"/>
+                        </StackPanel.Resources>
+                        <TextBlock Text="Дата получения"/>
+                        <DatePicker SelectedDate="{Binding DateGetSelectedBook}"/>
+                        <TextBlock Text="Дата возврата"/>
+                        <DatePicker SelectedDate="{Binding DateSetSelectedBook}"/>
+                    </StackPanel>
+                </GroupBox>
                 <Button DockPanel.Dock="Bottom" Content="Выбрать книгу"
                         Command="{Binding SelectBooksCommand}" Style="{StaticResource ButtonUG}"/>
-                <ListBox ItemsSource="{Binding AuthorsAndNamesBooks}">
+                <ListBox Name="test" ItemsSource="{Binding SelectedBooks}"
+                         SelectedItem="{Binding SelectedBook}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <Border BorderBrush="SandyBrown" BorderThickness="2">
                                 <Grid>
                                     <StackPanel Orientation="Vertical" Margin="5">
-                                        <TextBlock Text="{Binding Item1, StringFormat=' Автор: {0}'}"/>
-                                        <TextBlock Text="{Binding Item2, StringFormat=' Название: {0}'}"/>
+                                        <TextBlock Text="{Binding Author, StringFormat=' Автор: {0}'}"/>
+                                        <TextBlock Text="{Binding Name, StringFormat=' Название: {0}'}"/>
                                     </StackPanel>
                                     <Button Style="{StaticResource ButtonForDelete}"
                                             Command="{Binding RelativeSource={RelativeSource AncestorType=ListBox}, Path=DataContext.DeleteBookCommand}"

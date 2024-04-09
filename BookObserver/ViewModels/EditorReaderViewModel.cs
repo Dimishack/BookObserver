@@ -3,12 +3,7 @@ using BookObserver.Models.Books;
 using BookObserver.Models.Readers;
 using BookObserver.ViewModels.Base;
 using BookObserver.Views.Windows;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -21,6 +16,8 @@ namespace BookObserver.ViewModels
 
         private readonly Reader _readerOnEdit;
         private readonly int _indexReader;
+
+        private ObservableCollection<int> _indexesBooksOnDelete { get; } = [];
 
         #region SelectedLastName : string - Выбранная фамилия
 
@@ -92,26 +89,83 @@ namespace BookObserver.ViewModels
 
         #endregion
 
-        #region IdBooks : ObservableCollection<int> - Коллекция id книг
+        #region IndexesBook : ObservableCollection<int> - Коллекция индексов книг
 
-        ///<summary>Коллекция id книг</summary>
-        private ObservableCollection<int> _idBooks = [];
+        ///<summary>Коллекция индексов книг</summary>
+        private ObservableCollection<int> _indexesBook = [];
 
-        ///<summary>Коллекция id книг</summary>
-        public ObservableCollection<int> IdBooks { get => _idBooks; set => Set(ref _idBooks, value); }
+        ///<summary>Коллекция индексов книг</summary>
+        public ObservableCollection<int> IndexesBooks { get => _indexesBook; set => Set(ref _indexesBook, value); }
+
+        #endregion
+
+        #region SelectedBook : Book? - Выбранная книга
+
+        ///<summary>Выбранная книга</summary>
+        private Book? _selectedBook;
+
+        ///<summary>Выбранная книга</summary>
+        public Book? SelectedBook
+        {
+            get => _selectedBook;
+            set
+            {
+                if (!Set(ref _selectedBook, value) || value is null) return;
+
+                DateGetSelectedBook = value.DateGet;
+                DateSetSelectedBook = value.DateSet;
+            }
+        }
 
         #endregion
 
-        #region AuthorsAndNamesBooks : ObservableCollection<Tuple<string, string>> - Авторы и названия книг
+        #region DateGetSelectedBook : DateTime? - Дата получения выбранной книги
 
-        ///<summary>Авторы и названия книг</summary>
-        private ObservableCollection<Tuple<string, string>> _authorsAndNamesBooks = [];
+        ///<summary>Дата получения выбранной книги</summary>
+        private DateTime? _dateGetSelectedBook;
 
-        ///<summary>Авторы и названия книг</summary>
-        public ObservableCollection<Tuple<string, string>> AuthorsAndNamesBooks 
-        { get => _authorsAndNamesBooks; set => Set(ref _authorsAndNamesBooks, value); }
+        ///<summary>Дата получения выбранной книги</summary>
+        public DateTime? DateGetSelectedBook
+        {
+            get => _dateGetSelectedBook;
+            set
+            {
+                if (!Set(ref _dateGetSelectedBook, value)) return;
+
+                SelectedBook!.DateGet = value;
+                if (value is not null)
+                    DateSetSelectedBook = value.Value.AddMonths(1);
+            }
+        }
 
         #endregion
+
+        #region DateSetSelectedBook : DateTime? - Дата возврата выбранной книги
+
+        ///<summary>Дата возврата выбранной книги</summary>
+        private DateTime? _dateSetSelectedBook;
+
+        ///<summary>Дата возврата выбранной книги</summary>
+        public DateTime? DateSetSelectedBook
+        {
+            get => _dateSetSelectedBook;
+            set
+            {
+                if (!Set(ref _dateSetSelectedBook, value)) return;
+
+                SelectedBook!.DateSet = value;
+            }
+        }
+
+        #endregion
+
+        #region SelectedBooks : ObservableCollection<Book> - Выбранные книги
+
+        ///<summary>Выбранные книги</summary>
+        public ObservableCollection<Book> SelectedBooks { get; } = [];
+
+        #endregion
+
 
         #region Commands
 
@@ -180,16 +234,14 @@ namespace BookObserver.ViewModels
             p is Window
             && (
             !_booksWithHim
-            || (
-            _idBooks.Count > 0
-            && _authorsAndNamesBooks.Count > 0
-            ))
+            || _indexesBook.Count > 0
+            )
             ;
 
         ///<summary>Логика выполнения - Команда редактировать читателя</summary>
         private void OnEditCommandExecuted(object? p)
         {
-            _readersVM.Readers[_indexReader] = new Reader
+            var reader = new Reader
             {
                 Id = _indexReader + 1,
                 LastName = _selectedLastName,
@@ -199,9 +251,28 @@ namespace BookObserver.ViewModels
                 BooksWithHim = _booksWithHim ? "Да" : "Нет",
                 PhoneNumber = _selectedPhoneNumber,
                 HomePhoneNumber = _selectedHomePhoneNumber,
-                IdBooks = IdBooks,
-                AuthorsAndNamesBooks = _authorsAndNamesBooks
+                IndexesBooks = _indexesBook,
             };
+            _readersVM.Readers[_indexReader] = reader;
+            if (_indexesBook.Count > 0 || _indexesBooksOnDelete.Count > 0)
+            {
+                for (int i = 0; i < _indexesBook.Count; i++)
+                {
+                    _booksVM.Books[_indexesBook[i]].Existence = "Нет";
+                    _booksVM.Books[_indexesBook[i]].FullNameReader = reader.FullName;
+                    _booksVM.Books[_indexesBook[i]].DateGet = SelectedBooks[i].DateGet;
+                    _booksVM.Books[_indexesBook[i]].DateSet = SelectedBooks[i].DateSet;
+                }
+                foreach (var index in _indexesBooksOnDelete)
+                {
+                    _booksVM.Books[index].Existence = "Да";
+                    _booksVM.Books[index].FullNameReader = null;
+                    _booksVM.Books[index].DateGet = null;
+                    _booksVM.Books[index].DateSet = null;
+                }
+                _booksVM._booksView.View.Refresh();
+            }
+
             (p as Window)!.Close();
         }
 
@@ -232,7 +303,11 @@ namespace BookObserver.ViewModels
                 window = null;
                 ClearGarbage();
             };
-            window.ShowDialog();
+            if (window.ShowDialog() == true)
+            {
+                SelectedBooks.Add(_booksVM.Books[IndexesBooks[^1]]);
+                SelectedBook = SelectedBooks[^1];
+            }
         }
 
         #endregion
@@ -247,14 +322,17 @@ namespace BookObserver.ViewModels
             ??= new LambdaCommand(OnDeleteBookCommandExecuted, CanDeleteBookCommandExecute);
 
         ///<summary>Проверка возможности выполнения - Команда - удаление книги</summary>
-        private bool CanDeleteBookCommandExecute(object? p) => p is Tuple<string, string>;
+        private bool CanDeleteBookCommandExecute(object? p) => p is Book;
 
         ///<summary>Логика выполнения - Команда - удаление книги</summary>
         private void OnDeleteBookCommandExecuted(object? p)
         {
-            var authorAndName = (p as Tuple<string, string>)!;
-            AuthorsAndNamesBooks.Remove(authorAndName);
-            IdBooks.Remove(AuthorsAndNamesBooks.IndexOf(authorAndName));
+            var book = (p as Book)!;
+            _indexesBooksOnDelete.Add(IndexesBooks[SelectedBooks.IndexOf(book)]);
+            IndexesBooks.RemoveAt(SelectedBooks.IndexOf(book));
+            SelectedBooks.Remove(book);
+            if (SelectedBooks.Count <= 0)
+                BooksWithHim = false;
         }
 
         #endregion
@@ -274,8 +352,9 @@ namespace BookObserver.ViewModels
             SelectedHomePhoneNumber = _readerOnEdit.HomePhoneNumber;
             SelectedAddress = _readerOnEdit.Address;
             BooksWithHim = _readerOnEdit.BooksWithHim == "Да";
-            AuthorsAndNamesBooks = _readerOnEdit.AuthorsAndNamesBooks;
-            IdBooks = _readerOnEdit.IdBooks;
+            IndexesBooks = new(_readerOnEdit.IndexesBooks);
+            foreach (var indexBook in IndexesBooks)
+                SelectedBooks.Add(_booksVM.Books[indexBook]);
         }
     }
 }

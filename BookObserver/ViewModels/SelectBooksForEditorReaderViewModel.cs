@@ -243,9 +243,10 @@ namespace BookObserver.ViewModels
         ///<summary>Логика выполнения - Команда выбрать книгу</summary>
         private void OnSelectBookCommandExecuted(object? p)
         {
-            _editorReaderVM.IdBooks.Add(_selectedBook!.Id);
-            _editorReaderVM.AuthorsAndNamesBooks.Add(new Tuple<string, string>(_selectedBook.Author, _selectedBook.Name));
-            (p as Window)!.Close();
+            var window = (Window)p!;
+            _editorReaderVM.IndexesBooks.Add(_selectedBook!.Id - 1);
+            window.DialogResult = true;
+            window.Close();
         }
 
         #endregion
@@ -276,8 +277,8 @@ namespace BookObserver.ViewModels
             _editorReaderVM = editorReaderVM;
             _booksVM = booksVM;
             BooksInExistence = new(_booksVM.Books.Where(b => b.Existence == "Да"));
-            foreach (var idBook in _editorReaderVM.IdBooks.OrderDescending())
-                BooksInExistence.Remove(_booksVM.Books[idBook - 1]);
+            foreach (var indexBook in _editorReaderVM.IndexesBooks.OrderDescending())
+                BooksInExistence.Remove(_booksVM.Books[indexBook]);
             BooksInExistenceView = BooksInExistence;
             _bbksView.List = BooksInExistence.Select(b => b.BBK).Distinct().Order().ToList();
             _authorsView.List = BooksInExistence.Select(b => b.Author).Distinct().Order().ToList();
