@@ -561,7 +561,7 @@ namespace BookObserver.ViewModels
         public BooksViewModel()
         {
             Random r = new();
-            Books = new(Enumerable.Range(1, 100000).Select(p => new Book
+            Books = new(Enumerable.Range(1, 10000).Select(p => new Book
             {
                 Id = p,
                 CodeAuthor = $"Код автора {p}",

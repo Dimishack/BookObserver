@@ -418,7 +418,7 @@ namespace BookObserver.ViewModels
         public ReadersViewModel()
         {
             FiltredReaders = Readers = new ObservableCollection<Reader>(
-                Enumerable.Range(1, 100000).Select(
+                Enumerable.Range(1, 10000).Select(
                     p => new Reader
                     {
                         Id = p,
