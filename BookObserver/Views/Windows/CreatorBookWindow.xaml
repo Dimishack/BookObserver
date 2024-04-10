@@ -87,29 +87,29 @@
             <TextBlock Grid.Column="0" Grid.Row="7" 
                        Text="ISBN:"/>
             <TextBox Grid.Column="1" Grid.Row="0" 
-                      Text="{Binding SelectedCodeAuthor, UpdateSourceTrigger=PropertyChanged}"/>
+                      Text="{Binding CodeAuthor, UpdateSourceTrigger=PropertyChanged}"/>
             <ComboBox Grid.Column="1" Grid.Row="1" 
                       ItemsSource="{Binding BBKsView}"
-                      Text="{Binding SelectedBBK}"
+                      Text="{Binding BBK}"
                       KeyDown="ComboBox_KeyDown"/>
             <ComboBox Grid.Column="1" Grid.Row="2" 
                       ItemsSource="{Binding AuthorsView}"
-                      Text="{Binding SelectedAuthor}"/>
+                      Text="{Binding Author}"/>
             <ComboBox Grid.Column="1" Grid.Row="3" 
                       ItemsSource="{Binding NamesView}"
-                      Text="{Binding SelectedName}"/>
+                      Text="{Binding Name}"/>
             <ComboBox Grid.Column="1" Grid.Row="4" 
                       ItemsSource="{Binding PublishesView}"
-                      Text="{Binding SelectedPublish}"/>
+                      Text="{Binding Publish}"/>
             <ComboBox Grid.Column="1" Grid.Row="5" 
                       ItemsSource="{Binding YearPublishesView}"
-                      Text="{Binding SelectedYearPublish}"
+                      Text="{Binding YearPublish}"
                       KeyDown="ComboBox_KeyDownDigits"/>
             <TextBox Grid.Column="1" Grid.Row="6" 
-                     Text="{Binding SelectedPage, UpdateSourceTrigger=PropertyChanged}"
+                     Text="{Binding Pages, UpdateSourceTrigger=PropertyChanged}"
                      KeyDown="ComboBox_KeyDownDigits"/>
             <TextBox Grid.Column="1" Grid.Row="7"
-                     Text="{Binding SelectedISBN, UpdateSourceTrigger=PropertyChanged}"
+                     Text="{Binding ISBN, UpdateSourceTrigger=PropertyChanged}"
                      KeyDown="TextBox_KeyDown"/>
             <Button Grid.Column="1" Grid.Row="8" 
                     Content="Очистить поля" 

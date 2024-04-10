@@ -41,32 +41,32 @@ namespace BookObserver.ViewModels
         private readonly CollectionWithFilter _yearPublishesView = new();
         public ObservableCollection<string>? YearPublishesView => _yearPublishesView.CollectionView;
 
-        #region SelectedCodeAuthor : string? - Выбранный код автора
+        #region CodeAuthor : string - Код автора
 
-        ///<summary>Выбранный код автора</summary>
-        private string _selectedCodeAuthor = string.Empty;
+        ///<summary>Код автора</summary>
+        private string _codeAuthor = string.Empty;
 
-        ///<summary>Выбранный код автора</summary>
-        public string SelectedCodeAuthor
+        ///<summary>Код автора</summary>
+        public string CodeAuthor
         {
-            get => _selectedCodeAuthor;
-            set => Set(ref _selectedCodeAuthor, value);
+            get => _codeAuthor;
+            set => Set(ref _codeAuthor, value);
         }
 
         #endregion
 
-        #region SelectedBBK : string? - Выбранный ББК
+        #region BBK : string - ББК
 
-        ///<summary>Выбранный ББК</summary>
-        private string _selectedBBK = string.Empty;
+        ///<summary>ББК</summary>
+        private string _bbk = string.Empty;
 
-        ///<summary>Выбранный ББК</summary>
-        public string SelectedBBK
+        ///<summary>ББК</summary>
+        public string BBK
         {
-            get => _selectedBBK;
+            get => _bbk;
             set
             {
-                if (!Set(ref _selectedBBK, value)) return;
+                if (!Set(ref _bbk, value)) return;
 
                 _bbksView.RefreshFilter(value);
                 OnPropertyChanged(nameof(BBKsView));
@@ -75,18 +75,18 @@ namespace BookObserver.ViewModels
 
         #endregion
 
-        #region SelectedAuthor : string? - Выбранный автор
+        #region Author : string - Автор
 
-        ///<summary>Выбранный автор</summary>
-        private string _selectedAuthor = string.Empty;
+        ///<summary>Автор</summary>
+        private string _author = string.Empty;
 
-        ///<summary>Выбранный автор</summary>
-        public string SelectedAuthor
+        ///<summary>Автор</summary>
+        public string Author
         {
-            get => _selectedAuthor;
+            get => _author;
             set
             {
-                if (!Set(ref _selectedAuthor, value)) return;
+                if (!Set(ref _author, value)) return;
 
                 _authorsView.RefreshFilter(value);
                 OnPropertyChanged(nameof(AuthorsView));
@@ -95,18 +95,18 @@ namespace BookObserver.ViewModels
 
         #endregion
 
-        #region SelectedName : string? - Выбранное название книги
+        #region Name : string - Название
 
-        ///<summary>Выбранное название книги</summary>
-        private string _selectedName = string.Empty;
+        ///<summary>Название</summary>
+        private string _name = string.Empty;
 
-        ///<summary>Выбранное название книги</summary>
-        public string SelectedName
+        ///<summary>Название</summary>
+        public string Name
         {
-            get => _selectedName;
+            get => _name;
             set
             {
-                if (!Set(ref _selectedName, value)) return;
+                if (!Set(ref _name, value)) return;
 
                 _namesView.RefreshFilter(value);
                 OnPropertyChanged(nameof(NamesView));
@@ -115,18 +115,18 @@ namespace BookObserver.ViewModels
 
         #endregion
 
-        #region SelectedPublish : string? - Выбранное издательство
+        #region Publish : string - Издательство
 
-        ///<summary>Выбранное издательство</summary>
-        private string _selectedPublish = string.Empty;
+        ///<summary>Издательство</summary>
+        private string _publish = string.Empty;
 
-        ///<summary>Выбранное издательство</summary>
-        public string SelectedPublish
+        ///<summary>Издательство</summary>
+        public string Publish
         {
-            get => _selectedPublish;
+            get => _publish;
             set
             {
-                if (!Set(ref _selectedPublish, value)) return;
+                if (!Set(ref _publish, value)) return;
 
                 _publishesView.RefreshFilter(value);
                 OnPropertyChanged(nameof(PublishesView));
@@ -135,18 +135,18 @@ namespace BookObserver.ViewModels
 
         #endregion
 
-        #region SelectedYearPublish : string? - Выбранный год издания
+        #region YearPublish : string - Год издания
 
-        ///<summary>Выбранный год издания</summary>
-        private string _selectedYearPublish = string.Empty;
+        ///<summary>Год издания</summary>
+        private string _yearPublish = string.Empty;
 
-        ///<summary>Выбранный год издания</summary>
-        public string SelectedYearPublish
+        ///<summary>Год издания</summary>
+        public string YearPublish
         {
-            get => _selectedYearPublish;
+            get => _yearPublish;
             set
             {
-                if (!Set(ref _selectedYearPublish, value)) return;
+                if (!Set(ref _yearPublish, value)) return;
 
                 _yearPublishesView.RefreshFilter(value);
                 OnPropertyChanged(nameof(YearPublishesView));
@@ -155,29 +155,29 @@ namespace BookObserver.ViewModels
 
         #endregion
 
-        #region SelectedPage : string? - Выбранное количество страниц
+        #region Pages : string - Количество страниц
 
-        ///<summary>Выбранное количество страниц</summary>
-        private string _selectedPages = string.Empty;
+        ///<summary>Количество страниц</summary>
+        private string _pages = string.Empty;
 
-        ///<summary>Выбранное количество страниц</summary>
-        public string SelectedPage
+        ///<summary>Количество страниц</summary>
+        public string Pages
         {
-            get => _selectedPages;
-            set => Set(ref _selectedPages, value);
+            get => _pages;
+            set => Set(ref _pages, value);
         }
         #endregion
 
-        #region SelectedISBN : string? - Выбранный ISBN
+        #region ISBN : string - ISBN
 
-        ///<summary>Выбранный ISBN</summary>
-        private string _selectedISBN = string.Empty;
+        ///<summary>ISBN</summary>
+        private string _isbn = string.Empty;
 
-        ///<summary>Выбранный ISBN</summary>
-        public string SelectedISBN
+        ///<summary>ISBN</summary>
+        public string ISBN
         {
-            get => _selectedISBN;
-            set => Set(ref _selectedISBN, value);
+            get => _isbn;
+            set => Set(ref _isbn, value);
         }
 
         #endregion
@@ -205,27 +205,27 @@ namespace BookObserver.ViewModels
 
         ///<summary>Проверка возможности выполнения - COMMENT</summary>
         private bool CanClearFieldsCommandExecute(object? p) => 
-            !string.IsNullOrWhiteSpace(_selectedCodeAuthor)
-            || !string.IsNullOrWhiteSpace(_selectedBBK)
-            || !string.IsNullOrWhiteSpace(_selectedAuthor)
-            || !string.IsNullOrWhiteSpace(_selectedName)
-            || !string.IsNullOrWhiteSpace(_selectedPublish)
-            || !string.IsNullOrWhiteSpace(_selectedYearPublish)
-            || !string.IsNullOrWhiteSpace(_selectedPages)
-            || !string.IsNullOrWhiteSpace(_selectedISBN)
+            !string.IsNullOrWhiteSpace(_codeAuthor)
+            || !string.IsNullOrWhiteSpace(_bbk)
+            || !string.IsNullOrWhiteSpace(_author)
+            || !string.IsNullOrWhiteSpace(_name)
+            || !string.IsNullOrWhiteSpace(_publish)
+            || !string.IsNullOrWhiteSpace(_yearPublish)
+            || !string.IsNullOrWhiteSpace(_pages)
+            || !string.IsNullOrWhiteSpace(_isbn)
             ;
 
         ///<summary>Логика выполнения - COMMENT</summary>
         private void OnClearFieldsCommandExecuted(object? p)
         {
-            SelectedCodeAuthor = string.Empty;
-            SelectedBBK = string.Empty;
-            SelectedAuthor = string.Empty;
-            SelectedName = string.Empty;
-            SelectedPublish = string.Empty;
-            SelectedYearPublish = string.Empty;
-            SelectedPage = string.Empty;
-            SelectedISBN = string.Empty;
+            CodeAuthor = string.Empty;
+            BBK = string.Empty;
+            Author = string.Empty;
+            Name = string.Empty;
+            Publish = string.Empty;
+            YearPublish = string.Empty;
+            Pages = string.Empty;
+            ISBN = string.Empty;
         }
 
         #endregion
@@ -266,14 +266,14 @@ namespace BookObserver.ViewModels
             {
                 Id = Books.Count,
                 Existence = "Да",
-                CodeAuthor = _selectedCodeAuthor,
-                BBK = _selectedBBK,
-                Author = _selectedAuthor,
-                Name = _selectedName,
-                Publish = _selectedPublish,
-                YearPublish = _selectedYearPublish,
-                Pages = _selectedPages,
-                ISBN = _selectedISBN
+                CodeAuthor = _codeAuthor,
+                BBK = _bbk,
+                Author = _author,
+                Name = _name,
+                Publish = _publish,
+                YearPublish = _yearPublish,
+                Pages = _pages,
+                ISBN = _isbn
             });
             _booksVM._booksView.View.Refresh();
             if (_isNotifyAddBook)
