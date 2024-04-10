@@ -2,6 +2,7 @@
 using BookObserver.Infrastructure.Commands.Base;
 using BookObserver.Models;
 using BookObserver.Models.Books;
+using BookObserver.Services.Interfaces;
 using BookObserver.ViewModels.Base;
 using BookObserver.Views.Windows;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,10 +18,9 @@ namespace BookObserver.ViewModels
 {
     class BooksViewModel : ViewModel
     {
-        #region Properties...
-
-        private CreatorBookWindow? _creatorWindow = null;
-        private EditorBookWindow? _editorWindow = null;
+        private IUserDialog? _userDialog;
+        private CreatorBookWindow? _creatorWindow;
+        private EditorBookWindow? _editorWindow;
 
         public Dictionary<string, SortDescription> Sorting { get; } = new()
         {
@@ -71,11 +71,12 @@ namespace BookObserver.ViewModels
 
         private ObservableCollection<Book>? _filtredBooks;
         ///<summary>Список книг для фильтрации</summary>
-        public ObservableCollection<Book>? FiltredBooks { get => _filtredBooks; set => Set(ref _filtredBooks, value); } 
+        public ObservableCollection<Book>? FiltredBooks { get => _filtredBooks; set => Set(ref _filtredBooks, value); }
 
         #endregion
-
+        /// <summary>Вывод списка</summary>
         public readonly CollectionViewSource _booksView = new();
+        /// <summary>Вывод списка</summary>
         public ICollectionView BooksView => _booksView.View;
 
         #region SelectedBook : Book? - Выбранная книга
@@ -211,8 +212,6 @@ namespace BookObserver.ViewModels
                 ((Command)FindBooksCommand).Executable = true;
             }
         }
-
-        #endregion
 
         #endregion
 
@@ -364,11 +363,10 @@ namespace BookObserver.ViewModels
         private async void OnSaveBooksCommandExecuted(object? p)
         {
             using (var writer = new StreamWriter($@"{Environment.CurrentDirectory}/Data/Books.json"))
-            {
                 await writer.WriteAsync(JsonConvert.SerializeObject(p, Formatting.Indented));
-            }
             ((Command)SaveBooksCommand).Executable = false;
-            MessageBox.Show("Файл успешно сохранен");
+            _userDialog?.ShowInformation("Файл успешно сохранен", "BookObserver");
+            ((Command)SaveBooksCommand).Executable = false;
         }
 
         #endregion
@@ -401,6 +399,7 @@ namespace BookObserver.ViewModels
             };
             _creatorWindow = window;
             window.Show();
+            ((Command)SaveBooksCommand).Executable = true;
 
         }
 
@@ -421,7 +420,7 @@ namespace BookObserver.ViewModels
         ///<summary>Логика выполнения - Команда редактирования книги</summary>
         private void OnEditBookCommandExecuted(object? p)
         {
-            if(_editorWindow is { } window)
+            if (_editorWindow is { } window)
             {
                 _editorWindow.ShowDialog();
                 return;
@@ -433,7 +432,8 @@ namespace BookObserver.ViewModels
                 ClearGarbage();
             };
             _editorWindow = window;
-            window.ShowDialog();
+            if (window.ShowDialog() == true)
+                ((Command)SaveBooksCommand).Executable = true;
         }
 
         #endregion
@@ -569,24 +569,27 @@ namespace BookObserver.ViewModels
 
         #endregion
 
-        public BooksViewModel()
+        public BooksViewModel(IUserDialog userDialog)
         {
-            Random r = new();
-            Books = new(Enumerable.Range(1, 10000).Select(p => new Book
+            _userDialog = userDialog;
+            try
             {
-                Id = p,
-                CodeAuthor = $"Код автора {p}",
-                BBK = double.Round(r.NextDouble() * 100, 2).ToString(),
-                Author = $"Author {p}",
-                Name = new string('ü', r.Next(15, 60)),
-                Publish = $"Publish {p}",
-                YearPublish = r.Next(2000, 2024).ToString(),
-                Pages = r.Next(100, 501).ToString(),
-                ISBN = $"ISBN {p}",
-                Existence = "Да"
-            }));
-            _booksView.Source = FiltredBooks = Books;
-            ((Command)ResetToZeroFindCommand).Executable = false;
+                using (var reader = new StreamReader($@"{Environment.CurrentDirectory}/Data/Books.json"))
+                {
+                    Books = JsonConvert.DeserializeObject<ObservableCollection<Book>>(reader.ReadToEnd());
+                }
+                Books ??= [];
+            }
+            catch (Exception)
+            {
+                Books = [];
+            }
+            finally
+            {
+                _booksView.Source = FiltredBooks = Books;
+                ((Command)ResetToZeroFindCommand).Executable = false;
+                ((Command)SaveBooksCommand).Executable = false;
+            }
         }
     }
 }

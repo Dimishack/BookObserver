@@ -254,6 +254,8 @@ namespace BookObserver.ViewModels
         ///<summary>Логика выполнения - Редактировать книгу (нажатие на ОК)</summary>
         private void OnEditBookCommandExecuted(object? p)
         {
+            var window = (p as Window)!;
+            window.DialogResult = true;
             _booksVM.Books[_indexBook] = new Book
             {
                 Id = _bookOnEdit.Id,
@@ -273,7 +275,7 @@ namespace BookObserver.ViewModels
             };
             if (_idReader is not null)
                 _readersVM.Readers[(int)_idReader].IndexesBooks.Add(_indexBook);
-            (p as Window)!.Close();
+            window.Close();
         }
 
         #endregion
