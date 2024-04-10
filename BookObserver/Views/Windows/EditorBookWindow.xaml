@@ -25,6 +25,9 @@
             </UniformGrid.Resources>
             <Button Content="Ок" IsDefault="True" Command="{Binding EditBookCommand}"
                     CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"/>
+            <Button Command="{Binding ResetCommand}">
+                <TextBlock TextAlignment="Center">Вернуть первоначальный вид</TextBlock>
+            </Button>
             <Button Content="Отмена" IsCancel="True"
                 Command="{Binding CancelEditCommand}"
                 CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"/>
@@ -117,54 +120,44 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <TextBlock Grid.Column="0" Grid.Row="0" 
-                       Text="Код автора:"/>
-            <TextBlock Grid.Column="0" Grid.Row="1" 
                        Text="ББК:"/>
-            <TextBlock Grid.Column="0" Grid.Row="2" 
+            <TextBlock Grid.Column="0" Grid.Row="1" 
                        Text="Автор:"/>
-            <TextBlock Grid.Column="0" Grid.Row="3" 
+            <TextBlock Grid.Column="0" Grid.Row="2" 
                        Text="Название:"/>
-            <TextBlock Grid.Column="0" Grid.Row="4" 
+            <TextBlock Grid.Column="0" Grid.Row="3" 
                        Text="Издательство:"/>
-            <TextBlock Grid.Column="0" Grid.Row="5" 
+            <TextBlock Grid.Column="0" Grid.Row="4" 
                        Text="Год издания:"/>
-            <TextBlock Grid.Column="0" Grid.Row="6" 
+            <TextBlock Grid.Column="0" Grid.Row="5" 
                        Text="Количество страниц:"/>
-            <TextBlock Grid.Column="0" Grid.Row="7" 
+            <TextBlock Grid.Column="0" Grid.Row="6" 
                        Text="ISBN:"/>
-            <TextBlock Grid.Column="0" Grid.Row="8" 
+            <TextBlock Grid.Column="0" Grid.Row="7" 
                        Text="В наличии:"/>
             <TextBox Grid.Column="1" Grid.Row="0" 
-                     Text="{Binding CodeAuthor, UpdateSourceTrigger=PropertyChanged}"/>
-            <TextBox Grid.Column="1" Grid.Row="1" 
                      Text="{Binding BBK, UpdateSourceTrigger=PropertyChanged}"
                      KeyDown="ComboBox_KeyDown"/>
-            <TextBox Grid.Column="1" Grid.Row="2" 
+            <TextBox Grid.Column="1" Grid.Row="1" 
                      Text="{Binding Author, UpdateSourceTrigger=PropertyChanged}"/>
-            <TextBox Grid.Column="1" Grid.Row="3" 
+            <TextBox Grid.Column="1" Grid.Row="2" 
                      Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"/>
-            <TextBox Grid.Column="1" Grid.Row="4" 
+            <TextBox Grid.Column="1" Grid.Row="3" 
                      Text="{Binding Publish, UpdateSourceTrigger=PropertyChanged}"/>
-            <TextBox Grid.Column="1" Grid.Row="5" 
+            <TextBox Grid.Column="1" Grid.Row="4" 
                      Text="{Binding YearPublish, UpdateSourceTrigger=PropertyChanged}"
                      KeyDown="ComboBox_KeyDownDigits"/>
-            <TextBox Grid.Column="1" Grid.Row="6" 
+            <TextBox Grid.Column="1" Grid.Row="5" 
                      Text="{Binding Pages, UpdateSourceTrigger=PropertyChanged}"
                      KeyDown="ComboBox_KeyDownDigits"/>
-            <TextBox Grid.Column="1" Grid.Row="7"
+            <TextBox Grid.Column="1" Grid.Row="6"
                      Text="{Binding ISBN, UpdateSourceTrigger=PropertyChanged}"
                      KeyDown="TextBox_KeyDown"/>
-            <CheckBox Grid.Column="1" Grid.Row="8" IsChecked="{Binding Existence}"
+            <CheckBox Grid.Column="1" Grid.Row="7" IsChecked="{Binding Existence}"
                       VerticalAlignment="Center"
                       Margin="3"/>
-            <Button Grid.Column="1" Grid.Row="9" 
-                     Content="Вернуть первоначальный вид" 
-                     Style="{StaticResource ButtonUG}"
-                     Command="{Binding ResetCommand}"/>
         </Grid>
     </DockPanel>
 </Window>

@@ -68,50 +68,45 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <TextBlock Grid.Column="0" Grid.Row="0" 
-                       Text="Код автора:"/>
-            <TextBlock Grid.Column="0" Grid.Row="1" 
                        Text="ББК:"/>
-            <TextBlock Grid.Column="0" Grid.Row="2" 
+            <TextBlock Grid.Column="0" Grid.Row="1" 
                        Text="Автор:"/>
-            <TextBlock Grid.Column="0" Grid.Row="3" 
+            <TextBlock Grid.Column="0" Grid.Row="2" 
                        Text="Название:"/>
-            <TextBlock Grid.Column="0" Grid.Row="4" 
+            <TextBlock Grid.Column="0" Grid.Row="3" 
                        Text="Издательство:"/>
-            <TextBlock Grid.Column="0" Grid.Row="5" 
+            <TextBlock Grid.Column="0" Grid.Row="4" 
                        Text="Год издания:"/>
-            <TextBlock Grid.Column="0" Grid.Row="6" 
+            <TextBlock Grid.Column="0" Grid.Row="5" 
                        Text="Количество страниц:"/>
-            <TextBlock Grid.Column="0" Grid.Row="7" 
+            <TextBlock Grid.Column="0" Grid.Row="6" 
                        Text="ISBN:"/>
-            <TextBox Grid.Column="1" Grid.Row="0" 
-                      Text="{Binding CodeAuthor, UpdateSourceTrigger=PropertyChanged}"/>
-            <ComboBox Grid.Column="1" Grid.Row="1" 
+            <ComboBox Grid.Column="1" Grid.Row="0" 
                       ItemsSource="{Binding BBKsView}"
                       Text="{Binding BBK}"
                       KeyDown="ComboBox_KeyDown"/>
-            <ComboBox Grid.Column="1" Grid.Row="2" 
+            <ComboBox Grid.Column="1" Grid.Row="1" 
                       ItemsSource="{Binding AuthorsView}"
                       Text="{Binding Author}"/>
-            <ComboBox Grid.Column="1" Grid.Row="3" 
+            <ComboBox Grid.Column="1" Grid.Row="2" 
                       ItemsSource="{Binding NamesView}"
                       Text="{Binding Name}"/>
-            <ComboBox Grid.Column="1" Grid.Row="4" 
+            <ComboBox Grid.Column="1" Grid.Row="3" 
                       ItemsSource="{Binding PublishesView}"
                       Text="{Binding Publish}"/>
-            <ComboBox Grid.Column="1" Grid.Row="5" 
+            <ComboBox Grid.Column="1" Grid.Row="4" 
                       ItemsSource="{Binding YearPublishesView}"
                       Text="{Binding YearPublish}"
                       KeyDown="ComboBox_KeyDownDigits"/>
-            <TextBox Grid.Column="1" Grid.Row="6" 
+            <TextBox Grid.Column="1" Grid.Row="5" 
                      Text="{Binding Pages, UpdateSourceTrigger=PropertyChanged}"
                      KeyDown="ComboBox_KeyDownDigits"/>
-            <TextBox Grid.Column="1" Grid.Row="7"
+            <TextBox Grid.Column="1" Grid.Row="6"
                      Text="{Binding ISBN, UpdateSourceTrigger=PropertyChanged}"
                      KeyDown="TextBox_KeyDown"/>
-            <Button Grid.Column="1" Grid.Row="8" 
+            <Button Grid.Column="1" Grid.Row="7" 
                     Content="Очистить поля" 
                     Style="{StaticResource ButtonUG}"
                     Command="{Binding ClearFieldsCommand}"/>

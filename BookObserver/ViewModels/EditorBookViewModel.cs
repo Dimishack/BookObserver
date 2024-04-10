@@ -40,16 +40,6 @@ namespace BookObserver.ViewModels
 
         #endregion
 
-        #region CodeAuthor : string - Код автора
-
-        ///<summary>Код автора</summary>
-        private string _codeAuthor = string.Empty;
-
-        ///<summary>Код автора</summary>
-        public string CodeAuthor { get => _codeAuthor; set => Set(ref _codeAuthor, value); }
-
-        #endregion
-
         #region BBK : string - ББК
 
         ///<summary>ББК</summary>
@@ -183,8 +173,7 @@ namespace BookObserver.ViewModels
 
         ///<summary>Проверка возможности выполнения - Команда возвращения в первоначальный вид</summary>
         private bool CanResetCommandExecute(object? p) =>
-            _codeAuthor != _bookOnEdit.CodeAuthor
-            || _bbk != _bookOnEdit.BBK
+            _bbk != _bookOnEdit.BBK
             || _author != _bookOnEdit.Author
             || _name != _bookOnEdit.Name
             || _publish != _bookOnEdit.Publish
@@ -199,7 +188,6 @@ namespace BookObserver.ViewModels
         ///<summary>Логика выполнения - Команда возвращения в первоначальный вид</summary>
         private void OnResetCommandExecuted(object? p)
         {
-            CodeAuthor = _bookOnEdit.CodeAuthor;
             BBK = _bookOnEdit.BBK;
             Author = _bookOnEdit.Author;
             Name = _bookOnEdit.Name;
@@ -230,8 +218,7 @@ namespace BookObserver.ViewModels
         {
             if (p is not Window) return false;
 
-            if (_codeAuthor == _bookOnEdit.CodeAuthor
-            && _bbk == _bookOnEdit.BBK
+            if ( _bbk == _bookOnEdit.BBK
             && _author == _bookOnEdit.Author
             && _name == _bookOnEdit.Name
             && _publish == _bookOnEdit.Publish
@@ -260,7 +247,6 @@ namespace BookObserver.ViewModels
             {
                 Id = _bookOnEdit.Id,
                 IdReader = _idReader,
-                CodeAuthor = _codeAuthor,
                 BBK = _bbk,
                 Author = _author,
                 Name = _name,
@@ -330,7 +316,6 @@ namespace BookObserver.ViewModels
             _readersVM = readersVM;
             _bookOnEdit = _booksVM.SelectedBook!;
             _indexBook = _booksVM.Books.IndexOf(_bookOnEdit);
-            CodeAuthor = _bookOnEdit.CodeAuthor;
             BBK = _bookOnEdit.BBK;
             Author = _bookOnEdit.Author;
             Name = _bookOnEdit.Name;

@@ -266,7 +266,6 @@ namespace BookObserver.ViewModels
             {
                 Id = Books.Count,
                 Existence = "Да",
-                CodeAuthor = _codeAuthor,
                 BBK = _bbk,
                 Author = _author,
                 Name = _name,
