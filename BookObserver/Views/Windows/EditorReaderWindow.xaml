@@ -34,9 +34,13 @@
             </UniformGrid.Resources>
             <Button Content="Ок" Command="{Binding EditCommand}"
                     CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"/>
+            <Button
+                    Command="{Binding ResetCommand}">
+                <TextBlock TextAlignment="Center">Вернуть первоначальный вид</TextBlock>
+            </Button>
             <Button Content="Отмена"
-            Command="{Binding CancelEditCommand}"
-            CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"/>
+                    Command="{Binding CancelEditCommand}"
+                    CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"/>
         </UniformGrid>
         <GroupBox Header="Книги" Grid.Column="1" Grid.Row="1">
             <GroupBox.Resources>
@@ -142,25 +146,21 @@
             <TextBlock Grid.Column="0" Grid.Row="6"
                Text="Книги с собой:"/>
             <TextBox Grid.Column="1" Grid.Row="0"
-                  Text="{Binding SelectedLastName, UpdateSourceTrigger=PropertyChanged}"/>
+                  Text="{Binding LastName, UpdateSourceTrigger=PropertyChanged}"/>
             <TextBox Grid.Column="1" Grid.Row="1"
-              Text="{Binding SelectedFirstName, UpdateSourceTrigger=PropertyChanged}"/>
+              Text="{Binding FirstName, UpdateSourceTrigger=PropertyChanged}"/>
             <TextBox Grid.Column="1" Grid.Row="2"
-              Text="{Binding SelectedPatronymic, UpdateSourceTrigger=PropertyChanged}"/>
+              Text="{Binding Patronymic, UpdateSourceTrigger=PropertyChanged}"/>
             <TextBox Grid.Column="1" Grid.Row="3"
-              Text="{Binding SelectedAddress, UpdateSourceTrigger=PropertyChanged}"/>
+              Text="{Binding Address, UpdateSourceTrigger=PropertyChanged}"/>
             <TextBox Grid.Column="1" Grid.Row="4"
-              Text="{Binding SelectedPhoneNumber, UpdateSourceTrigger=PropertyChanged}"/>
+              Text="{Binding PhoneNumber, UpdateSourceTrigger=PropertyChanged}"/>
             <TextBox Grid.Column="1" Grid.Row="5"
-              Text="{Binding SelectedHomePhoneNumber, UpdateSourceTrigger=PropertyChanged}"/>
+              Text="{Binding HomePhoneNumber, UpdateSourceTrigger=PropertyChanged}"/>
             <CheckBox Grid.Column="1" Grid.Row="6" 
                       VerticalAlignment="Center"
                       Margin="3"
                       IsChecked="{Binding BooksWithHim}"/>
-            <Button Grid.Column="1" Grid.Row="7" 
-            Content="Вернуть первоначальный вид" 
-            Style="{StaticResource ButtonUG}"
-            Command="{Binding ResetCommand}"/>
         </Grid>
     </Grid>
 </Window>

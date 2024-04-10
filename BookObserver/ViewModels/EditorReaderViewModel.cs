@@ -19,63 +19,66 @@ namespace BookObserver.ViewModels
 
         private ObservableCollection<int> _indexesBooksOnDelete { get; } = [];
 
-        #region SelectedLastName : string - Выбранная фамилия
+        ///<summary>Выбранные книги</summary>
+        public ObservableCollection<Book> SelectedBooks { get; } = [];
+
+        #region LastName : string - Выбранная фамилия
 
         ///<summary>Выбранная фамилия</summary>
-        private string _selectedLastName = string.Empty;
+        private string _lastName = string.Empty;
 
         ///<summary>Выбранная фамилия</summary>
-        public string SelectedLastName { get => _selectedLastName; set => Set(ref _selectedLastName, value); }
+        public string LastName { get => _lastName; set => Set(ref _lastName, value); }
 
         #endregion
 
-        #region SelectedFirstName : string - Выбранное имя
+        #region FirstName : string - Выбранное имя
 
         ///<summary>Выбранное имя</summary>
-        private string _selectedFirstName = string.Empty;
+        private string _firstName = string.Empty;
 
         ///<summary>Выбранное имя</summary>
-        public string SelectedFirstName { get => _selectedFirstName; set => Set(ref _selectedFirstName, value); }
+        public string FirstName { get => _firstName; set => Set(ref _firstName, value); }
 
         #endregion
 
-        #region SelectedPatronymic : string - Выбранное отчество
+        #region Patronymic : string - Выбранное отчество
 
         ///<summary>Выбранное отчество</summary>
-        private string _selectedPatronymic = string.Empty;
+        private string _patronymic = string.Empty;
 
         ///<summary>Выбранное отчество</summary>
-        public string SelectedPatronymic { get => _selectedPatronymic; set => Set(ref _selectedPatronymic, value); }
+        public string Patronymic { get => _patronymic; set => Set(ref _patronymic, value); }
 
         #endregion
 
-        #region SelectedAddress : string - Выбранный адрес
+        #region Address : string - Выбранный адрес
 
         ///<summary>Выбранный адрес</summary>
-        private string _selectedAddress = string.Empty;
+        private string _address = string.Empty;
 
         ///<summary>Выбранный адрес</summary>
-        public string SelectedAddress { get => _selectedAddress; set => Set(ref _selectedAddress, value); }
+        public string Address { get => _address; set => Set(ref _address, value); }
 
         #endregion
 
-        #region SelectedPhoneNumber : string - Выбранный номер телефона
+        #region PhoneNumber : string - Выбранный номер телефона
 
         ///<summary>Выбранный номер телефона</summary>
-        private string _selectedPhoneNumber = string.Empty;
+        private string _phoneNumber = string.Empty;
 
         ///<summary>Выбранный номер телефона</summary>
-        public string SelectedPhoneNumber { get => _selectedPhoneNumber; set => Set(ref _selectedPhoneNumber, value); }
+        public string PhoneNumber { get => _phoneNumber; set => Set(ref _phoneNumber, value); }
 
         #endregion
 
-        #region SelectedHomePhoneNumber : string - Выбранный домашний номер телефона
+        #region HomePhoneNumber : string - Выбранный домашний номер телефона
 
         ///<summary>Выбранный домашний номер телефона</summary>
-        private string _selectedHomePhoneNumber = string.Empty;
+        private string _homePhoneNumber = string.Empty;
 
         ///<summary>Выбранный домашний номер телефона</summary>
-        public string SelectedHomePhoneNumber { get => _selectedHomePhoneNumber; set => Set(ref _selectedHomePhoneNumber, value); }
+        public string HomePhoneNumber { get => _homePhoneNumber; set => Set(ref _homePhoneNumber, value); }
 
         #endregion
 
@@ -112,8 +115,13 @@ namespace BookObserver.ViewModels
             {
                 if (!Set(ref _selectedBook, value) || value is null) return;
 
-                DateGetSelectedBook = value.DateGet;
-                DateSetSelectedBook = value.DateSet;
+                if (value.DateGet == null)
+                    DateGetSelectedBook = DateTime.Now;
+                else
+                {
+                    DateGetSelectedBook = value.DateGet;
+                    DateSetSelectedBook = value.DateSet;
+                }
             }
         }
 
@@ -159,14 +167,6 @@ namespace BookObserver.ViewModels
 
         #endregion
 
-        #region SelectedBooks : ObservableCollection<Book> - Выбранные книги
-
-        ///<summary>Выбранные книги</summary>
-        public ObservableCollection<Book> SelectedBooks { get; } = [];
-
-        #endregion
-
-
         #region Commands
 
         #region ResetCommand - Команда возвращения в первоначальный вид
@@ -180,25 +180,30 @@ namespace BookObserver.ViewModels
 
         ///<summary>Проверка возможности выполнения - Команда возвращения в первоначальный вид</summary>
         private bool CanResetCommandExecute(object? p) =>
-            _selectedLastName != _readerOnEdit.LastName
-            || _selectedFirstName != _readerOnEdit.FirstName
-            || _selectedPatronymic != _readerOnEdit.Patronymic
-            || _selectedPhoneNumber != _readerOnEdit.PhoneNumber
-            || _selectedHomePhoneNumber != _readerOnEdit.HomePhoneNumber
-            || _selectedAddress != _readerOnEdit.Address
+            _lastName != _readerOnEdit.LastName
+            || _firstName != _readerOnEdit.FirstName
+            || _patronymic != _readerOnEdit.Patronymic
+            || _phoneNumber != _readerOnEdit.PhoneNumber
+            || _homePhoneNumber != _readerOnEdit.HomePhoneNumber
+            || _address != _readerOnEdit.Address
             || _booksWithHim != (_readerOnEdit.BooksWithHim == "Да")
+            || !_indexesBook.SequenceEqual(_readerOnEdit.IndexesBooks)
             ;
 
         ///<summary>Логика выполнения - Команда возвращения в первоначальный вид</summary>
         private void OnResetCommandExecuted(object? p)
         {
-            SelectedLastName = _readerOnEdit.LastName;
-            SelectedFirstName = _readerOnEdit.FirstName;
-            SelectedPatronymic = _readerOnEdit.Patronymic;
-            SelectedPhoneNumber = _readerOnEdit.PhoneNumber;
-            SelectedHomePhoneNumber = _readerOnEdit.HomePhoneNumber;
-            SelectedAddress = _readerOnEdit.Address;
+            LastName = _readerOnEdit.LastName;
+            FirstName = _readerOnEdit.FirstName;
+            Patronymic = _readerOnEdit.Patronymic;
+            PhoneNumber = _readerOnEdit.PhoneNumber;
+            HomePhoneNumber = _readerOnEdit.HomePhoneNumber;
+            Address = _readerOnEdit.Address;
             BooksWithHim = _readerOnEdit.BooksWithHim == "Да";
+            IndexesBooks = new(_readerOnEdit.IndexesBooks);
+            SelectedBooks.Clear();
+            foreach (var indexBook in IndexesBooks)
+                SelectedBooks.Add(_booksVM.Books[indexBook]);
         }
 
         #endregion
@@ -244,13 +249,13 @@ namespace BookObserver.ViewModels
             var reader = new Reader
             {
                 Id = _indexReader + 1,
-                LastName = _selectedLastName,
-                FirstName = _selectedFirstName,
-                Patronymic = _selectedPatronymic,
-                Address = _selectedAddress,
+                LastName = _lastName,
+                FirstName = _firstName,
+                Patronymic = _patronymic,
+                Address = _address,
                 BooksWithHim = _booksWithHim ? "Да" : "Нет",
-                PhoneNumber = _selectedPhoneNumber,
-                HomePhoneNumber = _selectedHomePhoneNumber,
+                PhoneNumber = _phoneNumber,
+                HomePhoneNumber = _homePhoneNumber,
                 IndexesBooks = _indexesBook,
             };
             _readersVM.Readers[_indexReader] = reader;
@@ -345,12 +350,12 @@ namespace BookObserver.ViewModels
             _readersVM = readersVM;
             _readerOnEdit = _readersVM.SelectedReader!;
             _indexReader = _readerOnEdit.Id - 1;
-            SelectedLastName = _readerOnEdit.LastName;
-            SelectedFirstName = _readerOnEdit.FirstName;
-            SelectedPatronymic = _readerOnEdit.Patronymic;
-            SelectedPhoneNumber = _readerOnEdit.PhoneNumber;
-            SelectedHomePhoneNumber = _readerOnEdit.HomePhoneNumber;
-            SelectedAddress = _readerOnEdit.Address;
+            LastName = _readerOnEdit.LastName;
+            FirstName = _readerOnEdit.FirstName;
+            Patronymic = _readerOnEdit.Patronymic;
+            PhoneNumber = _readerOnEdit.PhoneNumber;
+            HomePhoneNumber = _readerOnEdit.HomePhoneNumber;
+            Address = _readerOnEdit.Address;
             BooksWithHim = _readerOnEdit.BooksWithHim == "Да";
             IndexesBooks = new(_readerOnEdit.IndexesBooks);
             foreach (var indexBook in IndexesBooks)
