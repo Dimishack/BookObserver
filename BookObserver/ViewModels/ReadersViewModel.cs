@@ -26,10 +26,6 @@ namespace BookObserver.ViewModels
             {"Имена (по убыванию)", new SortDescription("FirstName", ListSortDirection.Descending)},
             {"Отчества (по возрастанию)", new SortDescription("Patronymic", ListSortDirection.Ascending)},
             {"Отчества (по убыванию)", new SortDescription("Patronymic", ListSortDirection.Descending)},
-            {"Дата получения (по возрастанию)", new SortDescription("DateGet", ListSortDirection.Ascending)},
-            {"Дата получения (по убыванию)", new SortDescription("DateGet", ListSortDirection.Descending)},
-            {"Дата возврата (по возрастанию)", new SortDescription("DateSet", ListSortDirection.Ascending)},
-            {"Дата возврата (по убыванию)", new SortDescription("DateSet", ListSortDirection.Descending)},
         };
 
         #region SelectedSorting : string - Выбранная сортировка списка читателей

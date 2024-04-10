@@ -33,7 +33,11 @@ namespace BookObserver.ViewModels
             {"Авторы (по возрастанию)", new SortDescription("Author", ListSortDirection.Ascending)},
             {"Авторы (по убыванию)", new SortDescription("Author", ListSortDirection.Descending)},
             {"Названия (по возрастанию)", new SortDescription("Name", ListSortDirection.Ascending)},
-            {"Названия (по убыванию)", new SortDescription("Name", ListSortDirection.Descending)}
+            {"Названия (по убыванию)", new SortDescription("Name", ListSortDirection.Descending)},
+            {"Даты получения (по возрастанию)", new SortDescription("DateGet", ListSortDirection.Ascending)},
+            {"Даты получения (по убыванию)", new SortDescription("DateGet", ListSortDirection.Descending)},
+            {"Даты возврата (по возрастанию)", new SortDescription("DateSet", ListSortDirection.Ascending)},
+            {"Даты возврата (по убыванию)", new SortDescription("DateSet", ListSortDirection.Descending)},
         };
 
         #region SelectedSorting : string - Выбранная сортировка списка книг
@@ -51,6 +55,9 @@ namespace BookObserver.ViewModels
 
                 _booksView.View.SortDescriptions.Clear();
                 ClearGarbage();
+                if (value.Contains("Даты получения", StringComparison.OrdinalIgnoreCase)
+                    || value.Contains("Даты возврата", StringComparison.OrdinalIgnoreCase))
+                    _booksView.View.SortDescriptions.Add(Sorting["Сначала не в наличии"]);
                 _booksView.View.SortDescriptions.Add(Sorting[value]);
             }
         }
@@ -60,9 +67,13 @@ namespace BookObserver.ViewModels
         ///<summary>Список книг</summary>
         public ObservableCollection<Book> Books { get; }
 
+        #region FiltredBooks : ObservableCollection<Book> - Список книг для фильтрации
+
         private ObservableCollection<Book>? _filtredBooks;
         ///<summary>Список книг для фильтрации</summary>
-        public ObservableCollection<Book>? FiltredBooks { get => _filtredBooks; set => Set(ref _filtredBooks, value); }
+        public ObservableCollection<Book>? FiltredBooks { get => _filtredBooks; set => Set(ref _filtredBooks, value); } 
+
+        #endregion
 
         public readonly CollectionViewSource _booksView = new();
         public ICollectionView BooksView => _booksView.View;
@@ -572,7 +583,7 @@ namespace BookObserver.ViewModels
                 YearPublish = r.Next(2000, 2024).ToString(),
                 Pages = r.Next(100, 501).ToString(),
                 ISBN = $"ISBN {p}",
-                Existence = r.Next(0, 2) == 0 ? "Да" : "Нет"
+                Existence = "Да"
             }));
             _booksView.Source = FiltredBooks = Books;
             ((Command)ResetToZeroFindCommand).Executable = false;
