@@ -25,10 +25,16 @@ namespace BookObserver.ViewModels
             get => _existence;
             set
             {
-                if (!Set(ref _existence, value) || !value) return;
-                FullNameReader = null;
-                DateGet = null;
-                DateSet = null;
+                if (!Set(ref _existence, value)) return;
+                if (!value)
+                    DateGet = DateTime.Now;
+                else
+                {
+                    IdReader = null;
+                    FullNameReader = null;
+                    DateGet = null;
+                    DateSet = null;
+                }
             }
         }
 
@@ -243,7 +249,7 @@ namespace BookObserver.ViewModels
 
             return true;
         }
-            
+
 
         ///<summary>Логика выполнения - Редактировать книгу (нажатие на ОК)</summary>
         private void OnEditBookCommandExecuted(object? p)
