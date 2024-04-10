@@ -154,9 +154,11 @@
             <TextBox Grid.Column="1" Grid.Row="3"
               Text="{Binding Address, UpdateSourceTrigger=PropertyChanged}"/>
             <TextBox Grid.Column="1" Grid.Row="4"
-              Text="{Binding PhoneNumber, UpdateSourceTrigger=PropertyChanged}"/>
+              Text="{Binding PhoneNumber, UpdateSourceTrigger=PropertyChanged}"
+                     KeyDown="TextBox_KeyDown"/>
             <TextBox Grid.Column="1" Grid.Row="5"
-              Text="{Binding HomePhoneNumber, UpdateSourceTrigger=PropertyChanged}"/>
+              Text="{Binding HomePhoneNumber, UpdateSourceTrigger=PropertyChanged}"
+                     KeyDown="TextBox_KeyDown"/>
             <CheckBox Grid.Column="1" Grid.Row="6" 
                       VerticalAlignment="Center"
                       Margin="3"
