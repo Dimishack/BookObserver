@@ -244,7 +244,7 @@ namespace BookObserver.ViewModels
         private void OnSelectBookCommandExecuted(object? p)
         {
             var window = (Window)p!;
-            _editorReaderVM.IndexesBooks.Add(_selectedBook!.Id - 1);
+            _editorReaderVM.IndexesBooks.Add(_selectedBook!.Id);
             window.DialogResult = true;
             window.Close();
         }

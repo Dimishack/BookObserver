@@ -366,7 +366,6 @@ namespace BookObserver.ViewModels
                 await writer.WriteAsync(JsonConvert.SerializeObject(p, Formatting.Indented));
             ((Command)SaveBooksCommand).Executable = false;
             _userDialog?.ShowInformation("Файл успешно сохранен", "BookObserver");
-            ((Command)SaveBooksCommand).Executable = false;
         }
 
         #endregion

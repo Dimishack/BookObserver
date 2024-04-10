@@ -349,7 +349,7 @@ namespace BookObserver.ViewModels
             _booksVM = booksVM;
             _readersVM = readersVM;
             _readerOnEdit = _readersVM.SelectedReader!;
-            _indexReader = _readerOnEdit.Id - 1;
+            _indexReader = _readerOnEdit.Id;
             LastName = _readerOnEdit.LastName;
             FirstName = _readerOnEdit.FirstName;
             Patronymic = _readerOnEdit.Patronymic;

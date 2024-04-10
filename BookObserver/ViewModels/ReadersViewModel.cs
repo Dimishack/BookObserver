@@ -1,12 +1,16 @@
 ﻿using BookObserver.Infrastructure.Commands;
 using BookObserver.Infrastructure.Commands.Base;
 using BookObserver.Models;
+using BookObserver.Models.Books;
 using BookObserver.Models.Readers;
+using BookObserver.Services.Interfaces;
 using BookObserver.ViewModels.Base;
 using BookObserver.Views.Windows;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.IO;
 using System.Windows.Data;
 using System.Windows.Input;
 
@@ -14,6 +18,7 @@ namespace BookObserver.ViewModels
 {
     internal class ReadersViewModel : ViewModel
     {
+        private IUserDialog? _userDialog;
         private CreatorReaderWindow? _creatorReaderWindow;
         private EditorReaderWindow? _editorReaderWindow;
         public Dictionary<string, SortDescription> Sorting { get; } = new()
@@ -178,6 +183,7 @@ namespace BookObserver.ViewModels
 
             _creatorReaderWindow = window;
             _creatorReaderWindow.Show();
+            ((Command)SaveReadersCommand).Executable = true;
         }
 
         #endregion
@@ -209,7 +215,8 @@ namespace BookObserver.ViewModels
                 ClearGarbage();
             };
             _editorReaderWindow = window;
-            _editorReaderWindow.ShowDialog();
+            if (_editorReaderWindow.ShowDialog() == true)
+            ((Command)SaveReadersCommand).Executable = true;
         }
 
         #endregion
@@ -235,6 +242,32 @@ namespace BookObserver.ViewModels
                 for (int i = index; i < Readers.Count; i++)
                     Readers[i].Id--;
             FiltredReaders?.Remove(reader);
+            ((Command)SaveReadersCommand).Executable = true;
+        }
+
+        #endregion
+
+        #region SaveReadersCommand - Команда сохранение читателей
+
+        ///<summary>Команда сохранение читателей</summary>
+        private ICommand? _saveReadersCommand;
+
+        ///<summary>Команда сохранение читателей</summary>
+        public ICommand SaveReadersCommand => _saveReadersCommand
+            ??= new LambdaCommand(OnSaveReadersCommandExecuted, CanSaveReadersCommandExecute);
+
+        ///<summary>Проверка возможности выполнения - Команда сохранение читателей</summary>
+        private bool CanSaveReadersCommandExecute(object? p) => p is not null
+            && p is IList<Reader>
+            ;
+
+        ///<summary>Логика выполнения - Команда сохранение читателей</summary>
+        private async void OnSaveReadersCommandExecuted(object? p)
+        {
+            using (var writer = new StreamWriter($@"{Environment.CurrentDirectory}/Data/Readers.json"))
+                await writer.WriteAsync(JsonConvert.SerializeObject(p, Formatting.Indented));
+            ((Command)SaveReadersCommand).Executable = false;
+            _userDialog?.ShowInformation("Файл успешно сохранен", "BookObserver");
         }
 
         #endregion
@@ -411,24 +444,27 @@ namespace BookObserver.ViewModels
 
         #endregion
 
-        public ReadersViewModel()
+        public ReadersViewModel(IUserDialog? userDialog)
         {
-            FiltredReaders = Readers = new ObservableCollection<Reader>(
-                Enumerable.Range(1, 10000).Select(
-                    p => new Reader
-                    {
-                        Id = p,
-                        LastName = $"Фамилия {p}",
-                        FirstName = $"Имя {p}",
-                        Patronymic = $"Отчество {p}",
-                        PhoneNumber = $"Телефон {p}",
-                        HomePhoneNumber = $"Домашний {p}",
-                        Address = $"Адрес {p}",
-                        BooksWithHim = Random.Shared.Next(0,2) == 0? "Да": "Нет",
-                    }));
-
-            ((Command)ResetToZeroSearchCommand).Executable = false;
-            _readersView.Source = _filtredReaders;
+            _userDialog = userDialog;
+            try
+            {
+                using (var reader = new StreamReader($@"{Environment.CurrentDirectory}/Data/Readers.json"))
+                {
+                    Readers = JsonConvert.DeserializeObject<ObservableCollection<Reader>>(reader.ReadToEnd());
+                }
+                Readers ??= [];
+            }
+            catch (Exception)
+            {
+                Readers = [];
+            }
+            finally
+            {
+                ((Command)ResetToZeroSearchCommand).Executable = false;
+                ((Command)SaveReadersCommand).Executable = false;
+                _readersView.Source = FiltredReaders = Readers;
+            }
         }
     }
 }

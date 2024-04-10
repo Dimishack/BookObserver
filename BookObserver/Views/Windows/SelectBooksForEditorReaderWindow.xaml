@@ -77,7 +77,6 @@
                             <Border BorderBrush="SandyBrown" BorderThickness="2">
                                 <Grid>
                                     <StackPanel Margin="5">
-                                        <TextBlock Text="{Binding CodeAuthor, StringFormat=Код автора: {0}}"/>
                                         <TextBlock Text="{Binding BBK, StringFormat=ББК: {0}}"/>
                                         <TextBlock Text="{Binding Author, StringFormat=Автор: {0}}"/>
                                         <TextBlock Text="{Binding Name, StringFormat=Название: {0}}"/>

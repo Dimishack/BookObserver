@@ -151,7 +151,7 @@ namespace BookObserver.ViewModels
         #region IsNotifyAddReader : bool - Разрешение уведомлять о добавлении читателя
 
         ///<summary>Разрешение уведомлять о добавлении читателя</summary>
-        private bool _isNotifyAddReader;
+        private bool _isNotifyAddReader = true;
 
         ///<summary>Разрешение уведомлять о добавлении читателя</summary>
         public bool IsNotifyAddReader { get => _isNotifyAddReader; set => Set(ref _isNotifyAddReader, value); }

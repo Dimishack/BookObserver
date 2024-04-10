@@ -1,5 +1,6 @@
 ﻿using BookObserver.Infrastructure.Commands;
 using BookObserver.Infrastructure.Commands.Base;
+using BookObserver.Services.Interfaces;
 using System.Windows;
 using System.Windows.Input;
 
@@ -37,7 +38,7 @@ namespace BookObserver.ViewModels
 
         #endregion
 
-        public SelectReaderForEditorBookViewModel(EditorBookViewModel editorBookVM)
+        public SelectReaderForEditorBookViewModel(EditorBookViewModel editorBookVM) : base(null)
         {
             _editorBookVM = editorBookVM;
             ((Command)ResetToZeroSearchCommand).Executable = false;
