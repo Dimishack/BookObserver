@@ -121,46 +121,50 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <TextBlock Grid.Column="0" Grid.Row="0" 
-                   Text="Код автора:"/>
+                       Text="Код автора:"/>
             <TextBlock Grid.Column="0" Grid.Row="1" 
-                   Text="ББК:"/>
+                       Text="ББК:"/>
             <TextBlock Grid.Column="0" Grid.Row="2" 
-                   Text="Автор:"/>
+                       Text="Автор:"/>
             <TextBlock Grid.Column="0" Grid.Row="3" 
-                   Text="Название:"/>
+                       Text="Название:"/>
             <TextBlock Grid.Column="0" Grid.Row="4" 
-                   Text="Издательство:"/>
+                       Text="Издательство:"/>
             <TextBlock Grid.Column="0" Grid.Row="5" 
-                   Text="Год издания:"/>
+                       Text="Год издания:"/>
             <TextBlock Grid.Column="0" Grid.Row="6" 
-                   Text="Количество страниц:"/>
+                       Text="Количество страниц:"/>
             <TextBlock Grid.Column="0" Grid.Row="7" 
-                   Text="ISBN:"/>
+                       Text="ISBN:"/>
             <TextBlock Grid.Column="0" Grid.Row="8" 
-                   Text="В наличии:"/>
+                       Text="В наличии:"/>
             <TextBox Grid.Column="1" Grid.Row="0" 
-                  Text="{Binding CodeAuthor, UpdateSourceTrigger=PropertyChanged}"/>
+                     Text="{Binding CodeAuthor, UpdateSourceTrigger=PropertyChanged}"/>
             <TextBox Grid.Column="1" Grid.Row="1" 
-                  Text="{Binding BBK, UpdateSourceTrigger=PropertyChanged}"/>
+                     Text="{Binding BBK, UpdateSourceTrigger=PropertyChanged}"
+                     KeyDown="ComboBox_KeyDown"/>
             <TextBox Grid.Column="1" Grid.Row="2" 
-                  Text="{Binding Author, UpdateSourceTrigger=PropertyChanged}"/>
+                     Text="{Binding Author, UpdateSourceTrigger=PropertyChanged}"/>
             <TextBox Grid.Column="1" Grid.Row="3" 
-                  Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"/>
+                     Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"/>
             <TextBox Grid.Column="1" Grid.Row="4" 
-                  Text="{Binding Publish, UpdateSourceTrigger=PropertyChanged}"/>
+                     Text="{Binding Publish, UpdateSourceTrigger=PropertyChanged}"/>
             <TextBox Grid.Column="1" Grid.Row="5" 
-                  Text="{Binding YearPublish, UpdateSourceTrigger=PropertyChanged}"/>
+                     Text="{Binding YearPublish, UpdateSourceTrigger=PropertyChanged}"
+                     KeyDown="ComboBox_KeyDownDigits"/>
             <TextBox Grid.Column="1" Grid.Row="6" 
-                 Text="{Binding Pages, UpdateSourceTrigger=PropertyChanged}"/>
+                     Text="{Binding Pages, UpdateSourceTrigger=PropertyChanged}"
+                     KeyDown="ComboBox_KeyDownDigits"/>
             <TextBox Grid.Column="1" Grid.Row="7"
-                 Text="{Binding ISBN, UpdateSourceTrigger=PropertyChanged}"/>
+                     Text="{Binding ISBN, UpdateSourceTrigger=PropertyChanged}"
+                     KeyDown="TextBox_KeyDown"/>
             <CheckBox Grid.Column="1" Grid.Row="8" IsChecked="{Binding Existence}"
                       VerticalAlignment="Center"
                       Margin="3"/>
             <Button Grid.Column="1" Grid.Row="9" 
-                Content="Вернуть первоначальный вид" 
-                Style="{StaticResource ButtonUG}"
-                Command="{Binding ResetCommand}"/>
+                     Content="Вернуть первоначальный вид" 
+                     Style="{StaticResource ButtonUG}"
+                     Command="{Binding ResetCommand}"/>
         </Grid>
     </DockPanel>
 </Window>
