@@ -29,18 +29,18 @@ namespace BookObserver.ViewModels
         private readonly CollectionWithFilter _lastNamesView = new();
         public ObservableCollection<string>? LastNamesView => _lastNamesView.CollectionView;
 
-        #region SelectedLastName : string - Выбранная фамилия
+        #region LastName : string - Фамилия
 
-        ///<summary>Выбранная фамилия</summary>
-        private string _selectedLastName = string.Empty;
+        ///<summary>Фамилия</summary>
+        private string _lastName = string.Empty;
 
-        ///<summary>Выбранная фамилия</summary>
-        public string SelectedLastName
+        ///<summary>Фамилия</summary>
+        public string LastName
         {
-            get => _selectedLastName;
+            get => _lastName;
             set
             {
-                if (!Set(ref _selectedLastName, value)) return;
+                if (!Set(ref _lastName, value)) return;
 
                 _lastNamesView.RefreshFilter(value);
                 OnPropertyChanged(nameof(LastNamesView));
@@ -52,18 +52,18 @@ namespace BookObserver.ViewModels
         private readonly CollectionWithFilter _firstNamesView = new();
         public ObservableCollection<string>? FirstNamesView => _firstNamesView.CollectionView;
 
-        #region SelectedFirstName : string - Выбранное имя
+        #region FirstName : string - Имя
 
-        ///<summary>Выбранное имя</summary>
-        private string _selectedFirstName = string.Empty;
+        ///<summary>Имя</summary>
+        private string _firstName = string.Empty;
 
-        ///<summary>Выбранное имя</summary>
-        public string SelectedFirstName
+        ///<summary>Имя</summary>
+        public string FirstName
         {
-            get => _selectedFirstName;
+            get => _firstName;
             set
             {
-                if (!Set(ref _selectedFirstName, value)) return;
+                if (!Set(ref _firstName, value)) return;
 
                 _firstNamesView.RefreshFilter(value);
                 OnPropertyChanged(nameof(FirstNamesView));
@@ -75,18 +75,18 @@ namespace BookObserver.ViewModels
         private readonly CollectionWithFilter _patronymicsView = new();
         public ObservableCollection<string>? PatronymicsView => _patronymicsView.CollectionView;
 
-        #region SelectedPatronymic : string - Выбранное отчество
+        #region Patronymic : string - Отчество
 
-        ///<summary>Выбранное отчество</summary>
-        private string _selectedPatronymic = string.Empty;
+        ///<summary>Отчество</summary>
+        private string _patronymic = string.Empty;
 
-        ///<summary>Выбранное отчество</summary>
-        public string SelectedPatronymic
+        ///<summary>Отчество</summary>
+        public string Patronymic
         {
-            get => _selectedPatronymic;
+            get => _patronymic;
             set
             {
-                if (!Set(ref _selectedPatronymic, value)) return;
+                if (!Set(ref _patronymic, value)) return;
 
                 _patronymicsView.RefreshFilter(value);
                 OnPropertyChanged(nameof(PatronymicsView));
@@ -96,53 +96,53 @@ namespace BookObserver.ViewModels
         #endregion
 
         private readonly CollectionWithFilter _addressesView = new();
-        public ObservableCollection<string>? AdressesView => _addressesView.CollectionView;
+        public ObservableCollection<string>? AddressesView => _addressesView.CollectionView;
 
-        #region SelectedAddress : string - Выбранный адрес
+        #region Address : string - Адрес
 
-        ///<summary>Выбранный адрес</summary>
-        private string _selectedAddress = string.Empty;
+        ///<summary>Адрес</summary>
+        private string _address = string.Empty;
 
-        ///<summary>Выбранный адрес</summary>
-        public string SelectedAddress
+        ///<summary>Адрес</summary>
+        public string Address
         {
-            get => _selectedAddress;
+            get => _address;
             set
             {
-                if (!Set(ref _selectedAddress, value)) return;
+                if (!Set(ref _address, value)) return;
 
                 _addressesView.RefreshFilter(value);
-                OnPropertyChanged(nameof(AdressesView));
+                OnPropertyChanged(nameof(AddressesView));
             }
         }
 
         #endregion
 
-        #region SelectedPhoneNumber : string - Выбранный номер телефона
+        #region PhoneNumber : string - Номер телефона
 
-        ///<summary>Выбранный номер телефона</summary>
-        private string _selectedPhoneNumber = string.Empty;
+        ///<summary>Номер телефона</summary>
+        private string _phoneNumber = string.Empty;
 
-        ///<summary>Выбранный номер телефона</summary>
-        public string SelectedPhoneNumber
+        ///<summary>Номер телефона</summary>
+        public string PhoneNumber
         {
-            get => _selectedPhoneNumber;
-            set => Set(ref _selectedPhoneNumber, value);
+            get => _phoneNumber;
+            set => Set(ref _phoneNumber, value);
 
         }
 
         #endregion
 
-        #region SelectedHomePhoneNumber : string - Выбранный домашний номер телефона
+        #region HomePhoneNumber : string - Домашний номер телефона
 
-        ///<summary>Выбранный домашний номер телефона</summary>
-        private string _selectedHomePhoneNumber = string.Empty;
+        ///<summary>Домашний номер телефона</summary>
+        private string _homePhoneNumber = string.Empty;
 
-        ///<summary>Выбранный домашний номер телефона</summary>
-        public string SelectedHomePhoneNumber
+        ///<summary>Домашний номер телефона</summary>
+        public string HomePhoneNumber
         {
-            get => _selectedHomePhoneNumber;
-            set => Set(ref _selectedHomePhoneNumber, value);
+            get => _homePhoneNumber;
+            set => Set(ref _homePhoneNumber, value);
 
         }
 
@@ -171,23 +171,23 @@ namespace BookObserver.ViewModels
 
         ///<summary>Проверка возможности выполнения - Команда очистки полей</summary>
         private bool CanClearFieldsCommandExecute(object? p) => 
-            !string.IsNullOrWhiteSpace(_selectedLastName)
-            || !string.IsNullOrWhiteSpace(_selectedFirstName)
-            || !string.IsNullOrWhiteSpace(_selectedPatronymic)
-            || !string.IsNullOrWhiteSpace(_selectedPhoneNumber)
-            || !string.IsNullOrWhiteSpace(_selectedHomePhoneNumber)
-            || !string.IsNullOrWhiteSpace(_selectedAddress)
+            !string.IsNullOrWhiteSpace(_lastName)
+            || !string.IsNullOrWhiteSpace(_firstName)
+            || !string.IsNullOrWhiteSpace(_patronymic)
+            || !string.IsNullOrWhiteSpace(_phoneNumber)
+            || !string.IsNullOrWhiteSpace(_homePhoneNumber)
+            || !string.IsNullOrWhiteSpace(_address)
             ;
 
         ///<summary>Логика выполнения - Команда очистки полей</summary>
         private void OnClearFieldsCommandExecuted(object? p)
         {
-            SelectedLastName = string.Empty;
-            SelectedFirstName = string.Empty;
-            SelectedPatronymic = string.Empty;
-            SelectedPhoneNumber = string.Empty;
-            SelectedHomePhoneNumber = string.Empty;
-            SelectedAddress = string.Empty;
+            LastName = string.Empty;
+            FirstName = string.Empty;
+            Patronymic = string.Empty;
+            PhoneNumber = string.Empty;
+            HomePhoneNumber = string.Empty;
+            Address = string.Empty;
         }
 
         #endregion
@@ -224,12 +224,12 @@ namespace BookObserver.ViewModels
             Readers.Add(new Reader
             {
                 Id = Readers.Count,
-                LastName = _selectedLastName,
-                FirstName = _selectedFirstName,
-                Patronymic = _selectedPatronymic,
-                Address = _selectedAddress,
-                PhoneNumber = _selectedPhoneNumber,
-                HomePhoneNumber = _selectedHomePhoneNumber
+                LastName = _lastName,
+                FirstName = _firstName,
+                Patronymic = _patronymic,
+                Address = _address,
+                PhoneNumber = _phoneNumber,
+                HomePhoneNumber = _homePhoneNumber
             });
             _readersVM._readersView.View.Refresh();
             if (_isNotifyAddReader)
