@@ -3,7 +3,7 @@
     class Book
     {
         public int Id { get; set; }
-        public int? IdReader { get; set; }
+        public int? IndexReader { get; set; }
         public string? FullNameReader { get; set; }
         public string Existence { get; set; } = "Да";
         public string BBK { get; set; } = string.Empty;

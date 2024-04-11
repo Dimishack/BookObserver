@@ -13,6 +13,7 @@ namespace BookObserver.ViewModels
         private readonly ReadersViewModel _readersVM;
         private readonly Book _bookOnEdit;
         private readonly int _indexBook;
+        private readonly int? _indexReaderFromBook;
 
         #region Existence : bool - В наличии
 
@@ -30,7 +31,7 @@ namespace BookObserver.ViewModels
                     DateGet = DateTime.Now;
                 else
                 {
-                    IdReader = null;
+                    IndexReader = null;
                     FullNameReader = null;
                     DateGet = null;
                     DateSet = null;
@@ -110,13 +111,13 @@ namespace BookObserver.ViewModels
 
         #endregion
 
-        #region IdReader : int? - Id выбранного читателя
+        #region IndexReader : int? - Id выбранного читателя
 
         ///<summary>Id выбранного читателя</summary>
-        private int? _idReader;
+        private int? _indexReader;
 
         ///<summary>Id выбранного читателя</summary>
-        public int? IdReader { get => _idReader; set => Set(ref _idReader, value); }
+        public int? IndexReader { get => _indexReader; set => Set(ref _indexReader, value); }
 
         #endregion
 
@@ -183,6 +184,7 @@ namespace BookObserver.ViewModels
             || _fullNameReader != _bookOnEdit.FullNameReader
             || _dateGet != _bookOnEdit.DateGet
             || _dateSet != _bookOnEdit.DateSet
+            || _indexReader != _indexReaderFromBook
             ;
 
         ///<summary>Логика выполнения - Команда возвращения в первоначальный вид</summary>
@@ -199,7 +201,7 @@ namespace BookObserver.ViewModels
             FullNameReader = _bookOnEdit.FullNameReader;
             DateGet = _bookOnEdit.DateGet;
             DateSet = _bookOnEdit.DateSet;
-            IdReader = _bookOnEdit.IdReader;
+            IndexReader = _indexReaderFromBook;
         }
 
         #endregion
@@ -246,7 +248,7 @@ namespace BookObserver.ViewModels
             _booksVM.Books[_indexBook] = new Book
             {
                 Id = _bookOnEdit.Id,
-                IdReader = _idReader,
+                IndexReader = _indexReader,
                 BBK = _bbk,
                 Author = _author,
                 Name = _name,
@@ -259,12 +261,19 @@ namespace BookObserver.ViewModels
                 DateGet = _dateGet,
                 DateSet = _dateSet
             };
-            if (_idReader is not null && !_readersVM.Readers[(int)_idReader].IndexesBooks.Contains(_indexBook))
+            if (_indexReaderFromBook is not null && _indexReaderFromBook != _indexReader)
             {
-                _readersVM.Readers[(int)_idReader].IndexesBooks.Add(_indexBook);
-                _readersVM.Readers[(int)_idReader].BooksWithHim = "Да";
-                _readersVM._readersView.View.Refresh();
+                _readersVM.Readers[(int)_indexReaderFromBook].IndexesBooks.Remove(_indexBook);
+                if(_readersVM.Readers[(int)_indexReaderFromBook].IndexesBooks.Count <= 0)
+                    _readersVM.Readers[(int)_indexReaderFromBook].BooksWithHim = "Нет";
+
             }
+            if (_indexReader is not null && !_readersVM.Readers[(int)_indexReader].IndexesBooks.Contains(_indexBook))
+            {
+                _readersVM.Readers[(int)_indexReader].IndexesBooks.Add(_indexBook);
+                _readersVM.Readers[(int)_indexReader].BooksWithHim = "Да";
+            }
+                _readersVM._readersView.View.Refresh();
             window.Close();
         }
 
@@ -331,7 +340,7 @@ namespace BookObserver.ViewModels
             DateGet = _bookOnEdit.DateGet;
             DateSet = _bookOnEdit.DateSet;
             Existence = _bookOnEdit.Existence == "Да";
-            IdReader = _bookOnEdit.IdReader;
+            _indexReaderFromBook = IndexReader = _bookOnEdit.IndexReader;
         }
     }
 }
