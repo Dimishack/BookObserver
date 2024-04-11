@@ -246,6 +246,7 @@ namespace BookObserver.ViewModels
         ///<summary>Логика выполнения - Команда редактировать читателя</summary>
         private void OnEditCommandExecuted(object? p)
         {
+            var window = (p as Window)!;
             var reader = new Reader
             {
                 Id = _indexReader,
@@ -277,8 +278,8 @@ namespace BookObserver.ViewModels
                 }
                 _booksVM._booksView.View.Refresh();
             }
-
-            (p as Window)!.Close();
+            window.DialogResult = true;
+            window.Close();
         }
 
         #endregion

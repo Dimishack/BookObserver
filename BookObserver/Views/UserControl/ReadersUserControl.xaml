@@ -101,7 +101,7 @@
                         Добавить<LineBreak/>читателя
                     </TextBlock>
                 </Button>
-                <Button Command="{Binding EditorReaderCommand}">
+                <Button Command="{Binding EditReaderCommand}">
                     <TextBlock TextAlignment="Center">
                         Редактировать<LineBreak/>читателя
                     </TextBlock>

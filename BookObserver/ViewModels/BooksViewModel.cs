@@ -18,7 +18,7 @@ namespace BookObserver.ViewModels
 {
     class BooksViewModel : ViewModel
     {
-        private IUserDialog? _userDialog;
+        private IUserDialog _userDialog;
         private CreatorBookWindow? _creatorWindow;
         private EditorBookWindow? _editorWindow;
 
@@ -365,7 +365,7 @@ namespace BookObserver.ViewModels
             using (var writer = new StreamWriter($@"{Environment.CurrentDirectory}/Data/Books.json"))
                 await writer.WriteAsync(JsonConvert.SerializeObject(p, Formatting.Indented));
             ((Command)SaveBooksCommand).Executable = false;
-            _userDialog?.ShowInformation("Файл успешно сохранен", "BookObserver");
+            _userDialog.ShowInformation("Файл успешно сохранен", "BookObserver");
         }
 
         #endregion
@@ -431,8 +431,10 @@ namespace BookObserver.ViewModels
                 ClearGarbage();
             };
             _editorWindow = window;
-            if (window.ShowDialog() == true)
-                ((Command)SaveBooksCommand).Executable = true;
+            if (window.ShowDialog() == false) return;
+
+            ((Command)SaveBooksCommand).Executable = true;
+            _userDialog.ShowInformation("Запись успешно отредактирована.", "Редактировать запись");
         }
 
         #endregion

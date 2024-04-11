@@ -18,7 +18,7 @@ namespace BookObserver.ViewModels
 {
     internal class ReadersViewModel : ViewModel
     {
-        private IUserDialog? _userDialog;
+        private IUserDialog _userDialog;
         private CreatorReaderWindow? _creatorReaderWindow;
         private EditorReaderWindow? _editorReaderWindow;
         public Dictionary<string, SortDescription> Sorting { get; } = new()
@@ -188,13 +188,13 @@ namespace BookObserver.ViewModels
 
         #endregion
 
-        #region EditorReaderCommand - Команда редактирования читателя
+        #region EditReaderCommand - Команда редактирования читателя
 
         ///<summary>Команда редактирования читателя</summary>
-        private ICommand? _editorReaderCommand;
+        private ICommand? _editReaderCommand;
 
         ///<summary>Команда редактирования читателя</summary>
-        public ICommand EditorReaderCommand => _editorReaderCommand
+        public ICommand EditReaderCommand => _editReaderCommand
             ??= new LambdaCommand(OnEditorReaderCommandExecuted, CanEditorReaderCommandExecute);
 
         ///<summary>Проверка возможности выполнения - Команда редактирования читателя</summary>
@@ -215,8 +215,10 @@ namespace BookObserver.ViewModels
                 ClearGarbage();
             };
             _editorReaderWindow = window;
-            if (_editorReaderWindow.ShowDialog() == true)
+            if (_editorReaderWindow.ShowDialog() == false) return;
+
             ((Command)SaveReadersCommand).Executable = true;
+            _userDialog.ShowInformation("Запись успешно отформатирована.", "Редактировать запись");
         }
 
         #endregion
@@ -444,7 +446,7 @@ namespace BookObserver.ViewModels
 
         #endregion
 
-        public ReadersViewModel(IUserDialog? userDialog)
+        public ReadersViewModel(IUserDialog userDialog)
         {
             _userDialog = userDialog;
             try
