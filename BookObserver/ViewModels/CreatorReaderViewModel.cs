@@ -170,7 +170,7 @@ namespace BookObserver.ViewModels
             ??= new LambdaCommand(OnClearFieldsCommandExecuted, CanClearFieldsCommandExecute);
 
         ///<summary>Проверка возможности выполнения - Команда очистки полей</summary>
-        private bool CanClearFieldsCommandExecute(object? p) => 
+        private bool CanClearFieldsCommandExecute(object? p) =>
             !string.IsNullOrWhiteSpace(_lastName)
             || !string.IsNullOrWhiteSpace(_firstName)
             || !string.IsNullOrWhiteSpace(_patronymic)
@@ -221,6 +221,14 @@ namespace BookObserver.ViewModels
         ///<summary>Логика выполнения - Команда добавления читателя в основной список</summary>
         private void OnAddReaderCommandExecuted(object? p)
         {
+            if ((string.IsNullOrWhiteSpace(_lastName)
+                || string.IsNullOrWhiteSpace(_firstName)
+                || string.IsNullOrWhiteSpace(_patronymic)
+                || string.IsNullOrWhiteSpace(_phoneNumber)
+                || string.IsNullOrWhiteSpace(_homePhoneNumber)
+                || string.IsNullOrWhiteSpace(_address))
+                && !_userDialog.ShowWarning("Обнаружены пустые поля.\nВсе равно добавить читателя в список?", _title)) return;
+
             Readers.Add(new Reader
             {
                 Id = Readers.Count,
@@ -232,9 +240,9 @@ namespace BookObserver.ViewModels
                 HomePhoneNumber = _homePhoneNumber
             });
             _readersVM._readersView.View.Refresh();
+            ClearFieldsCommand.Execute(null);
             if (_isNotifyAddReader)
                 _userDialog.ShowInformation("Читатель успешно добавлен в список", _title);
-
         }
 
         #endregion

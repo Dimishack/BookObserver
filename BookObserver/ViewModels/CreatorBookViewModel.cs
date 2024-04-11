@@ -262,6 +262,15 @@ namespace BookObserver.ViewModels
         ///<summary>Логика выполнения - Команда добавления книги в основной список</summary>
         private void OnAddBookCommandExecuted(object? p)
         {
+            if ((string.IsNullOrWhiteSpace(_codeAuthor)
+            || string.IsNullOrWhiteSpace(_bbk)
+            || string.IsNullOrWhiteSpace(_author)
+            || string.IsNullOrWhiteSpace(_name)
+            || string.IsNullOrWhiteSpace(_publish)
+            || string.IsNullOrWhiteSpace(_yearPublish)
+            || string.IsNullOrWhiteSpace(_pages)
+            || string.IsNullOrWhiteSpace(_isbn))
+            && !_userDialog.ShowWarning("Обнаружены пустые поля.\nВсе равно добавить книгу в список?")) return;
             Books.Add(new Book
             {
                 Id = Books.Count,
@@ -275,6 +284,7 @@ namespace BookObserver.ViewModels
                 ISBN = _isbn
             });
             _booksVM._booksView.View.Refresh();
+            ClearFieldsCommand.Execute(null);
             if (_isNotifyAddBook)
                 _userDialog.ShowInformation("Книга успешно добавлена в список", _title);
         }
