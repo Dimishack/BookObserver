@@ -40,12 +40,12 @@ namespace BookObserver.ViewModels
         private readonly CollectionWithFilter _lastNamesView = new();
         public ObservableCollection<string>? LastNamesView => _lastNamesView.CollectionView;
 
-        #region SelectedLastName : string? - Выбранная фамилия
+        #region SelectedLastName : string? - Выбранная фамилия для поиска
 
-        ///<summary>Выбранная фамилия</summary>
+        ///<summary>Выбранная фамилия для поиска</summary>
         private string _selectedLastName = string.Empty;
 
-        ///<summary>Выбранная фамилия</summary>
+        ///<summary>Выбранная фамилия для поиска</summary>
         public string SelectedLastName
         {
             get => _selectedLastName;
@@ -64,12 +64,12 @@ namespace BookObserver.ViewModels
         private readonly CollectionWithFilter _firstNamesView = new();
         public ObservableCollection<string>? FirstNamesView => _firstNamesView.CollectionView;
 
-        #region SelectedFirstName : string? - Выбранное имя
+        #region SelectedFirstName : string - Выбранное имя для поиска
 
-        ///<summary>Выбранное имя</summary>
+        ///<summary>Выбранное имя для поиска</summary>
         private string _selectedFirstName = string.Empty;
 
-        ///<summary>Выбранное имя</summary>
+        ///<summary>Выбранное имя для поиска</summary>
         public string SelectedFirstName
         {
             get => _selectedFirstName;
@@ -88,12 +88,12 @@ namespace BookObserver.ViewModels
         private readonly CollectionWithFilter _patronymicsView = new();
         public ObservableCollection<string>? PatronymicsView => _patronymicsView.CollectionView;
 
-        #region SelectedPatronymic : string - Выбранное отчество
+        #region SelectedPatronymic : string - Выбранное отчество для поиска
 
-        ///<summary>Выбранное отчество</summary>
+        ///<summary>Выбранное отчество для поиска</summary>
         private string _selectedPatronymic = string.Empty;
 
-        ///<summary>Выбранное отчество</summary>
+        ///<summary>Выбранное отчество для поиска</summary>
         public string SelectedPatronymic
         {
             get => _selectedPatronymic;
@@ -215,7 +215,7 @@ namespace BookObserver.ViewModels
         ///<summary>Логика выполнения - Команда выбрать читателя</summary>
         private void OnSelectReaderCommandExecuted(object? p)
         {
-            _editorBookVM.IdReader = Readers.IndexOf(SelectedReader!);
+            _editorBookVM.IndexReader = Readers.IndexOf(SelectedReader!);
             _editorBookVM.FullNameReader = SelectedReader!.FullName;
             (p as Window)!.Close();
         }
