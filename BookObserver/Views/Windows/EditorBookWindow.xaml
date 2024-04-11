@@ -6,9 +6,6 @@
         xmlns:local="clr-namespace:BookObserver.Views.Windows"
         mc:Ignorable="d"
         
-        xmlns:vm ="clr-namespace:BookObserver.ViewModels"
-        d:DataContext="{d:DesignInstance vm:EditorBookViewModel}"
-        
         Name ="ThisWindow" Title="Редактировать книгу" MinHeight="510" Height="510" Width="400">
     <DockPanel>
         <TextBlock DockPanel.Dock="Top" 

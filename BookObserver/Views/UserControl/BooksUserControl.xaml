@@ -7,9 +7,6 @@
              
              xmlns:fa5="http://schemas.fontawesome.com/icons/"
              xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
-             xmlns:vm="clr-namespace:BookObserver.ViewModels"
-             
-             d:DataContext="{d:DesignInstance vm:BooksViewModel}"
              d:DesignHeight="450" d:DesignWidth="800">
     <Grid>
         <Grid.Resources>

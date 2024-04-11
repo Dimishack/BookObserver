@@ -6,9 +6,6 @@
         xmlns:local="clr-namespace:BookObserver.Views.Windows"
         mc:Ignorable="d"
         
-        xmlns:vm="clr-namespace:BookObserver.ViewModels"
-        d:DataContext="{d:DesignInstance vm:EditorReaderViewModel}"
-        
         Title="Редактировать читателя" MinHeight="450" Height="550" MinWidth="550" Width="650">
     <Grid>
         <Grid.ColumnDefinitions>

@@ -5,9 +5,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BookObserver.Views.Windows"
         
-        xmlns:vm="clr-namespace:BookObserver.ViewModels"
-        
-        d:DataContext="{d:DesignInstance vm:CreatorBookViewModel}"
         mc:Ignorable="d"
         Title="{Binding Title}" MinHeight="400" MaxHeight="400" MinWidth="300" Width="400">
     <DockPanel>

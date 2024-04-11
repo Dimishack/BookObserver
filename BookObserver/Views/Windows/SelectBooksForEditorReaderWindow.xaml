@@ -9,8 +9,6 @@
         xmlns:fa5="http://schemas.fontawesome.com/icons/"
         xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         
-        xmlns:vm="clr-namespace:BookObserver.ViewModels"
-        d:DataContext="{d:DesignInstance vm:SelectBooksForEditorReaderViewModel}"
         Title="Выбрать книгу" Height="450" Width="600">
     <Grid>
         <Grid.Resources>
