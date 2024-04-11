@@ -41,20 +41,6 @@ namespace BookObserver.ViewModels
         private readonly CollectionWithFilter _yearPublishesView = new();
         public ObservableCollection<string>? YearPublishesView => _yearPublishesView.CollectionView;
 
-        #region CodeAuthor : string - Код автора
-
-        ///<summary>Код автора</summary>
-        private string _codeAuthor = string.Empty;
-
-        ///<summary>Код автора</summary>
-        public string CodeAuthor
-        {
-            get => _codeAuthor;
-            set => Set(ref _codeAuthor, value);
-        }
-
-        #endregion
-
         #region BBK : string - ББК
 
         ///<summary>ББК</summary>
@@ -205,8 +191,7 @@ namespace BookObserver.ViewModels
 
         ///<summary>Проверка возможности выполнения - COMMENT</summary>
         private bool CanClearFieldsCommandExecute(object? p) => 
-            !string.IsNullOrWhiteSpace(_codeAuthor)
-            || !string.IsNullOrWhiteSpace(_bbk)
+            !string.IsNullOrWhiteSpace(_bbk)
             || !string.IsNullOrWhiteSpace(_author)
             || !string.IsNullOrWhiteSpace(_name)
             || !string.IsNullOrWhiteSpace(_publish)
@@ -218,7 +203,6 @@ namespace BookObserver.ViewModels
         ///<summary>Логика выполнения - COMMENT</summary>
         private void OnClearFieldsCommandExecuted(object? p)
         {
-            CodeAuthor = string.Empty;
             BBK = string.Empty;
             Author = string.Empty;
             Name = string.Empty;
@@ -262,8 +246,7 @@ namespace BookObserver.ViewModels
         ///<summary>Логика выполнения - Команда добавления книги в основной список</summary>
         private void OnAddBookCommandExecuted(object? p)
         {
-            if ((string.IsNullOrWhiteSpace(_codeAuthor)
-            || string.IsNullOrWhiteSpace(_bbk)
+            if ((string.IsNullOrWhiteSpace(_bbk)
             || string.IsNullOrWhiteSpace(_author)
             || string.IsNullOrWhiteSpace(_name)
             || string.IsNullOrWhiteSpace(_publish)
