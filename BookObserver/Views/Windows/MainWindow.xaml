@@ -4,22 +4,10 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008" mc:Ignorable="d"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BookObserver"
-        xmlns:vm="clr-namespace:BookObserver.ViewModels"
         xmlns:us="clr-namespace:BookObserver.Views.UserControl"
-        Title="{Binding Title}" Height="550" MinHeight="550" Width="600" MinWidth="600">
-    <Window.DataContext>
-        <vm:MainWindowViewModel/>
-    </Window.DataContext>
-    <Window.InputBindings>
-        <KeyBinding Modifiers="Ctrl" Key="Q" Command="{Binding CloseWindowCommand}"/>
-    </Window.InputBindings>
+        Topmost="True"
+        Title="BookObserver" Height="450"  Width="600" MinWidth="600">
     <DockPanel>
-        <Menu DockPanel.Dock="Top">
-            <MenuItem Header="Файл"/>
-            <MenuItem Header="Правка">
-                <MenuItem Header="Настройки"/>
-            </MenuItem>
-        </Menu>
         <TabControl>
             <TabItem Header="Книги">
                 <us:BooksUserControl DataContext="{Binding Source={StaticResource Locator}, Path=BooksVM}"/>

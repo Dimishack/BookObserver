@@ -16,7 +16,7 @@
             <Style TargetType="ComboBox" BasedOn="{StaticResource ComboBoxBase}"/>
         </Grid.Resources>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition MinWidth="150" MaxWidth="250"/>
+            <ColumnDefinition MinWidth="100" MaxWidth="250"/>
             <ColumnDefinition Width="3"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
@@ -92,7 +92,7 @@
             </GroupBox>
         </DockPanel>
         <DockPanel Grid.Column="2">
-            <UniformGrid DockPanel.Dock="Bottom" Rows="1">
+            <UniformGrid DockPanel.Dock="Bottom" Rows="1" Margin="5">
                 <UniformGrid.Resources>
                     <Style TargetType="Button" BasedOn="{StaticResource ButtonUG}"/>
                 </UniformGrid.Resources>

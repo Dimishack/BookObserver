@@ -16,7 +16,7 @@
             <Style TargetType="ComboBox" BasedOn="{StaticResource ComboBoxBase}"/>
         </Grid.Resources>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition MaxWidth="250" MinWidth="85"/>
+            <ColumnDefinition MaxWidth="250" MinWidth="120"/>
             <ColumnDefinition Width="3"/>
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
@@ -119,7 +119,7 @@
                 </Button>
                 <Button Command="{Binding EditBookCommand}">
                     <TextBlock TextAlignment="Center">
-                        Редактировать <LineBreak/> запись
+                        Редактировать <LineBreak/> книгу
                     </TextBlock>
                 </Button>
                 <Button Command="{Binding SaveBooksCommand}" CommandParameter="{Binding Books}">
