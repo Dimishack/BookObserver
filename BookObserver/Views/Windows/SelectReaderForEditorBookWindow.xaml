@@ -87,7 +87,7 @@
                     Command="{Binding SelectReaderCommand}"
                     CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"/>
             <GroupBox Header="Читатели">
-                <ListBox ItemsSource="{Binding ReadersView}"
+                <ListBox ItemsSource="{Binding FiltredReaders}"
                      SelectedItem="{Binding SelectedReader}">
                     <ListBox.ItemTemplate>
                         <DataTemplate>

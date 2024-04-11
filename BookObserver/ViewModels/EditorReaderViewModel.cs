@@ -248,7 +248,7 @@ namespace BookObserver.ViewModels
         {
             var reader = new Reader
             {
-                Id = _indexReader + 1,
+                Id = _indexReader,
                 LastName = _lastName,
                 FirstName = _firstName,
                 Patronymic = _patronymic,

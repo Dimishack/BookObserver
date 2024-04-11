@@ -259,8 +259,12 @@ namespace BookObserver.ViewModels
                 DateGet = _dateGet,
                 DateSet = _dateSet
             };
-            if (_idReader is not null)
+            if (_idReader is not null && !_readersVM.Readers[(int)_idReader].IndexesBooks.Contains(_indexBook))
+            {
                 _readersVM.Readers[(int)_idReader].IndexesBooks.Add(_indexBook);
+                _readersVM.Readers[(int)_idReader].BooksWithHim = "Да";
+                _readersVM._readersView.View.Refresh();
+            }
             window.Close();
         }
 
@@ -295,7 +299,7 @@ namespace BookObserver.ViewModels
         ///<summary>Логика выполнения - Команда выбрать читателя</summary>
         private void OnSelectReaderCommandExecuted(object? p)
         {
-            var viewModel = new SelectReaderForEditorBookViewModel(this);
+            var viewModel = new SelectReaderForEditorBookViewModel(this, _readersVM);
             var window = new SelectReaderForEditorBookWindow { DataContext = viewModel };
             window.Closed += (_, _) =>
             {

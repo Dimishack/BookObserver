@@ -106,7 +106,8 @@
                         Редактировать<LineBreak/>читателя
                     </TextBlock>
                 </Button>
-                <Button>
+                <Button Command="{Binding SaveReadersCommand}"
+                        CommandParameter="{Binding Readers}">
                     <TextBlock TextAlignment="Center">
                         Сохранить<LineBreak/>список
                     </TextBlock>
