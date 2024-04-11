@@ -18,6 +18,8 @@ namespace BookObserver.ViewModels
 {
     internal class ReadersViewModel : ViewModel
     {
+        private readonly BooksViewModel _booksVM;
+
         private IUserDialog _userDialog;
         private CreatorReaderWindow? _creatorReaderWindow;
         private EditorReaderWindow? _editorReaderWindow;
@@ -365,6 +367,37 @@ namespace BookObserver.ViewModels
 
         #endregion
 
+        #region ShowBooksOfReaderCommand - Команда показать список книг у читателя
+
+        ///<summary>Команда показать список книг у читателя</summary>
+        private ICommand? _showBooksOfReaderCommand;
+
+        ///<summary>Команда показать список книг у читателя</summary>
+        public ICommand ShowBooksOfReaderCommand => _showBooksOfReaderCommand
+            ??= new LambdaCommand(OnShowBooksOfReaderCommandExecuted, CanShowBooksOfReaderCommandExecute);
+
+        private bool CanShowBooksOfReaderCommandExecute(object? p) => p is Reader;
+
+        ///<summary>Логика выполнения - Команда показать список книг у читателя</summary>
+        private void OnShowBooksOfReaderCommandExecuted(object? p)
+        {
+            var books = new ObservableCollection<Book>();
+            foreach (var indexBook in (p as Reader)!.IndexesBooks)
+                books.Add(_booksVM.Books[indexBook]);
+            var window = new BooksFromReaderWindow
+            {
+                Books = books
+            };
+            window.Closed += (_, _) =>
+            {
+                window = null;
+                ClearGarbage();
+            };
+            window.Show();
+        }
+
+        #endregion
+
         #region GotFocus Commands...
 
         #region GotFocusComboBoxLastNamesCommand - Команда при получении фокуса (ComboBox фамилии)
@@ -446,8 +479,9 @@ namespace BookObserver.ViewModels
 
         #endregion
 
-        public ReadersViewModel(IUserDialog userDialog)
+        public ReadersViewModel(IUserDialog userDialog, BooksViewModel booksVM)
         {
+            _booksVM = booksVM;
             _userDialog = userDialog;
             try
             {

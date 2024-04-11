@@ -5,7 +5,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BookObserver"
         xmlns:us="clr-namespace:BookObserver.Views.UserControl"
-        Topmost="True"
         Title="BookObserver" Height="450"  Width="600" MinWidth="600">
     <DockPanel>
         <TabControl>

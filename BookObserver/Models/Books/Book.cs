@@ -1,6 +1,6 @@
 ﻿namespace BookObserver.Models.Books
 {
-    class Book
+    public class Book
     {
         public int Id { get; set; }
         public int? IndexReader { get; set; }
