@@ -5,7 +5,16 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BookObserver"
         xmlns:us="clr-namespace:BookObserver.Views.UserControl"
+        
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        
+        DataContext="{Binding Source={StaticResource Locator}, Path=MainVM}"
         Title="BookObserver" Height="450"  Width="600" MinWidth="600">
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Closing">
+            <i:InvokeCommandAction Command="{Binding CloseWindowCommand}" PassEventArgsToCommand="True"/>
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
     <DockPanel>
         <TabControl>
             <TabItem Header="Книги">

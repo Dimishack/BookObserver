@@ -27,7 +27,7 @@
 
   <ItemGroup>
     <Resource Include="Data\Books.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Data\Readers.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

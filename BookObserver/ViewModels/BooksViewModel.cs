@@ -362,7 +362,10 @@ namespace BookObserver.ViewModels
         ///<summary>Логика выполнения - Команда сохранения книг в файл</summary>
         private async void OnSaveBooksCommandExecuted(object? p)
         {
-            using (var writer = new StreamWriter($@"{Environment.CurrentDirectory}/Data/Books.json"))
+            var directory = $@"{Environment.CurrentDirectory}/Data";
+            if (!Directory.Exists(directory))
+                Directory.CreateDirectory(directory);
+            using (var writer = new StreamWriter($@"{directory}/Books.json"))
                 await writer.WriteAsync(JsonConvert.SerializeObject(p, Formatting.Indented));
             ((Command)SaveBooksCommand).Executable = false;
             _userDialog.ShowInformation("Файл успешно сохранен", "BookObserver");

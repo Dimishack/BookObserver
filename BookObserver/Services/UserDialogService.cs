@@ -9,7 +9,7 @@ namespace BookObserver.Services
             MessageBox.Show(message, caption, MessageBoxButton.OK, MessageBoxImage.Information);
 
         public bool ShowWarning(string message, string? caption = null) =>
-            MessageBox.Show(message, caption, MessageBoxButton.YesNo, MessageBoxImage.Warning, MessageBoxResult.Yes)
+            MessageBox.Show(message, caption, MessageBoxButton.YesNo, MessageBoxImage.Warning)
             == MessageBoxResult.Yes;
     }
 }
