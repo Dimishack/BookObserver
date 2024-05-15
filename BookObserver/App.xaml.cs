@@ -19,18 +19,18 @@ namespace BookObserver
 
         public static IServiceProvider Services => Host.Services;
 
-        protected override void OnStartup(StartupEventArgs e)
+        protected override async void OnStartup(StartupEventArgs e)
         {
             var host = Host;
             base.OnStartup(e);
-            host.StartAsync();
+            await host.StartAsync();
         }
 
-        protected override void OnExit(ExitEventArgs e)
+        protected override async void OnExit(ExitEventArgs e)
         {
             using var host = Host;
             base.OnExit(e);
-            host.StopAsync();
+            await host.StopAsync();
         }
     }
 }
