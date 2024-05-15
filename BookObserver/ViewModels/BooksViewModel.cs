@@ -10,7 +10,6 @@ using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
-using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 
@@ -55,8 +54,7 @@ namespace BookObserver.ViewModels
 
                 _booksView.View.SortDescriptions.Clear();
                 ClearGarbage();
-                if (value.Contains("Даты получения", StringComparison.OrdinalIgnoreCase)
-                    || value.Contains("Даты возврата", StringComparison.OrdinalIgnoreCase))
+                if (value.Contains("Даты", StringComparison.OrdinalIgnoreCase))
                     _booksView.View.SortDescriptions.Add(Sorting["Сначала не в наличии"]);
                 _booksView.View.SortDescriptions.Add(Sorting[value]);
             }
@@ -69,11 +67,13 @@ namespace BookObserver.ViewModels
 
         #region FiltredBooks : ObservableCollection<Book> - Список книг для фильтрации
 
+        ///<summary>Список книг для фильтрации</summary>
         private ObservableCollection<Book>? _filtredBooks;
         ///<summary>Список книг для фильтрации</summary>
         public ObservableCollection<Book>? FiltredBooks { get => _filtredBooks; set => Set(ref _filtredBooks, value); }
 
         #endregion
+
         /// <summary>Вывод списка</summary>
         public readonly CollectionViewSource _booksView = new();
         /// <summary>Вывод списка</summary>
@@ -263,17 +263,17 @@ namespace BookObserver.ViewModels
 
         #endregion
 
-        #region ClearFiltersCommand - Команда для очистки фильтров
+        #region ClearFieldsCommand - Команда для очистки полей
 
-        ///<summary>Команда для очистки фильтров</summary>
-        private ICommand? _clearFiltersCommand;
+        ///<summary>Команда для очистки полей</summary>
+        private ICommand? _clearFieldsCommand;
 
-        ///<summary>Команда для очистки фильтров</summary>
-        public ICommand ClearFiltersCommand => _clearFiltersCommand
-            ??= new LambdaCommand(OnClearFiltersCommandExecuted, CanClearFiltersCommandExecute);
+        ///<summary>Команда для очистки полей</summary>
+        public ICommand ClearFieldsCommand => _clearFieldsCommand
+            ??= new LambdaCommand(OnClearFieldsCommandExecuted, CanClearFieldsCommandExecute);
 
-        ///<summary>Проверка возможности выполнения - Команда для очистки фильтров</summary>
-        private bool CanClearFiltersCommandExecute(object? p) =>
+        ///<summary>Проверка возможности выполнения - Команда для очистки полей</summary>
+        private bool CanClearFieldsCommandExecute(object? p) =>
             !string.IsNullOrWhiteSpace(_selectedExistence)
             || !string.IsNullOrWhiteSpace(_selectedBBK)
             || !string.IsNullOrWhiteSpace(_authorsFilterText)
@@ -281,8 +281,8 @@ namespace BookObserver.ViewModels
             || !string.IsNullOrWhiteSpace(_selectedPublish)
             ;
 
-        ///<summary>Логика выполнения - Команда для очистки фильтров</summary>
-        private void OnClearFiltersCommandExecuted(object? p)
+        ///<summary>Логика выполнения - Команда для очистки полей</summary>
+        private void OnClearFieldsCommandExecuted(object? p)
         {
             SelectedExistence = string.Empty;
             SelectedBBK = string.Empty;
@@ -328,8 +328,7 @@ namespace BookObserver.ViewModels
 
         ///<summary>Проверка возможности выполнения - Команда удаления книги</summary>
         private bool CanDeleteBookCommandExecute(object? p) =>
-            Books is not null
-            && p is not null
+            p is not null
             && p is Book;
 
         ///<summary>Логика выполнения - Команда удаления книги</summary>
@@ -368,7 +367,7 @@ namespace BookObserver.ViewModels
             using (var writer = new StreamWriter($@"{directory}/Books.json"))
                 await writer.WriteAsync(JsonConvert.SerializeObject(p, Formatting.Indented));
             ((Command)SaveBooksCommand).Executable = false;
-            _userDialog.ShowInformation("Файл успешно сохранен", "BookObserver");
+            _userDialog.ShowInformation("Список успешно сохранен", "BookObserver");
         }
 
         #endregion

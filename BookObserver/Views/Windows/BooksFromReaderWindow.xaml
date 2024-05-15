@@ -23,7 +23,9 @@
                             </StackPanel>
                             <TextBlock Text="{Binding Pages, StringFormat='Количество страниц: {0}'}"/>
                             <TextBlock Text="{Binding ISBN, StringFormat=ISBN: {0}}"/>
-                            <TextBlock Text="{Binding Existence, StringFormat=В наличии: {0}}"
+                            <TextBlock Text="{Binding DateGet, StringFormat=Дата получения: {0:dd.MM.yyyy}}"
+                                       FontWeight="Bold"/>
+                            <TextBlock Text="{Binding DateSet, StringFormat=Дата возврата: {0:dd.MM.yyyy}}"
                                        FontWeight="Bold"/>
                         </StackPanel>
                     </Grid>

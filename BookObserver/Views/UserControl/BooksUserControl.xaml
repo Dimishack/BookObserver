@@ -97,7 +97,7 @@
                             </i:Interaction.Triggers>
                         </ComboBox>
                         <Button Content="Очистить поля" Margin="10"
-                                Command="{Binding ClearFiltersCommand}">
+                                Command="{Binding ClearFieldsCommand}">
                         </Button>
                     </StackPanel>
                 </DockPanel>

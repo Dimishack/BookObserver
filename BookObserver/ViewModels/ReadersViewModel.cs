@@ -274,7 +274,7 @@ namespace BookObserver.ViewModels
             using (var writer = new StreamWriter($@"{directory}/Readers.json"))
                 await writer.WriteAsync(JsonConvert.SerializeObject(p, Formatting.Indented));
             ((Command)SaveReadersCommand).Executable = false;
-            _userDialog?.ShowInformation("Файл успешно сохранен", "BookObserver");
+            _userDialog?.ShowInformation("Список успешно сохранен", "BookObserver");
         }
 
         #endregion
